@@ -15,5 +15,6 @@
 	"requirePragma": false,
 	"trailingComma": "none",
 	"useTabs": true,
-	"vueIndentScriptAndStyle": false
+	"vueIndentScriptAndStyle": false,
+	"vueIndentScriptHandlesTemplateLiterals": false
 }
