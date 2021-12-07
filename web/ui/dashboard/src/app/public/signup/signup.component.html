@@ -1,0 +1,80 @@
+<div class="auth-page">
+	<button class="back-button has-icon" (click)="activeStep = 'basic'" *ngIf="activeStep === 'otp'">
+		<img src="assets/img/arrow-left-icon-primary.svg" alt="arrow back icon" />
+	</button>
+
+	<section class="auth-page--container">
+		<img src="/assets/img/logo.svg" alt="convoy logo" class="logo" />
+
+		<ng-container *ngIf="activeStep === 'basic'">
+			<h3>Create your workspace, 💻</h3>
+			<p>A workspace is your virtual office where you manage everything webhooks happening in your business. Tell us about your business.</p>
+
+			<form [formGroup]="signupForm" class="card card__shadow" (ngSubmit)="activeStep = 'otp'">
+				<div class="input">
+					<input type="text" aria-label="Business name" autocomplete="username" placeholder="Business name" formControlName="username" />
+				</div>
+
+				<div class="input">
+					<input type="email" aria-label="Email address" autocomplete="email" placeholder="Email address" />
+				</div>
+
+				<div class="input">
+					<div class="input--password">
+						<input [type]="showLoginPassword ? 'text' : 'password'" aria-label="password" autocomplete="new-password" placeholder="Enter your password" formControlName="password" />
+						<button class="input--password__view-toggle" type="button">
+							<img
+								[src]="!showLoginPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
+								alt="showLoginPassword ? 'hide password icon' : 'view password icon'"
+							/>
+						</button>
+					</div>
+				</div>
+
+				<div class="input checkbox">
+					<input type="checkbox" id="termsCondition" />
+					<label for="termsCondition">
+						<div>I have read, understood and I agree to Convoy’s Privacy Policy, and Terms & Conditions.</div>
+					</label>
+				</div>
+
+				<button [disabled]="disableLoginBtn" class="primary full-100">
+					{{ disableLoginBtn ? 'loading....' : 'Login to Dashboard' }}
+				</button>
+			</form>
+
+			<button class="white full-100">Login if you already have an account</button>
+		</ng-container>
+
+		<ng-container *ngIf="activeStep === 'otp'">
+			<h3>We sent you an OTP to jaykay@zoho.com, 📬</h3>
+			<p>A password reset link has been sent to your email, fellow the link or enter the 6 digits code in it below to continue.</p>
+
+			<div class="card otp">
+				<div class="otp--codes">
+					<div class="input">
+						<input type="text" aria-label="otp code 1" />
+					</div>
+					<div class="input">
+						<input type="text" aria-label="otp code 2" />
+					</div>
+					<div class="input">
+						<input type="text" aria-label="otp code 3" />
+					</div>
+					<div class="input">
+						<input type="text" aria-label="otp code 4" />
+					</div>
+					<div class="input">
+						<input type="text" aria-label="otp code 5" />
+					</div>
+					<div class="input">
+						<input type="text" aria-label="otp code 6" />
+					</div>
+				</div>
+				<button class="primary full-100">Continue</button>
+			</div>
+
+			<button class="white full-100" (click)="signup()">Resend reset link in 0:59</button>
+		</ng-container>
+	</section>
+</div>

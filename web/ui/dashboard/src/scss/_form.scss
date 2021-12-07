@@ -77,6 +77,34 @@
 			}
 		}
 	}
+
+	&.checkbox {
+		flex-wrap: nowrap;
+		align-items: center;
+
+		label {
+			text-transform: initial;
+			line-height: 24px;
+			font-size: 14px;
+		}
+
+		input[type='checkbox'] {
+			width: initial;
+			order: 1;
+			margin-right: 16px;
+		}
+	}
+
+	&.has-icon {
+		position: relative;
+
+		.input--valid-icon {
+			position: absolute;
+			top: calc(50% + 8px);
+			transform: translate(0, -50%);
+			right: 12px;
+		}
+	}
 }
 
 input,
@@ -88,6 +116,13 @@ datalist {
 	border-radius: 4px;
 	padding: 15px;
 	appearance: none;
+	transition: all 0.3s;
+
+	&:focus {
+		background: rgba(71, 125, 179, 0.04);
+		border: 1px solid #477db3;
+		outline: #477db3;
+	}
 }
 
 input[type='checkbox'],

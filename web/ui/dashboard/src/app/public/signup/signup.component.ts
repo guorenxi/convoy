@@ -3,24 +3,25 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
-	selector: 'app-login',
-	templateUrl: './login.component.html',
-	styleUrls: ['./login.component.scss']
+	selector: 'app-signup',
+	templateUrl: './signup.component.html',
+	styleUrls: ['./signup.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class SignupComponent implements OnInit {
 	showLoginPassword = false;
 	disableLoginBtn = false;
-	loginForm: FormGroup = this.formBuilder.group({
-		email: ['', Validators.required],
+	signupForm: FormGroup = this.formBuilder.group({
+		username: ['', Validators.required],
 		password: ['', Validators.required]
 	});
+	activeStep: 'basic' | 'otp' = 'basic';
 
 	constructor(private formBuilder: FormBuilder, private router: Router) {}
 
 	ngOnInit(): void {}
 
-	async login() {
-		localStorage.setItem('CONVOY_AUTH', JSON.stringify(this.loginForm.value));
+	async signup() {
+		localStorage.setItem('CONVOY_AUTH', JSON.stringify(this.signupForm.value));
 		this.router.navigateByUrl('dashboard');
 	}
 }
