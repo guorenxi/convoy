@@ -17,7 +17,6 @@ import { GROUP } from 'src/app/models/group.model';
 	styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-	showDropdown = false;
 	showFilterCalendar = false;
 	tabs: ['events', 'event deliveries', 'apps'] = ['events', 'event deliveries', 'apps'];
 	activeTab: 'events' | 'apps' | 'event deliveries' = 'events';
@@ -99,11 +98,6 @@ export class DashboardComponent implements OnInit {
 		// get active tab from url and apply, after getting the details from above requests so that the data is available ahead
 		this.toggleActiveTab(this.route.snapshot.queryParams.activeTab ?? 'events');
 		return;
-	}
-
-	logout() {
-		localStorage.removeItem('CONVOY_AUTH');
-		this.router.navigateByUrl('/login');
 	}
 
 	toggleActiveTab(tab: 'events' | 'apps' | 'event deliveries') {
