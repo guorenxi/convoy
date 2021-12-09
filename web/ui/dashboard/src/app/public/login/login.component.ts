@@ -11,7 +11,7 @@ export class LoginComponent implements OnInit {
 	showLoginPassword = false;
 	disableLoginBtn = false;
 	loginForm: FormGroup = this.formBuilder.group({
-		email: ['', Validators.required],
+		username: ['', Validators.required],
 		password: ['', Validators.required]
 	});
 

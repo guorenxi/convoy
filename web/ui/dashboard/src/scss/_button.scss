@@ -84,24 +84,6 @@ button {
 		width: 100%;
 	}
 
-	&.has-icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-
-		&.icon-right {
-			img {
-				margin-left: 10px;
-			}
-		}
-
-		&.icon-left {
-			img {
-				margin-right: 10px;
-			}
-		}
-	}
-
 	&.round {
 		border-radius: 50%;
 	}
@@ -160,5 +142,31 @@ button:disabled {
 
 	img {
 		width: 14px;
+	}
+}
+
+.has-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&.icon-right {
+		img {
+			margin-left: 10px;
+		}
+
+		.icon {
+			margin-left: 10px;
+		}
+	}
+
+	&.icon-left {
+		img {
+			margin-right: 10px;
+		}
+
+		.icon {
+			margin-right: 10px;
+		}
 	}
 }
