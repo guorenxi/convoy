@@ -23,6 +23,10 @@ const routes: Routes = [
 			{
 				path: 'team',
 				loadChildren: () => import('./pages/team/team.module').then(m => m.TeamModule)
+			},
+			{
+				path: 'account',
+				loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule)
 			}
 		]
 	}

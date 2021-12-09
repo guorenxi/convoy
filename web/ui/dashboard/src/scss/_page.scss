@@ -45,15 +45,6 @@
 		margin-bottom: 40px;
 		width: 109px;
 	}
-
-	button.white {
-		background: linear-gradient(0deg, #f6f7f9 0%, #ffffff 100%);
-		border: 1px solid #edf2f7;
-		box-sizing: border-box;
-		box-shadow: 0px 1px 1px rgba(22, 29, 37, 0.05), inset 0px 2px 0px rgba(255, 255, 255, 0.05);
-		border-radius: 10px;
-		margin: 24px 0 70px;
-	}
 }
 
 .page {
@@ -84,6 +75,43 @@
 		button {
 			padding: 8px 32px;
 			font-size: 14px;
+		}
+	}
+
+	&__small {
+		max-width: 920px;
+		background: #ffffff;
+		border: 1px solid #edeff5;
+		border-radius: 8px;
+	}
+
+	&--empty-state {
+		background: #ffffff;
+		border: 1px solid #edeff5;
+		border-radius: 10px;
+		height: 550px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+
+		h4 {
+			font-size: 16px;
+			line-height: 30px;
+			margin-top: 24px;
+		}
+
+		p {
+			font-weight: 500;
+			font-size: 14px;
+			line-height: 22px;
+			color: #737a91;
+			width: 384px;
+			text-align: center;
+		}
+
+		button {
+			margin-top: 30px;
 		}
 	}
 }
