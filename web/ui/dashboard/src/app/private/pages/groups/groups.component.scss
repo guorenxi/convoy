@@ -1,31 +1,5 @@
 .groups-page {
-	&--head {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-
-		h1 {
-			font-weight: bold;
-			font-size: 16px;
-			line-height: 30px;
-			margin-bottom: 1px;
-		}
-
-		p {
-			font-weight: 500;
-			font-size: 14px;
-			line-height: 22px;
-			color: #737a91;
-		}
-
-		button {
-			padding: 8px 32px;
-			font-size: 14px;
-		}
-	}
-
 	.groups {
-		margin-top: 23px;
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(336px, 1fr));
 		gap: 24px 32px;

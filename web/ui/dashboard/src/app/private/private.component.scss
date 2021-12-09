@@ -170,6 +170,11 @@
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			transition: background 0.2s ease-in-out;
+
+			&:hover {
+				background: #edf2f7;
+			}
 
 			p {
 				font-weight: 500;
@@ -182,20 +187,6 @@
 		.organisation--name {
 			display: flex;
 			align-items: center;
-		}
-
-		.img {
-			width: 24px;
-			height: 24px;
-			background: #000624;
-			border-radius: 50px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			color: #edeff5;
-			font-size: 10px;
-			text-align: center;
-			margin-right: 16px;
 		}
 	}
 }

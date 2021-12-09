@@ -60,4 +60,44 @@
 	width: 1374px;
 	margin: 32px auto;
 	padding: 0 2rem;
+
+	&--head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 23px;
+
+		h1 {
+			font-weight: bold;
+			font-size: 16px;
+			line-height: 30px;
+			margin-bottom: 1px;
+		}
+
+		p {
+			font-weight: 500;
+			font-size: 14px;
+			line-height: 22px;
+			color: #737a91;
+		}
+
+		button {
+			padding: 8px 32px;
+			font-size: 14px;
+		}
+	}
+}
+
+.img {
+	width: 24px;
+	height: 24px;
+	background: #000624;
+	border-radius: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #edeff5;
+	font-size: 10px;
+	text-align: center;
+	margin-right: 16px;
 }
