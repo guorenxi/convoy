@@ -60,7 +60,7 @@
 		padding: 32px;
 		width: 100%;
 
-		&--head {
+		.user-details--head {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -91,7 +91,7 @@
 			}
 		}
 
-		&--head,
+		.user-details--head,
 		form {
 			border-bottom: 1px solid #edeff5;
 			padding-bottom: 26px;

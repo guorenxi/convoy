@@ -5,7 +5,7 @@
 			<p>A definition of what a group is goes here</p>
 		</div>
 
-		<button class="primary">Create Group</button>
+		<button class="primary" (click)="showCreateGroupModal = true">Create Group</button>
 	</div>
 
 	<ul class="groups">
@@ -94,6 +94,54 @@
 		</div>
 		<h4>You have no group yet</h4>
 		<p>A definition of what a group is goes here</p>
-		<button class="primary">Create Group</button>
+		<button class="primary" (click)="showCreateGroupModal = true">Create Group</button>
+	</div>
+</div>
+
+<div class="overlay" *ngIf="showCreateGroupModal === true"></div>
+<div class="modal modal__right" *ngIf="showCreateGroupModal === true">
+	<div class="modal--head">
+		<h1>Create Group</h1>
+		<button class="modal--close clear" (click)="showCreateGroupModal = false">
+			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
+		</button>
+	</div>
+
+	<div class="modal--body">
+		<form>
+			<div class="input">
+				<label for="group-name">Group Name</label>
+				<input type="text" id="group-name" />
+			</div>
+
+			<h3>Retry Strategy</h3>
+			<div class="input">
+				<label for="interval">Interval seconds</label>
+				<input type="number" id="interval" />
+			</div>
+
+			<div class="input">
+				<label for="retry-limit">Retry Limit</label>
+				<input type="number" id="retry-limit" />
+			</div>
+
+			<h3>Signature</h3>
+			<div class="input">
+				<label for="signatur-header">Header</label>
+				<input type="number" id="signatur-header" />
+			</div>
+
+			<div class="input">
+				<label for="hash">Hash</label>
+				<input type="number" id="hash" />
+			</div>
+		</form>
+	</div>
+
+	<div class="modal--footer">
+		<div class="button-container">
+			<button class="white" (click)="showCreateGroupModal = false">Discard</button>
+			<button class="primary">Create Group</button>
+		</div>
 	</div>
 </div>

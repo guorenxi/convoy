@@ -5,7 +5,7 @@
 			<p>A definition of what a team is goes here</p>
 		</div>
 
-		<button class="primary">Add team member</button>
+		<button class="primary" (click)="showInviteTeamMemberModal = true">Add team member</button>
 	</div>
 
 	<table>
@@ -160,6 +160,113 @@
 		</div>
 		<h4>You have no one on your team yet</h4>
 		<p>You can invite team members to join your organization and assign them roles to groups</p>
-		<button class="primary">Add team member</button>
+		<button class="primary" (click)="showInviteTeamMemberModal = true">Add team member</button>
+	</div>
+</div>
+
+<div class="overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal"></div>
+<div class="modal modal__right" *ngIf="showInviteTeamMemberModal">
+	<div class="modal--head">
+		<h1>Add Team Member</h1>
+		<button class="modal--close clear" (click)="showInviteTeamMemberModal = false">
+			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
+		</button>
+	</div>
+
+	<div class="modal--body">
+		<div class="user-details--head">
+			<div>
+				<img src="/assets/img/mimoji.png" alt="profile image" />
+				<button class="white">Edit Photo</button>
+			</div>
+
+			<div class="dropdown--container">
+				<button class="clear has-icon" (click)="showTeamMemberDropdown = !showTeamMemberDropdown"><img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" /></button>
+
+				<div class="dropdown user-dropdown" *ngIf="showTeamMemberDropdown">
+					<ul>
+						<li>
+							<button class="danger clear">Deactivate team member</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<form>
+			<h3>Basic info</h3>
+			<p>Amet minim mollit non deserunt ullamco est sit aliqua dolo</p>
+			<div class="input smaller">
+				<label for="first-name">First Name</label>
+				<input type="text" id="first-name" />
+			</div>
+
+			<div class="input smaller">
+				<label for="last-name">Last Name</label>
+				<input type="text" id="last-name" />
+			</div>
+
+			<div class="input">
+				<label for="email">Email</label>
+				<input type="email" id="email" />
+			</div>
+
+			<div class="input">
+				<label for="phone-number">Phone Number</label>
+				<input type="tel" inputmode="tel" id="phone-number" />
+			</div>
+
+			<div class="dropdown--container">
+				<div class="input">
+					<label for="group">Select group</label>
+					<input type="text" id="group" readonly (click)="showTeamGroupDropdown = !showTeamGroupDropdown" />
+				</div>
+
+				<div class="dropdown" *ngIf="showTeamGroupDropdown">
+					<div class="input search">
+						<img src="/assets/img/search-icon.svg" alt="search icon" />
+						<input type="search" placeholder="Search groups here" />
+					</div>
+
+					<ul>
+						<li>
+							<label for="group-name1">Group name goes here</label>
+							<input type="checkbox" name="group-name" id="group-name1" />
+						</li>
+						<li>
+							<label for="group-name2">Group name goes here</label>
+							<input type="checkbox" name="group-name" id="group-name2" />
+						</li>
+						<li>
+							<label for="group-name3">Group name goes here</label>
+							<input type="checkbox" name="group-name" id="group-name3" />
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="input">
+				<label for="role">Select Role</label>
+				<select name="role" id="role">
+					<option value="Admin">Admin</option>
+					<option value="Dev">Dev</option>
+				</select>
+			</div>
+		</form>
+	</div>
+
+	<div class="modal--footer">
+		<div class="button-container">
+			<button class="white" (click)="showInviteTeamMemberModal = false">Discard</button>
+			<button class="primary">Send Invite</button>
+		</div>
+	</div>
+</div>
+
+<div class="modal modal__center" *ngIf="showSuccessModal">
+	<div class="modal--body success">
+		<img width="140px" src="/assets/img/success.gif" alt="success animation" />
+		<p>Team member created succesfully! We sent them an email for onboarding instructions.</p>
+		<button class="white" (click)="showSuccessModal = false">Close</button>
 	</div>
 </div>

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-groups',
-  templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.scss']
+	selector: 'app-groups',
+	templateUrl: './groups.component.html',
+	styleUrls: ['./groups.component.scss']
 })
 export class GroupsComponent implements OnInit {
+	showCreateGroupModal: boolean = false;
 
-  constructor() { }
+	constructor() {}
 
-  ngOnInit(): void {
-  }
-
+	ngOnInit(): void {}
 }
