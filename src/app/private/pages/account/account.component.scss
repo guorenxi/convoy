@@ -140,3 +140,11 @@
 		}
 	}
 }
+
+.modal {
+	width: 624px;
+
+	.modal--body {
+		height: unset;
+	}
+}

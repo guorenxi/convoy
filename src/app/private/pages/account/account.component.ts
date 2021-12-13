@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountComponent implements OnInit {
 	activePage: 'profile' | 'organisation' | 'billing' = 'profile';
+	showChangePasswordModal: boolean = true;
+	passwordToggle = { oldPassword: false, newPassword: false, confirmPassword: false };
 
 	constructor() {}
 
