@@ -1,0 +1,89 @@
+.dashboard--header {
+	background: #ffffff;
+	width: 100%;
+
+	&--container {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 1374px;
+		margin: auto;
+		background: #ffffff;
+		padding: 12px 20px;
+	}
+
+	.logo {
+		img {
+			width: 100px;
+		}
+	}
+
+	.organisations {
+		width: 440px;
+	}
+
+	.more {
+		width: 264px;
+	}
+
+	&--nav {
+		display: flex;
+		align-items: center;
+
+		nav {
+			margin-left: 91px;
+
+			ul {
+				display: flex;
+				align-items: center;
+
+				li {
+					&:not(:last-of-type) {
+						margin-right: 32px;
+					}
+
+					a {
+						padding: 12px 15px;
+						font-size: 14px;
+						font-weight: 500;
+						color: #737a91;
+
+						&.active {
+							background: #edf2f7;
+							border-radius: 4px;
+							color: var(--primary-color);
+							font-weight: 600;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&--acounts {
+		display: flex;
+		align-items: center;
+
+		a {
+			white-space: nowrap;
+			margin-right: 32px;
+			color: var(--primary-color);
+			font-weight: 500;
+			font-size: 14px;
+			line-height: 22px;
+		}
+	}
+
+	button.more-icon.has-icon {
+		background: #f8f8fa;
+		border-radius: 4px;
+		margin-left: 16px;
+		padding-left: 14px;
+		padding-right: 14px;
+	}
+}
+
+.organisation--name {
+	display: flex;
+	align-items: center;
+}

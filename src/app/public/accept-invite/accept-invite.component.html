@@ -1,0 +1,45 @@
+<div class="auth-page">
+	<section class="auth-page--container">
+		<img src="/assets/img/logo.svg" class="logo" alt="convoy logo" />
+		<h3>Join your team to start managing webhooks</h3>
+		<p>Please, fill in your detail to create your Kwiksell account and join your team (Buycoins).</p>
+
+		<form [formGroup]="acceptInviteForm" class="card" (ngSubmit)="acceptInvite()">
+			<div class="input">
+				<input type="text" autocomplete="given-name" placeholder="First name" formControlName="firstName" />
+			</div>
+
+			<div class="input">
+				<input type="text" autocomplete="family-name" placeholder="Last name" formControlName="lastName" />
+			</div>
+
+			<div class="input">
+				<input type="email" autocomplete="email" placeholder="Email address" formControlName="email" />
+			</div>
+
+			<div class="input">
+				<input type="text" placeholder="Role assigned goes here " />
+			</div>
+
+			<div class="input">
+				<div class="input--password">
+					<input [type]="showPassword ? 'text' : 'password'" autocomplete="new-password" placeholder="Create Password" formControlName="password" />
+					<button class="input--password__view-toggle" (click)="showPassword = !showPassword" type="button">
+						<img [src]="!showPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'" alt="showPassword ? 'hide password icon' : 'view password icon'" />
+					</button>
+				</div>
+			</div>
+
+			<div class="input checkbox">
+				<input type="checkbox" id="termsCondition" />
+				<label for="termsCondition">
+					<div>I have read, understood and I agree to Convoy’s Privacy Policy, and Terms & Conditions.</div>
+				</label>
+			</div>
+
+			<div class="button-container margin-top">
+				<button class="primary full-100">Join your team</button>
+			</div>
+		</form>
+	</section>
+</div>
