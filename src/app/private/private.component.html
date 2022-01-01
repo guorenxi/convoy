@@ -37,13 +37,13 @@
 
 				<div *ngIf="showOrgDropdown" class="dropdown organisations">
 					<div class="dropdown--head">
-						<h3>Your organisations (3)</h3>
+						<h3>Your organisations ({{ organisations?.length }})</h3>
 					</div>
 					<ul>
-						<li>
+						<li *ngFor="let organisation of organisations">
 							<div class="organisation--name">
-								<div class="img img__round img__small">BL</div>
-								<p>Organisation Name</p>
+								<div class="img img__round img__small">{{ organisation?.name?.slice(0, 1) }}</div>
+								<p>{{ organisation?.name }}</p>
 							</div>
 							<img src="/assets/img/check-icon-primary.svg" alt="check icon" />
 						</li>

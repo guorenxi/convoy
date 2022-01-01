@@ -37,10 +37,14 @@ export class LoginComponent implements OnInit {
 
 			localStorage.setItem('CONVOY_AUTH', JSON.stringify(response.data));
 			this.generalService.showNotification({ message: response.message });
+			const userId = response.data?.user?.id;
+			localStorage.setItem('USER_ID', userId)
 			this.disableLoginBtn = false;
 			this.router.navigateByUrl('dashboard');
 		} catch (error) {
 			this.disableLoginBtn = false;
 		}
 	}
+
+	
 }

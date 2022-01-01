@@ -1,5 +1,5 @@
 export interface GROUP {
-	uid: string;
+	id: string;
 	name: string;
 	logo_url: string;
 	config: {
