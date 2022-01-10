@@ -50,10 +50,10 @@
 								alt="showLoginPassword ? 'hide password icon' : 'view password icon'"
 							/>
 						</button>
-						<div class="input--error-message" *ngIf="signupForm.controls.password.touched && signupForm.controls.password.invalid">
-							<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-							<span>Password must contain at least one letter and one number</span>
-						</div>
+					</div>
+					<div class="input--error-message" *ngIf="signupForm.controls.password.touched && signupForm.controls.password.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Password must contain at least one letter and one number</span>
 					</div>
 				</div>
 
