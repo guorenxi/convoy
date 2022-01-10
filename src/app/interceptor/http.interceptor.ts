@@ -15,16 +15,11 @@ export class HttpIntercepter implements HttpInterceptor {
 				return httpEvent;
 			}),
 			catchError((error: HttpErrorResponse) => {
-				if (error.status === 401) this.router.navigate(['/login'], { replaceUrl: true });
-				let errorMessage: string;
+				if (error.status === 401 || error.error.message === 'Signature has expired') this.router.navigate(['/login'], { replaceUrl: true });
+				let errorMessage: string = error.error?.message;
 
-				if (Array.isArray(error.error?.errors) && error.error?.errors.length > 0) {
-					errorMessage = error.error?.errors[0]?.message;
-				} else {
-					errorMessage = error.error?.message;
-				}
 				this.generalService.showNotification({
-					message: `${error.message === 'Timeout has occurred' ? 'Request timeout, please check your network and try again' : errorMessage}`
+					message: `${error.error.message === 'Timeout has occurred' ? 'Request timeout, please check your network and try again' : errorMessage}`
 				});
 				return throwError(error);
 			})

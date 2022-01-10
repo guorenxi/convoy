@@ -8,7 +8,7 @@
 		<button class="primary" (click)="showCreateGroupModal = true">Create Group</button>
 	</div>
 
-	<ul class="groups" *ngIf="!noData">
+	<ul class="groups" *ngIf="!noData && groups">
 		<li class="group" *ngFor="let group of groups">
 			<div class="group--head">
 				<h4>{{group.name}}</h4>
@@ -31,7 +31,7 @@
 	</ul>
 </div>
 
-<div class="page" *ngIf="noData">
+<div class="page" *ngIf="noData || !groups">
 	<div class="page--empty-state">
 		<div class="page--empty-state--img">
 			<img src="/assets/img/group-empty-img.svg" alt="add group empty" />

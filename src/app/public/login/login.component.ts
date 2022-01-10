@@ -29,11 +29,10 @@ export class LoginComponent implements OnInit {
 			return;
 		}
 
+		localStorage.clear()
 		this.disableLoginBtn = true;
 		try {
 			const response: any = await this.loginService.login(this.loginForm.value);
-
-			console.log(response);
 
 			localStorage.setItem('CONVOY_AUTH', JSON.stringify(response.data));
 			this.generalService.showNotification({ message: response.message });

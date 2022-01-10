@@ -46,7 +46,6 @@ export class GroupsComponent implements OnInit {
 			this.createGroupForm.reset();
 			this.generalService.showNotification({ message: response.message });
 			this.getGroups();
-			console.log(response);
 			this.loading = false;
 		} catch (error) {
 			this.loading = false;
@@ -54,15 +53,15 @@ export class GroupsComponent implements OnInit {
 	}
 
 	async getGroups() {
+		console.log(localStorage.getItem('orgId'));
 		const orgId = localStorage.getItem('orgId');
 		const requestOptions = {
 			orgId: `org_id=${orgId}`
 		};
 		try {
 			const response = await this.groupService.getGroups(requestOptions);
-			response.data.length ? this.noData = false : this.noData = true
+			response.data.length ? (this.noData = false) : (this.noData = true);
 			this.groups = response.data;
-			console.log(response);
 		} catch (error) {}
 	}
 }

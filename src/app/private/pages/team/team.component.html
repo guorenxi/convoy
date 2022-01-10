@@ -8,7 +8,7 @@
 		<button class="primary" (click)="showInviteTeamMemberModal = true">Add team member</button>
 	</div>
 
-	<table>
+	<table *ngIf="!noData && teams">
 		<thead>
 			<tr class="table--head">
 				<th scope="col">NAME</th>
@@ -19,11 +19,11 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
+			<tr *ngFor="let team of teams">
 				<td>
 					<div class="has-img">
-						<div class="img img__round img__small">BL</div>
-						Elizabeth Adekola
+						<div class="img img__round img__small">{{ team.firstname.slice(0, 1) }}{{ team.lastname.slice(0, 1) }}</div>
+						{{ team.firstname }} {{ team.lastname }}
 					</div>
 				</td>
 				<td>
@@ -34,111 +34,8 @@
 				</td>
 				<td>
 					<div>
-						<div class="tag tag--Success">Active</div>
-					</div>
-				</td>
-				<td>
-					<div>
-						<button class="has-icon clear">
-							<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
-						</button>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="has-img">
-						<div class="img img__round img__small">BL</div>
-						Elizabeth Adekola
-					</div>
-				</td>
-				<td>
-					<div>Role goes here</div>
-				</td>
-				<td>
-					<div>All Groups</div>
-				</td>
-				<td>
-					<div>
-						<div class="tag tag--Success">Active</div>
-					</div>
-				</td>
-				<td>
-					<div>
-						<button class="has-icon clear">
-							<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
-						</button>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="has-img">
-						<div class="img img__round img__small">BL</div>
-						Elizabeth Adekola
-					</div>
-				</td>
-				<td>
-					<div>Role goes here</div>
-				</td>
-				<td>
-					<div>All Groups</div>
-				</td>
-				<td>
-					<div>
-						<div class="tag tag--Success">Active</div>
-					</div>
-				</td>
-				<td>
-					<div>
-						<button class="has-icon clear">
-							<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
-						</button>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="has-img">
-						<div class="img img__round img__small">BL</div>
-						Elizabeth Adekola
-					</div>
-				</td>
-				<td>
-					<div>Role goes here</div>
-				</td>
-				<td>
-					<div>All Groups</div>
-				</td>
-				<td>
-					<div>
-						<div class="tag tag--Success">Active</div>
-					</div>
-				</td>
-				<td>
-					<div>
-						<button class="has-icon clear">
-							<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
-						</button>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="has-img">
-						<div class="img img__round img__small">BL</div>
-						Elizabeth Adekola
-					</div>
-				</td>
-				<td>
-					<div>Role goes here</div>
-				</td>
-				<td>
-					<div>All Groups</div>
-				</td>
-				<td>
-					<div>
-						<div class="tag tag--Success">Active</div>
+						<div class="tag tag--Success" *ngIf="team.status">Active</div>
+						<div class="tag tag--Failure" *ngIf="!team.status">Inactive</div>
 					</div>
 				</td>
 				<td>
@@ -153,7 +50,7 @@
 	</table>
 </div>
 
-<div class="page">
+<div class="page" *ngIf="noData || !teams">
 	<div class="page--empty-state">
 		<div class="page--empty-state--img">
 			<img src="/assets/img/team-empty-img.svg" alt="add team empty" />
@@ -193,28 +90,28 @@
 			</div>
 		</div>
 
-		<form>
+		<form [formGroup]="inviteUserForm" (ngSubmit)="inviteUser()">
 			<h3>Basic info</h3>
 			<p>Amet minim mollit non deserunt ullamco est sit aliqua dolo</p>
 			<div class="input smaller">
 				<label for="first-name">First Name</label>
-				<input type="text" id="first-name" />
+				<input type="text" id="first-name" formControlName="firstname" />
 			</div>
 
 			<div class="input smaller">
 				<label for="last-name">Last Name</label>
-				<input type="text" id="last-name" />
+				<input type="text" id="last-name" formControlName="lastname"/>
 			</div>
 
 			<div class="input">
 				<label for="email">Email</label>
-				<input type="email" id="email" />
+				<input type="email" id="email" formControlName="email"/>
 			</div>
 
-			<div class="input">
+			<!-- <div class="input">
 				<label for="phone-number">Phone Number</label>
 				<input type="tel" inputmode="tel" id="phone-number" />
-			</div>
+			</div> -->
 
 			<div class="dropdown--container">
 				<div class="input">
@@ -225,23 +122,16 @@
 				<div class="dropdown" *ngIf="showTeamGroupDropdown">
 					<div class="input search">
 						<img src="/assets/img/search-icon.svg" alt="search icon" />
-						<input type="search" placeholder="Search groups here" />
+						<input type="search" placeholder="Search groups here" (input)="searchGroup($event)" />
 					</div>
 
-					<ul>
-						<li>
-							<label for="group-name1">Group name goes here</label>
-							<input type="checkbox" name="group-name" id="group-name1" />
-						</li>
-						<li>
-							<label for="group-name2">Group name goes here</label>
-							<input type="checkbox" name="group-name" id="group-name2" />
-						</li>
-						<li>
-							<label for="group-name3">Group name goes here</label>
-							<input type="checkbox" name="group-name" id="group-name3" />
+					<ul *ngIf="filteredGroups.length">
+						<li *ngFor="let group of filteredGroups">
+							<label for="group-name1">{{group.name}}</label>
+							<input type="checkbox" name="group-name" id="group-name1" (input)="selectGroup(group)"/>
 						</li>
 					</ul>
+
 				</div>
 			</div>
 

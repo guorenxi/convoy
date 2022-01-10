@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HTTP_RESPONSE } from 'src/app/models/http.model';
-import { HttpService } from 'src/app/services/http/http.service';
+import { HTTP_RESPONSE } from '../models/http.model';
+import { HttpService } from '../services/http/http.service';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class LoginService {
+export class PrivateService {
 	constructor(private http: HttpService) {}
 
-	async login(requestDetails: { email?: string; password?: string }): Promise<HTTP_RESPONSE> {
+  async getOrganizations(requestOptions: { userId: string }): Promise<HTTP_RESPONSE> {
 		try {
 			const response = await this.http.request({
-				url: 'login',
-				body: requestDetails,
-				method: 'post'
+				url: `organizations?${requestOptions.userId || ''}`,
+				method: 'get'
 			});
 			return response;
 		} catch (error: any) {
 			return error;
 		}
 	}
-	
+
 	async logout(): Promise<HTTP_RESPONSE> {
 		try {
 			const response = await this.http.request({
-				url: 'logout',
+				url: `logout`,
 				method: 'delete'
 			});
 			return response;
@@ -32,6 +31,4 @@ export class LoginService {
 			return error;
 		}
 	}
-
-	
 }
