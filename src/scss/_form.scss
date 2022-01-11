@@ -77,6 +77,18 @@
 		}
 	}
 
+	&--error-message {
+		color: var(--danger-color);
+		text-align: left;
+		font-size: 12px;
+		display: flex;
+		align-items: center;
+		margin-top: 7px;
+		order: 3;
+		img {
+			margin-right: 9.33px;
+		}
+	}
 	&.checkbox {
 		flex-wrap: nowrap;
 		align-items: center;

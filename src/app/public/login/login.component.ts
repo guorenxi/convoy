@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { LoginService } from './login.service';
 
 @Component({
 	selector: 'app-login',
@@ -11,16 +13,34 @@ export class LoginComponent implements OnInit {
 	showLoginPassword = false;
 	disableLoginBtn = false;
 	loginForm: FormGroup = this.formBuilder.group({
-		username: ['', Validators.required],
+		email: ['', Validators.required],
 		password: ['', Validators.required]
 	});
 
-	constructor(private formBuilder: FormBuilder, private router: Router) {}
+	constructor(private formBuilder: FormBuilder, private router: Router, private loginService: LoginService, private generalService: GeneralService) {}
 
 	ngOnInit(): void {}
 
 	async login() {
-		localStorage.setItem('CONVOY_AUTH', JSON.stringify(this.loginForm.value));
-		this.router.navigateByUrl('dashboard');
+		if (this.loginForm.invalid) {
+			(<any>Object).values(this.loginForm.controls).forEach((control: FormControl) => {
+				control?.markAsTouched();
+			});
+			return;
+		}
+
+		this.disableLoginBtn = true;
+		try {
+			const response: any = await this.loginService.login(this.loginForm.value);
+
+			console.log(response);
+
+			localStorage.setItem('CONVOY_AUTH', JSON.stringify(response.data));
+			this.generalService.showNotification({ message: response.message });
+			this.disableLoginBtn = false;
+			this.router.navigateByUrl('dashboard');
+		} catch (error) {
+			this.disableLoginBtn = false;
+		}
 	}
 }
