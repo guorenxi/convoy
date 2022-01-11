@@ -32,4 +32,16 @@ export class LoginService {
 			return error;
 		}
 	}
+
+	async getOrganizations(requestOptions: { userId: string }): Promise<HTTP_RESPONSE> {
+		try {
+			const response = await this.http.request({
+				url: `organizations?${requestOptions.userId || ''}`,
+				method: 'get'
+			});
+			return response;
+		} catch (error: any) {
+			return error;
+		}
+	}
 }
