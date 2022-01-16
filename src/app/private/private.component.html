@@ -30,7 +30,7 @@
 				<button class="has-icon icon-left" (click)="showOrgDropdown = !showOrgDropdown" *ngIf="authDetails()">
 					<div class="has-icon">
 						<div class="icon">O</div>
-						<div class="name">{{ authDetails().username }}</div>
+						<div class="name">{{ authDetails().user?.profile?.firstname }}</div>
 					</div>
 					<img src="/assets/img/angle-arrow-down.svg" alt="arrow down icon" />
 				</button>

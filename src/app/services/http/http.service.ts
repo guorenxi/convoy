@@ -12,7 +12,7 @@ export class HttpService {
 	constructor(private httpClient: HttpClient) {}
 
 	authDetails() {
-		const authDetails = localStorage.getItem('CONVOY_AUTH');
+		const authDetails = localStorage.getItem('CONVOY_AUTH')
 		if (authDetails) {
 			const { token } = JSON.parse(authDetails);
 			return { token: `Bearer ${token}`, authState: true };
@@ -25,7 +25,7 @@ export class HttpService {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const requestHeader = new HttpHeaders({
-					Authorization: `Basic ${this.authDetails().token}`
+					Authorization: `${this.authDetails().token}`
 				});
 				const requestResponse: any = await this.httpClient.request(requestDetails.method, this.APIURL + requestDetails.url, { headers: requestHeader, body: requestDetails.body }).toPromise();
 				return resolve(requestResponse);

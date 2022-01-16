@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ORGANIZATION_DATA } from '../models/organization.model';
-import { LoginService } from '../public/login/login.service';
+import { PrivateService } from './private.service';
 
 @Component({
 	selector: 'app-private',
@@ -12,11 +12,11 @@ export class PrivateComponent implements OnInit {
 	showOrgDropdown = false;
 	showMoreDropdown = false;
 	organisations!: ORGANIZATION_DATA[];
-
-	constructor(private router: Router, private loginService:LoginService ) {}
+	showLoader: boolean = false;
+	constructor(private router: Router, private privateService: PrivateService) {}
 
 	ngOnInit() {
-		this.getOrganizations()
+		this.getOrganizations();
 	}
 
 	authDetails() {
@@ -24,24 +24,33 @@ export class PrivateComponent implements OnInit {
 		return authDetails ? JSON.parse(authDetails) : false;
 	}
 
-	logout() {
-		localStorage.removeItem('CONVOY_AUTH');
-		this.router.navigateByUrl('/login');
+	async logout() {
+		this.showLoader = true;
+		try {
+			const response: any = await this.privateService.logout();
+			if (response) {
+				this.router.navigateByUrl('/login');
+			}
+			this.showLoader = false;
+		} catch (error) {
+			this.showLoader = false;
+		}
 	}
 
 	async getOrganizations() {
-		const userId = localStorage.getItem('USER_ID')
+		const userId = localStorage.getItem('USER_ID');
+		console.log(userId);
 		const requestOptions = {
 			userId: `userId=${userId}`
 		};
 		try {
-			const response = await this.loginService.getOrganizations(requestOptions);
-			console.log(response);
+			const response = await this.privateService.getOrganizations(requestOptions);
 			this.organisations = response.data;
-			const userOrganisation = this.organisations.find(organisation => organisation.members.some(item => item.id === userId))
-			const organisationId = userOrganisation?.id
-			if(organisationId) localStorage.setItem('orgId', organisationId)
+			const userOrganisation = this.organisations.find(organisation => organisation.members.some(item => item.id === userId));
+			const organisationId = userOrganisation?.id;
 			console.log(organisationId);
+			if (organisationId) localStorage.setItem('orgId', organisationId);
+			console.log(localStorage.getItem('orgId'));
 		} catch (error) {}
 	}
 }

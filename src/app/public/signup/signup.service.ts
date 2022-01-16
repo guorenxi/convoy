@@ -5,13 +5,13 @@ import { HttpService } from 'src/app/services/http/http.service';
 @Injectable({
 	providedIn: 'root'
 })
-export class LoginService {
+export class SignupService {
 	constructor(private http: HttpService) {}
 
-	async login(requestDetails: { email?: string; password?: string }): Promise<HTTP_RESPONSE> {
+	async signup(requestDetails: { firstname: string; lastname: string; email: string; password: string; org_name: string }): Promise<HTTP_RESPONSE> {
 		try {
 			const response = await this.http.request({
-				url: 'login',
+				url: 'users',
 				body: requestDetails,
 				method: 'post'
 			});
@@ -20,18 +20,4 @@ export class LoginService {
 			return error;
 		}
 	}
-	
-	async logout(): Promise<HTTP_RESPONSE> {
-		try {
-			const response = await this.http.request({
-				url: 'logout',
-				method: 'delete'
-			});
-			return response;
-		} catch (error: any) {
-			return error;
-		}
-	}
-
-	
 }

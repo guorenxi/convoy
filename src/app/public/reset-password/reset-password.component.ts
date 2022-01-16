@@ -28,7 +28,6 @@ export class ResetPasswordComponent implements OnInit {
 		}
 		try{
 			const response = await this.resetPasswordService.resetPassword(payload)
-			console.log(response)
 		}
 		catch{
 			
