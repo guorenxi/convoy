@@ -71,7 +71,6 @@ export class GroupsComponent implements OnInit {
 		};
 		try {
 			const response = await this.groupService.deleteGroup(requestOptions);
-			console.log(response);
 			this.deletingGroup = false;
 		} catch {
 			this.deletingGroup = false;

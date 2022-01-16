@@ -59,7 +59,6 @@ export class ViewGroupComponent implements OnInit {
 			const response = await this.viewGroupService.viewGroup(requestOptions);
 			if (response.data) this.groupDetails = response.data;
       this.messagesChart()
-			console.log(response);
 			this.showLoader = false;
 		} catch {
 			this.showLoader = false;
