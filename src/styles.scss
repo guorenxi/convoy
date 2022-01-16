@@ -71,3 +71,6 @@ $convoy-ng-theme: mat.define-light-theme(
 	--grey-color: #1e1147;
 	--grey-color-rgb: 30, 17, 71;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
