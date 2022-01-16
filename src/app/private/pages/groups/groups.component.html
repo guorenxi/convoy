@@ -1,37 +1,59 @@
-<div class="groups-page page">
+<div class="loader" *ngIf="showLoader">
+	<app-loader></app-loader>
+</div>
+<div class="groups-page page" *ngIf="!noData && !showLoader">
 	<div class="page--head">
 		<div>
 			<h1>Groups</h1>
 			<p>A definition of what a group is goes here</p>
 		</div>
 
-		<button class="primary" (click)="showCreateGroupModal = true">Create Group</button>
+		<button class="primary" (click)="showCreateGroupModal = true; currentId = ''">Create Group</button>
 	</div>
 
-	<ul class="groups" *ngIf="!noData">
-		<li class="group" *ngFor="let group of groups">
-			<div class="group--head">
-				<h4>{{group.name}}</h4>
-			</div>
-			<div class="group--metric">
-				<div>
-					<span>234</span>
-					Message Sent
+	<ul class="groups">
+		<li *ngFor="let group of groups">
+			<div class="group">
+				<div class="group--head">
+					<h4>{{ group.name }}</h4>
 				</div>
-				<div>
-					<span>24</span>
-					Apps
+				<div class="group--metric">
+					<div>
+						<span>234</span>
+						Message Sent
+					</div>
+					<div class="group--metric-app">
+						<div>
+							<span>24</span>
+							Apps
+						</div>
+						<button (click)="showDropdown(group.id)">
+							<img src="/assets/img/more-horizontal.svg" alt="more" />
+						</button>
+					</div>
+				</div>
+				<div class="group--body">
+					<img src="/assets/img/chart-icon.svg" alt="graph icon" />
 				</div>
 			</div>
-			<div class="group--body">
-				<img src="/assets/img/chart-icon.svg" alt="graph icon" />
+			<div *ngIf="currentId == group.id" class="dropdown groups">
+				<ul>
+					<li (click)="viewGroup(group.id)">
+						<p>View Group</p>
+					</li>
+					<li (click)="viewGroupSettings(group)">
+						<p>Group settings</p>
+					</li>
+					<li (click)="selectedGroup = group; showDeleteGroupModal = true; currentId = ''">
+						<p class="delete">Delete Group</p>
+					</li>
+				</ul>
 			</div>
 		</li>
-
 	</ul>
 </div>
 
-<div class="page" *ngIf="noData">
+<div class="page" *ngIf="noData && !showLoader">
 	<div class="page--empty-state">
 		<div class="page--empty-state--img">
 			<img src="/assets/img/group-empty-img.svg" alt="add group empty" />
@@ -42,73 +64,124 @@
 	</div>
 </div>
 
-<div class="overlay" *ngIf="showCreateGroupModal === true"></div>
-<div class="modal modal__right" *ngIf="showCreateGroupModal === true">
+<div class="overlay" *ngIf="showCreateGroupModal || showGroupSettingModal || showDeleteGroupModal"></div>
+<div class="modal modal__right" *ngIf="showCreateGroupModal">
+	<app-create-group (closeModal)="showCreateGroupModal = false; editMode = false; getGroups()" [selectedGroup]="selectedGroup" [editMode]="editMode"></app-create-group>
+</div>
+
+<div class="modal modal__right" *ngIf="showGroupSettingModal">
 	<div class="modal--head">
-		<h1>Create Group</h1>
-		<button class="modal--close clear" (click)="showCreateGroupModal = false">
+		<h1>{{ selectedGroup?.name }}</h1>
+		<button class="modal--close clear" (click)="showGroupSettingModal = false">
 			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
 		</button>
 	</div>
-
 	<div class="modal--body">
-		<form [formGroup]="createGroupForm" (ngSubmit)="createGroup()">
-			<div class="input">
-				<label for="group-name">Group Name</label>
-				<input type="text" id="group-name" formControlName="name" />
-				<div class="input--error-message" *ngIf="createGroupForm.controls.name.touched && createGroupForm.controls.name.invalid">
-					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-					<span>Name is required</span>
-				</div>
-			</div>
-
-			<h3>Retry Strategy</h3>
-			<div formGroupName="retry">
-				<div class="input">
-					<label for="interval">Interval seconds</label>
-					<input type="number" id="interval" formControlName="interval_seconds" />
-				</div>
-
-				<div class="input">
-					<label for="retry-limit">Retry Limit</label>
-					<input type="number" id="retry-limit" formControlName="limit" />
-				</div>
-			</div>
-
-			<h3>Signature</h3>
-			<div formGroupName="signature">
-				<div class="input">
-					<label for="signatur-header">Header</label>
-					<input type="text" id="signatur-header" formControlName="header" />
-				</div>
-
-				<div class="input">
-					<label for="hash">Hash</label>
-					<input type="text" id="hash" formControlName="hash" />
-				</div>
-			</div>
-			<div class="input">
-				<div class="input--password">
-					<input [type]="showLoginPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
-					<button class="input--password__view-toggle" (click)="showLoginPassword = !showLoginPassword" type="button">
-						<img
-							[src]="!showLoginPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
-							[alt]="showLoginPassword ? 'hide password icon' : 'view password icon'"
-						/>
-					</button>
-				</div>
-				<div class="input--error-message" *ngIf="createGroupForm.controls.password.touched && createGroupForm.controls.password.invalid">
-					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-					<span>Password is required</span>
-				</div>
-			</div>
-		</form>
+		<div class="group-settings">
+			<ul>
+				<li>
+					<div>
+						<p>Retry Strategy</p>
+					</div>
+					<div class="setting">
+						<span>{{ selectedGroup?.config?.strategy?.default?.intervalSeconds }}secs</span>
+						<button>
+							<img src="/assets/img/copy.svg" alt="copy" />
+						</button>
+					</div>
+				</li>
+				<li>
+					<div>
+						<p>Retry Limit</p>
+					</div>
+					<div class="setting">
+						<span>
+							{{ selectedGroup?.config?.strategy?.default?.retryLimit }}
+						</span>
+						<button>
+							<img src="/assets/img/copy.svg" alt="copy" />
+						</button>
+					</div>
+				</li>
+				<li>
+					<div>
+						<p>Header</p>
+					</div>
+					<div class="setting">
+						<span>
+							{{ selectedGroup?.config?.signature?.header }}
+						</span>
+						<button>
+							<img src="/assets/img/copy.svg" alt="copy" />
+						</button>
+					</div>
+				</li>
+				<li>
+					<div>
+						<p>Hash</p>
+					</div>
+					<div class="setting">
+						<span>
+							{{ selectedGroup?.config?.signature?.hash }}
+						</span>
+						<button>
+							<img src="/assets/img/copy.svg" alt="copy" />
+						</button>
+					</div>
+				</li>
+				<li>
+					<div>
+						<p>Disable Endpoint</p>
+					</div>
+					<div class="setting">
+						<span>
+							{{ selectedGroup?.config?.disable_endpoint }}
+						</span>
+					</div>
+				</li>
+				<!-- <li>
+					<div>
+						<p>Group auth key</p>
+					</div>
+					<div class="setting">
+						<span>
+							{{ selectedGroup?.config?.strategy?.default?.retryLimit }}
+						</span>
+						<button>
+							<img src="/assets/img/copy.svg" alt="copy" />
+						</button>
+					</div>
+				</li> -->
+			</ul>
+		</div>
 	</div>
-
 	<div class="modal--footer">
 		<div class="button-container">
-			<button class="white" (click)="showCreateGroupModal = false">Discard</button>
-			<button class="primary" (click)="createGroup()">{{ loading ? 'Creating Group...' : 'Create Group' }}</button>
+			<button class="white delete" (click)="showDeleteGroupModal = !showDeleteGroupModal">
+				Delete Group
+				<img src="/assets/img/trash-alt.svg" alt="delete icon" />
+			</button>
+			<button class="primary groups" (click)="editMode = true; showGroupSettingModal = false; showCreateGroupModal = true">
+				Edit Group Settings
+				<img src="/assets/img/edit-alt.svg" alt="edit icon" />
+			</button>
+		</div>
+	</div>
+</div>
+<div class="modal modal__right" *ngIf="showDeleteGroupModal">
+	<div class="modal--head">
+		<h1>{{ selectedGroup?.name }}</h1>
+		<button class="modal--close clear" (click)="showDeleteGroupModal = false">
+			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
+		</button>
+	</div>
+	<div class="modal--body">
+		<div class="delete-group">
+			<img src="/assets/img/warning-sign.svg" alt="warning" />
+			<p class="title">Are you sure you want to delete “{{ selectedGroup?.name }}”?</p>
+			<p class="subtext">This action is irrevesible</p>
+			<button class="danger" (click)="deleteGroup()">{{ deletingGroup ? 'Deleting...' : 'Yes, Delete' }}</button>
+			<button class="clear cancel" (click)="showDeleteGroupModal = false">No, Cancel</button>
 		</div>
 	</div>
 </div>

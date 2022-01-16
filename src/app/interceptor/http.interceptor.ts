@@ -15,7 +15,7 @@ export class HttpIntercepter implements HttpInterceptor {
 				return httpEvent;
 			}),
 			catchError((error: HttpErrorResponse) => {
-				if (error.status === 401) this.router.navigate(['/login'], { replaceUrl: true });
+				if (error.error.status === 401 || error.error.message == 'Signature has expired') this.router.navigate(['/login'], { replaceUrl: true });
 				let errorMessage: string;
 
 				if (Array.isArray(error.error?.errors) && error.error?.errors.length > 0) {

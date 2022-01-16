@@ -1,0 +1,66 @@
+<div>
+	<div class="modal--head">
+		<h1>{{ editMode ? 'Edit Group' : 'Create Group' }}</h1>
+		<button class="modal--close clear" (click)="closeCreateGroupModal()">
+			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
+		</button>
+	</div>
+
+	<div class="modal--body">
+		<form [formGroup]="createGroupForm" (ngSubmit)="createGroup()">
+			<div class="input">
+				<label for="group-name">Group Name</label>
+				<input type="text" id="group-name" formControlName="name" />
+				<div class="input--error-message" *ngIf="createGroupForm.controls.name.touched && createGroupForm.controls.name.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Name is required</span>
+				</div>
+			</div>
+
+			<h3>Retry Strategy</h3>
+			<div formGroupName="strategy">
+				<div class="input">
+					<label for="interval">Interval seconds</label>
+					<input type="number" id="interval" formControlName="interval_seconds" />
+				</div>
+
+				<div class="input">
+					<label for="retry-limit">Retry Limit</label>
+					<input type="number" id="retry-limit" formControlName="limit" />
+				</div>
+			</div>
+
+			<h3>Signature</h3>
+			<div formGroupName="signature">
+				<div class="input">
+					<label for="signatur-header">Header</label>
+					<input type="text" id="signatur-header" formControlName="header" />
+				</div>
+
+				<div class="input">
+					<label for="hash">Hash</label>
+					<input type="text" id="hash" formControlName="hash" />
+				</div>
+			</div>
+			<h3>Disable Endpoint</h3>
+			<div class="input radio">
+				<button type="button" (click)="disableEndpoint = !disableEndpoint; updateForm()" [class]="{ active: disableEndpoint }">
+					<img [src]="!disableEndpoint ? '/assets/img/circle.svg' : '/assets/img/check-circle.svg'" [alt]="!disableEndpoint ? 'no' : 'yes'" />
+					Yes
+				</button>
+				<button type="button" (click)="disableEndpoint = !disableEndpoint; updateForm()" [class]="{ active: !disableEndpoint }">
+					<img [src]="disableEndpoint ? '/assets/img/circle.svg' : '/assets/img/check-circle.svg'" [alt]="disableEndpoint ? 'no' : 'yes'" />
+					No
+				</button>
+			</div>
+		</form>
+	</div>
+
+	<div class="modal--footer">
+		<div class="button-container">
+			<button class="white" (click)="closeCreateGroupModal()">Discard</button>
+			<button class="primary" *ngIf="editMode" (click)="createGroup()">{{ loading ? 'Saving...' : 'Edit Group' }}</button>
+			<button class="primary" *ngIf="!editMode" (click)="createGroup()">{{ loading ? 'Creating Group...' : 'Create Group' }}</button>
+		</div>
+	</div>
+</div>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { GROUP } from 'src/app/models/group.model';
 import { GeneralService } from 'src/app/services/general/general.service';
 import { GroupsService } from './groups.service';
@@ -11,58 +11,69 @@ import { GroupsService } from './groups.service';
 })
 export class GroupsComponent implements OnInit {
 	showCreateGroupModal: boolean = false;
-	showLoginPassword: boolean = false;
-	createGroupForm: FormGroup = this.formBuilder.group({
-		name: ['', Validators.required],
-		retry: this.formBuilder.group({
-			interval_seconds: ['', Validators.required],
-			limit: ['', Validators.required]
-		}),
-		signature: this.formBuilder.group({
-			header: ['', Validators.required],
-			hash: ['', Validators.required],
-			disable_endpoint: [false, Validators.required]
-		}),
-		password: ['', Validators.required]
-	});
 	loading: boolean = false;
 	noData: boolean = false;
+	disableEndpoint!: boolean;
 	groups!: GROUP[];
-	constructor(private formBuilder: FormBuilder, private groupService: GroupsService, private generalService: GeneralService) {}
+	showLoader: boolean = false;
+	showGroupDropdown: boolean = false;
+	currentId!: string;
+	selectedGroup!: GROUP;
+	showDeleteGroupModal: boolean = false;
+	showGroupSettingModal: boolean = false;
+	editMode: boolean = false;
+	deletingGroup: boolean = false;
+	constructor(private groupService: GroupsService, private generalService: GeneralService, private router: Router) {}
 
 	ngOnInit() {
 		this.getGroups();
 	}
 
-	async createGroup() {
-		const orgId = localStorage.getItem('orgId');
-		this.loading = true;
-		const requestOptions = {
-			orgId: `org_id=${orgId}`
-		};
-		try {
-			const response = await this.groupService.createGroup(this.createGroupForm.value, requestOptions);
-			this.showCreateGroupModal = false;
-			this.createGroupForm.reset();
-			this.generalService.showNotification({ message: response.message });
-			this.getGroups();
-			console.log(response);
-			this.loading = false;
-		} catch (error) {
-			this.loading = false;
-		}
-	}
-
 	async getGroups() {
+		this.showLoader = true;
 		const orgId = localStorage.getItem('orgId');
 		const requestOptions = {
 			orgId: `org_id=${orgId}`
 		};
 		try {
 			const response = await this.groupService.getGroups(requestOptions);
-			response.data.length ? this.noData = false : this.noData = true
+			response.data.length ? (this.noData = false) : (this.noData = true);
+			this.showLoader = false;
 			this.groups = response.data;
-			console.log(response);
-		} catch (error) {}
+		} catch {
+			this.showLoader = true;
+		}
+	}
+
+	showDropdown(id: string) {
+		if (this.currentId === id) {
+			this.currentId = '';
+		} else {
+			this.currentId = id;
+		}
+	}
+
+	viewGroupSettings(group: GROUP) {
+		this.currentId = '';
+		this.selectedGroup = group;
+		this.showGroupSettingModal = true;
+	}
+
+	viewGroup(id: string) {
+		this.router.navigate(['/groups/' + id]);
+	}
+	async deleteGroup() {
+		const orgId = localStorage.getItem('orgId');
+		this.deletingGroup = true;
+		const requestOptions = {
+			orgId: `org_id=${orgId}`,
+			groupId: this.selectedGroup?.id
+		};
+		try {
+			const response = await this.groupService.deleteGroup(requestOptions);
+			this.deletingGroup = false;
+		} catch {
+			this.deletingGroup = false;
+		}
 	}
 }

@@ -85,10 +85,27 @@
 
 		button.white {
 			padding: 13px 57px;
+			display: flex;
+			align-items: center;
+			&.delete {
+				padding: 13px 30px;
+				color: #ff554a;
+			}
+			img {
+				margin-left: 10px;
+			}
 		}
 
 		button.primary {
 			padding: 13px 70px;
+			display: flex;
+			align-items: center;
+			&.groups {
+				padding: 13px 30px;
+			}
+			img {
+				margin-left: 10px;
+			}
 		}
 	}
 }
