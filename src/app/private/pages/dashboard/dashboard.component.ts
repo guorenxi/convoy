@@ -9,4 +9,9 @@ export class DashboardComponent implements OnInit {
 	constructor() {}
 
 	ngOnInit() {}
+	
+	authDetails() {
+		const authDetails = localStorage.getItem('CONVOY_AUTH');
+		return authDetails ? JSON.parse(authDetails) : false;
+	}
 }

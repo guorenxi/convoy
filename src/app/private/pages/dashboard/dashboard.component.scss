@@ -1,0 +1,94 @@
+.get-started {
+	h2 {
+		font-weight: 600;
+		font-size: 20px;
+		line-height: 30px;
+		color: #000624;
+		text-transform: capitalize;
+		text-align: center;
+	}
+	.subtext {
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 24px;
+		text-align: center;
+		letter-spacing: 0.004em;
+		color: #7987a3;
+	}
+	&__cards {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(357px, 1fr));
+		gap: 59px;
+		margin-top: 56px;
+		margin-bottom: 56px;
+		&_item {
+			border-radius: 16px;
+			padding: 32px;
+			h3 {
+				font-weight: 600;
+				font-size: 18px;
+				line-height: 30px;
+				margin-bottom: 16px;
+			}
+			button {
+				border-radius: 6px;
+				font-weight: 500;
+				font-size: 14px;
+				line-height: 22px;
+				color: #46548c;
+			}
+			p {
+				font-weight: 500;
+				font-size: 14px;
+				line-height: 24px;
+				letter-spacing: 0.004em;
+				color: #7987a3;
+				max-width: 293px;
+				margin-bottom: 24px;
+			}
+			&.green {
+				background: #e7fbf4;
+
+				button {
+					background: #daeee7;
+				}
+			}
+			&.yellow {
+				background: #fcf5ec;
+				button {
+					background: #f2ebe2;
+				}
+			}
+			&.purple {
+				background: rgba(90, 83, 179, 0.1);
+				button {
+					background: #e0dfed;
+				}
+			}
+		}
+	}
+
+	&_plan {
+		background: #edf2f7;
+		border: 1px dashed #c8d8e8;
+		border-radius: 8px;
+		max-width: 576px;
+		margin: 0 auto;
+		padding: 10px 24px;
+		display: flex;
+		align-items: flex-start;
+		img {
+			margin-right: 20px;
+		}
+		p,
+		a {
+			font-weight: 500;
+			font-size: 14px;
+			line-height: 22px;
+            max-width: 464px;
+		}
+		a {
+			color: #7987a3;
+		}
+	}
+}

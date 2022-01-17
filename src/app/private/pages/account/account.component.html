@@ -30,32 +30,28 @@
 					<button class="white">Edit Photo</button>
 				</div>
 
-				<button class="primary">Save Changes</button>
+				<button class="primary" (click)="editBasicUserInfo()">{{ savingDetails ? 'Saving changes...' : 'Save Changes' }}</button>
 			</div>
 
 			<h2>Basic Info</h2>
 			<p>Amet minim mollit non deserunt ullamco est sit aliqua dolo</p>
 
-			<form>
+			<form [formGroup]="editBasicInfoForm">
 				<div class="input small">
-					<input type="text" aria-label="first name" />
+					<input type="text" aria-label="first name" placeholder="firstname" formControlName="firstname" />
 				</div>
 				<div class="input small">
-					<input type="text" aria-label="last name" />
+					<input type="text" aria-label="last name" placeholder="lastname" formControlName="lastname" />
 				</div>
 
 				<div class="input">
-					<input type="email" aria-label="email" />
-				</div>
-
-				<div class="input extra-space">
-					<input type="tel" inputmode="tel" aria-label="phone number" />
+					<input type="email" aria-label="email" placeholder="email" formControlName="email" />
 				</div>
 			</form>
 
 			<h2>Change Password</h2>
 			<p>Here you can change your password should it be compromised.</p>
-			<button class="white">Change password</button>
+			<button class="white" (click)="showChangePasswordModal = true">Change password</button>
 		</ng-container>
 
 		<ng-container *ngIf="activePage === 'organisation'">

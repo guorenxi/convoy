@@ -19,4 +19,17 @@ export class AccountService {
 			return error;
 		}
 	}
+
+	async editBasicInfo(requestDetails: { firstname: string; lastname: string; email: string }, requestOptions: { userId: string }): Promise<HTTP_RESPONSE> {
+		try {
+			const response = await this.http.request({
+				url: `users/${requestOptions.userId}`,
+				body: requestDetails,
+				method: 'put'
+			});
+			return response;
+		} catch (error: any) {
+			return error;
+		}
+	}
 }
