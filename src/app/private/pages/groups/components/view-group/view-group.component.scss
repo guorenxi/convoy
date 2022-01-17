@@ -1,12 +1,11 @@
 .group-dashboard {
-	padding: 30px 65px;
 
 	&-head {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		padding: 0;
-		max-width: 730px;
+		max-width: 850px;
 		width: 100%;
 
 		.group-name {
@@ -36,7 +35,7 @@
 
 		&-chart {
 			padding: 0;
-			max-width: 730px;
+			max-width: 850px;
 			width: 100%;
 
 			h3 {
@@ -107,7 +106,7 @@
 		}
 
 		&-tabs {
-			width: calc(1310px - 624px);
+			width: calc(1310px - 644px);
 			border-right: 1px solid #edeff5;
 			height: 100%;
 			overflow: auto;
@@ -149,7 +148,7 @@
 
 		&-details {
 			padding: 24px;
-			width: 624px;
+			width: 644px;
 			max-height: calc(100vh - 950px);
 			min-height: 707px;
 			overflow: auto;

@@ -1,3 +1,34 @@
-<div class="dashboard page">
+<!-- <div class="dashboard page">
 	<convoy-dashboard></convoy-dashboard>
+</div> -->
+<div class="page">
+	<div class="get-started">
+		<h2>Welcome, {{ authDetails()?.user?.profile?.firstname }} {{ authDetails()?.user?.profile?.lastname }} 🌤</h2>
+		<div class="subtext">Here is what you can do to get started with Convoy</div>
+		<div class="get-started__cards">
+			<div class="get-started__cards_item green">
+				<h3>Invite members to your team</h3>
+				<p>Add team members to your Convoy organization so everyone has access to manage webhooks across all environments</p>
+				<button [routerLink]="['/teams']">Invite Team Members</button>
+			</div>
+			<div class="get-started__cards_item yellow">
+				<h3>Setup groups for your products</h3>
+				<p>Connect your various webhooks products each groups and track their metrics separately</p>
+				<button>Go to applications</button>
+			</div>
+			<div class="get-started__cards_item purple">
+				<h3>Customize your App Portal</h3>
+				<p>Your App Portal is the window you provide your customers to view and manage their webhooks.</p>
+				<button>Configure App Portal</button>
+			</div>
+		</div>
+		<div class="get-started_plan">
+			<img src="/assets/img/ideas.svg" alt="idea" />
+			<div>
+				<p>Regardless of your pricing plan, you can send up to 100,000 messages per month for free. Have more than 100,000 messages?</p>
+				<br />
+				<a>Upgrade Plan</a>
+			</div>
+		</div>
+	</div>
 </div>
