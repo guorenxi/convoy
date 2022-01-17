@@ -19,4 +19,12 @@ export class GeneralService {
 			notificationElement?.classList.remove('show');
 		}, 3000);
 	}
+
+	onlyNumber(event: KeyboardEvent): boolean {
+		const NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+		const ASCII_CODE = Number(event.key);
+		if (NUMBERS.includes(ASCII_CODE)) return true;
+		return false;
+	}
+
 }
