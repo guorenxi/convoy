@@ -15,11 +15,18 @@ export class TeamComponent implements OnInit {
 	showTeamMemberDropdown: boolean = false;
 	showTeamGroupDropdown: boolean = false;
 	showSuccessModal: boolean = false;
+	showDeactivateModal: boolean = false;
+	selectedMember!: TEAMS;
 	loading: boolean = false;
 	noData: boolean = false;
+	searchMode: boolean = false;
+	deactivatingUser: boolean = false;
 	teams!: TEAMS[];
 	groups!: GROUP[];
 	filteredGroups!: GROUP[];
+	selectedGroups: GROUP[] = [];
+	noOfSelectedGroups!: string;
+	invitingUser: boolean = false;
 	inviteUserForm: FormGroup = this.formBuilder.group({
 		firstname: ['', Validators.required],
 		lastname: ['', Validators.required],
@@ -59,14 +66,12 @@ export class TeamComponent implements OnInit {
 		try {
 			const response = await this.groupService.getGroups(requestOptions);
 			this.groups = response.data;
-			this.filteredGroups = response.data
+			this.filteredGroups = response.data;
 		} catch {}
 	}
 
 	searchGroup(searchInput: any) {
-		console.log(searchInput)
-		const searchString = searchInput.target.value
-		console.log(searchString)
+		const searchString = searchInput.target.value;
 		if (searchString) {
 			this.filteredGroups = this.groups.filter(element => {
 				let filteredGroups = element.name.toLowerCase();
@@ -77,8 +82,46 @@ export class TeamComponent implements OnInit {
 		}
 	}
 
-	selectGroup(group: GROUP) {
-		
+	searchTeam(searchInput: any) {
+		this.searchMode = true;
+		const searchString = searchInput.target.value;
+		console.log(searchString)
 	}
-	async inviteUser() {}
+
+	selectGroup(group: GROUP) {
+		const id = group.id;
+		if (this.selectedGroups?.length) {
+			const groupExists = this.selectedGroups.find(item => item.id == id);
+			if (groupExists) {
+				this.selectedGroups = this.selectedGroups.filter(group => group.id != id);
+			} else {
+				this.selectedGroups.push(group);
+			}
+		} else {
+			this.selectedGroups.push(group);
+		}
+		this.noOfSelectedGroups = `${this.selectedGroups?.length} group${this.selectedGroups?.length == 1 ? '' : 's'}`;
+	}
+	async inviteUser() {
+		const orgId = localStorage.getItem('orgId');
+		const groupIds = this.selectedGroups.map(item => item.id);
+		this.invitingUser = true;
+		const requestOptions = {
+			orgId: orgId || ''
+		};
+		this.inviteUserForm.patchValue({
+			groups: groupIds
+		});
+		console.log(groupIds);
+		try {
+			const response = await this.teamService.inviteUserToOrganisation(this.inviteUserForm.value, requestOptions);
+			if (response) this.showSuccessModal = true;
+			console.log(response);
+			this.invitingUser = false;
+		} catch {
+			this.invitingUser = false;
+		}
+	}
+
+	deactivateMember() {}
 }

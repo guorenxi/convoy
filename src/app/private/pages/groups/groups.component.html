@@ -176,8 +176,8 @@
 		</button>
 	</div>
 	<div class="modal--body">
-		<div class="delete-group">
-			<img src="/assets/img/warning-sign.svg" alt="warning" />
+		<div class="delete-modal deactivate">
+			<img src="/assets/img/warning.gif" alt="warning" />
 			<p class="title">Are you sure you want to delete “{{ selectedGroup?.name }}”?</p>
 			<p class="subtext">This action is irrevesible</p>
 			<button class="danger" (click)="deleteGroup()">{{ deletingGroup ? 'Deleting...' : 'Yes, Delete' }}</button>

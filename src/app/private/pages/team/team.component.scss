@@ -47,6 +47,7 @@ table {
 	}
 
 	.dropdown {
+		position: absolute;
 		width: 281px;
 		left: 0;
 		padding: 16px 24px;
@@ -84,6 +85,8 @@ table {
 }
 
 .user-dropdown {
+	position: absolute;
+	margin-left: -115px;
 	button {
 		padding: 0;
 	}

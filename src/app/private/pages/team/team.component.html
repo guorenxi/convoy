@@ -1,11 +1,19 @@
-<div class="team-page page">
+<div class="loader" *ngIf="loading">
+	<app-loader></app-loader>
+</div>
+<div class="team-page page" *ngIf="!noData && !loading">
 	<div class="page--head">
 		<div>
 			<h1>Teams</h1>
 			<p>A definition of what a team is goes here</p>
 		</div>
-
-		<button class="primary" (click)="showInviteTeamMemberModal = true">Add team member</button>
+		<div class="page--head--search">
+			<div class="input search no-margin">
+				<img src="/assets/img/search-icon.svg" alt="search icon" />
+				<input type="search" placeholder="Search team member here" (keyup)="searchTeam($event)" />
+			</div>
+			<button class="primary" (click)="showInviteTeamMemberModal = true">Add team member</button>
+		</div>
 	</div>
 
 	<table *ngIf="!noData && teams">
@@ -39,10 +47,17 @@
 					</div>
 				</td>
 				<td>
-					<div>
-						<button class="has-icon clear">
+					<div class="dropdown--container">
+						<button class="has-icon clear" (click)="showTeamMemberDropdown = !showTeamMemberDropdown">
 							<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
 						</button>
+						<div class="dropdown user-dropdown" *ngIf="showTeamMemberDropdown">
+							<ul>
+								<li>
+									<button class="danger clear" (click)="showDeactivateModal = !showDeactivateModal; showTeamMemberDropdown = false; selectedMember = team">Deactivate team member</button>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</td>
 			</tr>
@@ -50,7 +65,7 @@
 	</table>
 </div>
 
-<div class="page" *ngIf="noData || !teams">
+<div class="page" *ngIf="noData && !loading">
 	<div class="page--empty-state">
 		<div class="page--empty-state--img">
 			<img src="/assets/img/team-empty-img.svg" alt="add team empty" />
@@ -61,7 +76,7 @@
 	</div>
 </div>
 
-<div class="overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal"></div>
+<div class="overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal || showDeactivateModal"></div>
 <div class="modal modal__right" *ngIf="showInviteTeamMemberModal">
 	<div class="modal--head">
 		<h1>Add Team Member</h1>
@@ -71,7 +86,7 @@
 	</div>
 
 	<div class="modal--body">
-		<div class="user-details--head">
+		<!-- <div class="user-details--head">
 			<div>
 				<img src="/assets/img/mimoji.png" alt="profile image" />
 				<button class="white">Edit Photo</button>
@@ -88,7 +103,7 @@
 					</ul>
 				</div>
 			</div>
-		</div>
+		</div> -->
 
 		<form [formGroup]="inviteUserForm" (ngSubmit)="inviteUser()">
 			<h3>Basic info</h3>
@@ -100,23 +115,18 @@
 
 			<div class="input smaller">
 				<label for="last-name">Last Name</label>
-				<input type="text" id="last-name" formControlName="lastname"/>
+				<input type="text" id="last-name" formControlName="lastname" />
 			</div>
 
 			<div class="input">
 				<label for="email">Email</label>
-				<input type="email" id="email" formControlName="email"/>
+				<input type="email" id="email" formControlName="email" />
 			</div>
-
-			<!-- <div class="input">
-				<label for="phone-number">Phone Number</label>
-				<input type="tel" inputmode="tel" id="phone-number" />
-			</div> -->
 
 			<div class="dropdown--container">
 				<div class="input">
 					<label for="group">Select group</label>
-					<input type="text" id="group" readonly (click)="showTeamGroupDropdown = !showTeamGroupDropdown" />
+					<input type="text" id="group" [(ngModel)]="noOfSelectedGroups" [ngModelOptions]="{ standalone: true }" readonly (click)="showTeamGroupDropdown = !showTeamGroupDropdown" />
 				</div>
 
 				<div class="dropdown" *ngIf="showTeamGroupDropdown">
@@ -127,17 +137,16 @@
 
 					<ul *ngIf="filteredGroups.length">
 						<li *ngFor="let group of filteredGroups">
-							<label for="group-name1">{{group.name}}</label>
-							<input type="checkbox" name="group-name" id="group-name1" (input)="selectGroup(group)"/>
+							<label for="group-name1">{{ group.name }}</label>
+							<input type="checkbox" name="group-name" id="group-name1" (input)="selectGroup(group)" />
 						</li>
 					</ul>
-
 				</div>
 			</div>
 
 			<div class="input">
 				<label for="role">Select Role</label>
-				<select name="role" id="role">
+				<select name="role" id="role" formControlName="role">
 					<option value="Admin">Admin</option>
 					<option value="Dev">Dev</option>
 				</select>
@@ -148,7 +157,7 @@
 	<div class="modal--footer">
 		<div class="button-container">
 			<button class="white" (click)="showInviteTeamMemberModal = false">Discard</button>
-			<button class="primary">Send Invite</button>
+			<button class="primary" (click)="inviteUser()">{{ invitingUser ? 'Inviting User' : 'Send Invite' }}</button>
 		</div>
 	</div>
 </div>
@@ -158,5 +167,14 @@
 		<img width="140px" src="/assets/img/success.gif" alt="success animation" />
 		<p>Team member created succesfully! We sent them an email for onboarding instructions.</p>
 		<button class="white" (click)="showSuccessModal = false">Close</button>
+	</div>
+</div>
+<div class="modal modal__center" *ngIf="showDeactivateModal">
+	<div class="delete-modal">
+		<img src="/assets/img/warning.gif" alt="warning" />
+		<p class="title">Are you sure you want to deactivate “{{ selectedMember?.firstname }} {{ selectedMember?.lastname }}”?</p>
+		<p class="subtext">This action is irrevesible</p>
+		<button class="danger" (click)="deactivateMember()">{{ deactivatingUser ? 'Deactivation...' : 'Yes, Deactivate' }}</button>
+		<button class="clear cancel" (click)="showDeactivateModal = false">No, Cancel</button>
 	</div>
 </div>
