@@ -63,6 +63,7 @@ table {
 		font-size: 14px;
 		line-height: 28px;
 		padding: 9px 10px;
+		white-space: nowrap;
 	}
 
 	tbody tr {
@@ -99,6 +100,7 @@ table {
 
 			& > div {
 				padding: 9px 10px;
+				white-space: nowrap;
 			}
 
 			&.has-long-text {
@@ -191,7 +193,7 @@ table {
 	height: 27px;
 	font-size: 14px;
 	line-height: 22px;
-	padding: 2.5px 8px;
+	padding: 2.5px 5px;
 	color: #000624;
 }
 .resend {

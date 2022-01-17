@@ -24,8 +24,8 @@ export class TeamService {
 		try {
 			const response = await this.http.request({
 				url: `organizations/${requestOptions.orgId}/invite_user`,
-        body: requestDetails,
-				method: 'get'
+				body: requestDetails,
+				method: 'post'
 			});
 			return response;
 		} catch (error: any) {
@@ -33,7 +33,7 @@ export class TeamService {
 		}
 	}
 
-  async searchTeamMembers(requestOptions: { orgId: string }): Promise<HTTP_RESPONSE> {
+	async searchTeamMembers(requestOptions: { orgId: string }): Promise<HTTP_RESPONSE> {
 		try {
 			const response = await this.http.request({
 				url: `organizations/${requestOptions.orgId}/search`,
