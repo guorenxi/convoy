@@ -112,11 +112,10 @@ export class TeamComponent implements OnInit {
 		this.inviteUserForm.patchValue({
 			groups: groupIds
 		});
-		console.log(groupIds);
 		try {
 			const response = await this.teamService.inviteUserToOrganisation(this.inviteUserForm.value, requestOptions);
-			if (response) this.showSuccessModal = true;
-			console.log(response);
+			if (response.data) this.showSuccessModal = true;
+			this.fetchTeamMembers()
 			this.invitingUser = false;
 		} catch {
 			this.invitingUser = false;
