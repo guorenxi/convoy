@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AccountService } from './account.service';
 
 @Component({
 	selector: 'app-account',
@@ -10,7 +12,17 @@ export class AccountComponent implements OnInit {
 	showChangePasswordModal: boolean = true;
 	passwordToggle = { oldPassword: false, newPassword: false, confirmPassword: false };
 
-	constructor() {}
+	constructor(private accountService:AccountService, private router:Router) {}
 
 	ngOnInit(): void {}
+
+	async logout() {
+		try {
+			const response: any = await this.accountService.logout();
+			if (response) {
+				this.router.navigateByUrl('/login');
+			}
+		} catch (error) {
+		}
+	}
 }
