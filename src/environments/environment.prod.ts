@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://convoy-saas-backend-staging.herokuapp.com'
+  baseUrl: 'https://convoy-saas-backend-staging.herokuapp.com'
 };
