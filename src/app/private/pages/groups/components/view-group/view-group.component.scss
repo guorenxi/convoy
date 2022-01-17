@@ -6,7 +6,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 0;
-		max-width: 850px;
+		max-width: 730px;
 		width: 100%;
 
 		.group-name {
@@ -36,7 +36,7 @@
 
 		&-chart {
 			padding: 0;
-			max-width: 850px;
+			max-width: 730px;
 			width: 100%;
 
 			h3 {
@@ -44,6 +44,7 @@
 				line-height: 24px;
 				display: flex;
 				align-items: center;
+				margin-bottom: 20px;
 				img {
 					margin-left: 10px;
 				}
@@ -106,7 +107,7 @@
 		}
 
 		&-tabs {
-			width: calc(1310px - 644px);
+			width: calc(1310px - 624px);
 			border-right: 1px solid #edeff5;
 			height: 100%;
 			overflow: auto;
@@ -148,7 +149,7 @@
 
 		&-details {
 			padding: 24px;
-			width: 644px;
+			width: 624px;
 			max-height: calc(100vh - 950px);
 			min-height: 707px;
 			overflow: auto;
