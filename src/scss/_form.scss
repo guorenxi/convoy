@@ -137,6 +137,11 @@
 		flex-wrap: nowrap;
 		margin-bottom: 10px;
 
+		&.no-margin{
+			margin-bottom: unset;
+			margin-right: 24px;
+			background: #fff;
+		}
 		input {
 			background: transparent;
 			border: none;

@@ -58,6 +58,12 @@
 		justify-content: space-between;
 		margin-bottom: 23px;
 
+		&--search{
+			display: flex;
+			flex-flow: row;
+			align-items: center;
+		}
+
 		h1 {
 			font-weight: bold;
 			font-size: 16px;
@@ -78,6 +84,7 @@
 		}
 	}
 
+	
 	&__small {
 		max-width: 920px;
 		background: #ffffff;
