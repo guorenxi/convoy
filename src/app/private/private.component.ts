@@ -48,9 +48,7 @@ export class PrivateComponent implements OnInit {
 			this.organisations = response.data;
 			const userOrganisation = this.organisations.find(organisation => organisation.members.some(item => item.id === userId));
 			const organisationId = userOrganisation?.id;
-			console.log(organisationId);
 			if (organisationId) localStorage.setItem('orgId', organisationId);
-			console.log(localStorage.getItem('orgId'));
 		} catch (error) {}
 	}
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { GeneralService } from 'src/app/services/general/general.service';
 import { LoginService } from './login.service';
 
 @Component({
@@ -17,7 +16,7 @@ export class LoginComponent implements OnInit {
 		password: ['', Validators.required]
 	});
 
-	constructor(private formBuilder: FormBuilder, private router: Router, private loginService: LoginService, private generalService: GeneralService) {}
+	constructor(private formBuilder: FormBuilder, private router: Router, private loginService: LoginService) {}
 
 	ngOnInit(): void {}
 
@@ -29,18 +28,15 @@ export class LoginComponent implements OnInit {
 			return;
 		}
 
-		localStorage.clear()
 		this.disableLoginBtn = true;
 		try {
 			const response: any = await this.loginService.login(this.loginForm.value);
-
 			localStorage.setItem('CONVOY_AUTH', JSON.stringify(response.data));
-			this.generalService.showNotification({ message: response.message });
 			const userId = response.data?.user?.id;
 			localStorage.setItem('USER_ID', userId)
 			this.disableLoginBtn = false;
 			this.router.navigateByUrl('dashboard');
-		} catch (error) {
+		} catch {
 			this.disableLoginBtn = false;
 		}
 	}

@@ -7,12 +7,12 @@ import { environment } from 'src/environments/environment';
 	providedIn: 'root'
 })
 export class HttpService {
-	APIURL = `${environment.production ? location.origin : environment.baseUrl}/api/v1/`;
+	APIURL = `${environment.baseUrl}/api/v1/`;
 
 	constructor(private httpClient: HttpClient) {}
 
 	authDetails() {
-		const authDetails = localStorage.getItem('CONVOY_AUTH')
+		const authDetails = localStorage.getItem('CONVOY_AUTH');
 		if (authDetails) {
 			const { token } = JSON.parse(authDetails);
 			return { token: `Bearer ${token}`, authState: true };
