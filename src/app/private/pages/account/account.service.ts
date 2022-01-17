@@ -25,7 +25,7 @@ export class AccountService {
 			const response = await this.http.request({
 				url: `users/${requestOptions.userId}`,
 				body: requestDetails,
-				method: 'post'
+				method: 'put'
 			});
 			return response;
 		} catch (error: any) {
