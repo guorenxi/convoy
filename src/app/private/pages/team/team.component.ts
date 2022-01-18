@@ -163,7 +163,6 @@ export class TeamComponent implements OnInit {
 			if (response.status) this.showDeactivateModal = false;
 			this.generalService.showNotification({ message: response.message });
 			this.fetchTeamMembers();
-			console.log(response);
 			this.deactivatingUser = false;
 		} catch {
 			this.deactivatingUser = false;
@@ -176,7 +175,5 @@ export class TeamComponent implements OnInit {
 		} else {
 			this.currentId = id;
 		}
-		console.log(id);
-		console.log(this.currentId);
 	}
 }
