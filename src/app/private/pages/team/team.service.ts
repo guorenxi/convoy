@@ -33,10 +33,10 @@ export class TeamService {
 		}
 	}
 
-	async searchTeamMembers(requestOptions: { orgId: string }): Promise<HTTP_RESPONSE> {
+	async searchTeamMembers(requestOptions: { orgId: string; query: string }): Promise<HTTP_RESPONSE> {
 		try {
 			const response = await this.http.request({
-				url: `organizations/${requestOptions.orgId}/search`,
+				url: `organizations/${requestOptions.orgId}/members/search`,
 				method: 'get'
 			});
 			return response;

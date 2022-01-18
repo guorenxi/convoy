@@ -82,10 +82,22 @@ export class TeamComponent implements OnInit {
 		}
 	}
 
-	searchTeam(searchInput: any) {
+	async searchTeam(searchInput: any) {
 		this.searchMode = true;
 		const searchString = searchInput.target.value;
-		console.log(searchString)
+		const orgId = localStorage.getItem('orgId') || '';
+		const requestOptions = {
+			orgId: orgId,
+			query: searchString
+		};
+		this.loading = true;
+		try {
+			const response = await this.teamService.searchTeamMembers(requestOptions);
+			this.loading = false;
+			console.log(response);
+		} catch {
+			this.loading = false;
+		}
 	}
 
 	selectGroup(group: GROUP) {
@@ -115,7 +127,7 @@ export class TeamComponent implements OnInit {
 		try {
 			const response = await this.teamService.inviteUserToOrganisation(this.inviteUserForm.value, requestOptions);
 			if (response.data) this.showSuccessModal = true;
-			this.fetchTeamMembers()
+			this.fetchTeamMembers();
 			this.invitingUser = false;
 		} catch {
 			this.invitingUser = false;
