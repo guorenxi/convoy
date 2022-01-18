@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GROUP } from 'src/app/models/group.model';
 import { TEAMS } from 'src/app/models/team.model';
+import { GeneralService } from 'src/app/services/general/general.service';
 import { GroupsService } from '../groups/groups.service';
 import { TeamService } from './team.service';
 
@@ -19,23 +20,27 @@ export class TeamComponent implements OnInit {
 	selectedMember!: TEAMS;
 	loading: boolean = false;
 	noData: boolean = false;
+	noSearch: boolean = false;
 	searchMode: boolean = false;
 	deactivatingUser: boolean = false;
+	searchingMembers: boolean = false;
+	searchText!: string;
 	teams!: TEAMS[];
 	groups!: GROUP[];
 	filteredGroups!: GROUP[];
 	selectedGroups: GROUP[] = [];
 	noOfSelectedGroups!: string;
 	invitingUser: boolean = false;
+	currentId!: string;
 	inviteUserForm: FormGroup = this.formBuilder.group({
 		firstname: ['', Validators.required],
 		lastname: ['', Validators.required],
-		email: ['', Validators.required],
+		email: ['', Validators.compose([Validators.required, Validators.email])],
 		role: ['', Validators.required],
 		groups: [[], Validators.required]
 	});
 
-	constructor(private teamService: TeamService, private groupService: GroupsService, private formBuilder: FormBuilder) {}
+	constructor(private teamService: TeamService, private groupService: GroupsService, private formBuilder: FormBuilder, private generalService: GeneralService) {}
 
 	async ngOnInit() {
 		await Promise.all([this.fetchTeamMembers(), this.getGroups()]);
@@ -47,6 +52,8 @@ export class TeamComponent implements OnInit {
 			orgId: orgId
 		};
 		this.loading = true;
+		this.noSearch = false;
+		this.searchMode = false;
 		try {
 			const response = await this.teamService.getTeamMembers(requestOptions);
 			if (response.data.length) this.teams = response.data;
@@ -84,19 +91,21 @@ export class TeamComponent implements OnInit {
 
 	async searchTeam(searchInput: any) {
 		this.searchMode = true;
-		const searchString = searchInput.target.value;
+		const searchString = searchInput;
+		this.searchText = searchString;
 		const orgId = localStorage.getItem('orgId') || '';
 		const requestOptions = {
 			orgId: orgId,
-			query: searchString
+			query: `?query=${searchString}`
 		};
-		this.loading = true;
+		this.searchingMembers = true;
 		try {
 			const response = await this.teamService.searchTeamMembers(requestOptions);
-			this.loading = false;
-			console.log(response);
+			if (response.data.length) this.teams = response.data;
+			response.data.length ? (this.noSearch = false) : (this.noSearch = true);
+			this.searchingMembers = false;
 		} catch {
-			this.loading = false;
+			this.searchingMembers = false;
 		}
 	}
 
@@ -124,9 +133,17 @@ export class TeamComponent implements OnInit {
 		this.inviteUserForm.patchValue({
 			groups: groupIds
 		});
+		if (this.inviteUserForm.invalid) {
+			(<any>this.inviteUserForm).values(this.inviteUserForm.controls).forEach((control: FormControl) => {
+				control?.markAsTouched();
+			});
+			return;
+		}
 		try {
 			const response = await this.teamService.inviteUserToOrganisation(this.inviteUserForm.value, requestOptions);
 			if (response.data) this.showSuccessModal = true;
+			this.showInviteTeamMemberModal = false;
+			this.inviteUserForm.reset();
 			this.fetchTeamMembers();
 			this.invitingUser = false;
 		} catch {
@@ -134,5 +151,32 @@ export class TeamComponent implements OnInit {
 		}
 	}
 
-	deactivateMember() {}
+	async deactivateMember() {
+		const orgId = localStorage.getItem('orgId');
+		this.deactivatingUser = true;
+		const requestOptions = {
+			orgId: orgId || '',
+			memberId: this.selectedMember?.id
+		};
+		try {
+			const response = await this.teamService.deactivateTeamMember(requestOptions);
+			if (response.status) this.showDeactivateModal = false;
+			this.generalService.showNotification({ message: response.message });
+			this.fetchTeamMembers();
+			console.log(response);
+			this.deactivatingUser = false;
+		} catch {
+			this.deactivatingUser = false;
+		}
+	}
+
+	showDropdown(id: string) {
+		if (this.currentId == id) {
+			this.currentId = '';
+		} else {
+			this.currentId = id;
+		}
+		console.log(id);
+		console.log(this.currentId);
+	}
 }

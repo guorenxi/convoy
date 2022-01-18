@@ -1,4 +1,4 @@
-<div class="loader" *ngIf="loading">
+<div class="loader" *ngIf="loading && !searchMode">
 	<app-loader></app-loader>
 </div>
 <div class="team-page page" *ngIf="!noData && !loading">
@@ -8,15 +8,24 @@
 			<p>A definition of what a team is goes here</p>
 		</div>
 		<div class="page--head--search">
-			<div class="input search no-margin">
-				<img src="/assets/img/search-icon.svg" alt="search icon" />
-				<input type="search" placeholder="Search team member here" (keyup)="searchTeam($event)" />
-			</div>
+			<app-search (searchInput)="searchTeam($event)" (clear)="fetchTeamMembers()" searchPlaceholder="Search team member here"></app-search>
+			
 			<button class="primary" (click)="showInviteTeamMemberModal = true">Add team member</button>
 		</div>
 	</div>
 
-	<table *ngIf="!noData && teams">
+	<div class="page--empty-state" *ngIf="searchMode && noSearch">
+		<div class="page--empty-state--img">
+			<img src="/assets/img/team-empty-img.svg" alt="add team empty" />
+		</div>
+		<h4>You have no one with the name '{{searchText}}' on your team</h4>
+		
+	</div>
+	<div class="loader" *ngIf="searchingMembers && searchMode">
+		<app-loader></app-loader>
+	</div>
+
+	<table *ngIf="!noData && !noSearch && teams">
 		<thead>
 			<tr class="table--head">
 				<th scope="col">NAME</th>
@@ -38,7 +47,7 @@
 					<div>Role goes here</div>
 				</td>
 				<td>
-					<div>All Groups</div>
+					<div>{{ team.groups }} Group{{team.groups == 1  ? '' : 's' }}</div>
 				</td>
 				<td>
 					<div>
@@ -48,13 +57,15 @@
 				</td>
 				<td>
 					<div class="dropdown--container">
-						<button class="has-icon clear" (click)="showTeamMemberDropdown = !showTeamMemberDropdown">
+						<button class="has-icon clear" (click)="showDropdown(team.id)">
 							<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
 						</button>
-						<div class="dropdown user-dropdown" *ngIf="showTeamMemberDropdown">
+						<div class="dropdown user-dropdown" *ngIf="currentId == team.id">
 							<ul>
 								<li>
-									<button class="danger clear" (click)="showDeactivateModal = !showDeactivateModal; showTeamMemberDropdown = false; selectedMember = team">Deactivate team member</button>
+									<button class="danger clear" (click)="showDeactivateModal = !showDeactivateModal; showTeamMemberDropdown = false; selectedMember = team; currentId = ''">
+										Deactivate team member
+									</button>
 								</li>
 							</ul>
 						</div>
@@ -111,22 +122,38 @@
 			<div class="input smaller">
 				<label for="first-name">First Name</label>
 				<input type="text" id="first-name" formControlName="firstname" />
+				<div class="input--error-message" *ngIf="inviteUserForm.controls.firstname.touched && inviteUserForm.controls.firstname.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Firstname is required</span>
+				</div>
 			</div>
 
 			<div class="input smaller">
 				<label for="last-name">Last Name</label>
 				<input type="text" id="last-name" formControlName="lastname" />
+				<div class="input--error-message" *ngIf="inviteUserForm.controls.lastname.touched && inviteUserForm.controls.lastname.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Lastname is required</span>
+				</div>
 			</div>
 
 			<div class="input">
 				<label for="email">Email</label>
 				<input type="email" id="email" formControlName="email" />
+				<div class="input--error-message" *ngIf="inviteUserForm.controls.email.touched && inviteUserForm.controls.email.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Please enter a valid email</span>
+				</div>
 			</div>
 
 			<div class="dropdown--container">
 				<div class="input">
 					<label for="group">Select group</label>
 					<input type="text" id="group" [(ngModel)]="noOfSelectedGroups" [ngModelOptions]="{ standalone: true }" readonly (click)="showTeamGroupDropdown = !showTeamGroupDropdown" />
+					<div class="input--error-message" *ngIf="noOfSelectedGroups && selectedGroups?.length == 0">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Please select at least 1 group</span>
+					</div>
 				</div>
 
 				<div class="dropdown" *ngIf="showTeamGroupDropdown">
@@ -150,6 +177,10 @@
 					<option value="Admin">Admin</option>
 					<option value="Dev">Dev</option>
 				</select>
+				<div class="input--error-message" *ngIf="inviteUserForm.controls.role.touched && inviteUserForm.controls.role.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Please select a role</span>
+				</div>
 			</div>
 		</form>
 	</div>
@@ -157,7 +188,7 @@
 	<div class="modal--footer">
 		<div class="button-container">
 			<button class="white" (click)="showInviteTeamMemberModal = false">Discard</button>
-			<button class="primary" (click)="inviteUser()">{{ invitingUser ? 'Inviting User' : 'Send Invite' }}</button>
+			<button class="primary" [disabled]="invitingUser" (click)="inviteUser()">{{ invitingUser ? 'Inviting User..' : 'Send Invite' }}</button>
 		</div>
 	</div>
 </div>
@@ -174,7 +205,7 @@
 		<img src="/assets/img/warning.gif" alt="warning" />
 		<p class="title">Are you sure you want to deactivate “{{ selectedMember?.firstname }} {{ selectedMember?.lastname }}”?</p>
 		<p class="subtext">This action is irrevesible</p>
-		<button class="danger" (click)="deactivateMember()">{{ deactivatingUser ? 'Deactivation...' : 'Yes, Deactivate' }}</button>
+		<button class="danger" [disabled]="deactivatingUser" (click)="deactivateMember()">{{ deactivatingUser ? 'Deactivating...' : 'Yes, Deactivate' }}</button>
 		<button class="clear cancel" (click)="showDeactivateModal = false">No, Cancel</button>
 	</div>
 </div>

@@ -36,8 +36,20 @@ export class TeamService {
 	async searchTeamMembers(requestOptions: { orgId: string; query: string }): Promise<HTTP_RESPONSE> {
 		try {
 			const response = await this.http.request({
-				url: `organizations/${requestOptions.orgId}/members/search`,
+				url: `organizations/${requestOptions.orgId}/members/search${requestOptions.query}`,
 				method: 'get'
+			});
+			return response;
+		} catch (error: any) {
+			return error;
+		}
+	}
+
+	async deactivateTeamMember(requestOptions: { orgId: string; memberId: string }) {
+		try {
+			const response = await this.http.request({
+				url: `organizations/${requestOptions.orgId}/members/${requestOptions.memberId}`,
+				method: 'delete'
 			});
 			return response;
 		} catch (error: any) {
