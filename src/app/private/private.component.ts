@@ -54,4 +54,16 @@ export class PrivateComponent implements OnInit {
 			if (organisationId) localStorage.setItem('orgId', organisationId);
 		} catch (error) {}
 	}
+
+	autoClose(event: any) {
+		var target = event.target;
+		if (!target.closest('.dropdown')) {
+			if(this.showOrgDropdown){
+				this.showOrgDropdown = false
+			}
+			if(this.showMoreDropdown){
+				this.showMoreDropdown = false
+			}
+		}
+	}
 }

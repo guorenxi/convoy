@@ -5,7 +5,7 @@
 		<p>Log in to your workspace to continue</p>
 
 		<form [formGroup]="loginForm" class="card" (ngSubmit)="login()">
-			<div class="input">
+			<div class="input login">
 				<input type="email" aria-label="email" name="email" autocomplete="email" formControlName="email" placeholder="Jane Doe" />
 				<div class="input-floating-label">Email Address</div>
 				<div class="input--error-message" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
@@ -14,7 +14,7 @@
 				</div>
 			</div>
 
-			<div class="input">
+			<div class="input login">
 				<div class="input--password">
 					<input [type]="showLoginPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
 					<div class="input-floating-label">Passsword</div>

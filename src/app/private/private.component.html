@@ -35,7 +35,7 @@
 					<img src="/assets/img/angle-arrow-down.svg" alt="arrow down icon" />
 				</button>
 
-				<div *ngIf="showOrgDropdown" class="dropdown organisations">
+				<div *ngIf="showOrgDropdown" class="dropdown organisations" (window:mouseup)="autoClose($event)">
 					<div class="dropdown--head">
 						<h3>Your organisations ({{ organisations?.length }})</h3>
 					</div>
@@ -62,9 +62,9 @@
 					<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
 				</button>
 
-				<div *ngIf="showMoreDropdown" class="dropdown more">
+				<div *ngIf="showMoreDropdown" class="dropdown more" id="divToHide" (window:mouseup)="autoClose($event)">
 					<div class="dropdown--head">
-						<h3>Kayode Sholanke</h3>
+						<h3>{{ authDetails().user?.profile?.firstname }} {{ authDetails().user?.profile?.lastname }}</h3>
 						<p>Product Designer</p>
 					</div>
 					<ul>
