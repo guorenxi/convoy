@@ -30,10 +30,10 @@ export class CreateGroupComponent implements OnInit {
 	constructor(private formBuilder: FormBuilder, private createGroupService: CreateGroupService, private generalService: GeneralService) {}
 
 	ngOnInit() {
-    if(this.editMode){
-      this.editGroup()
-    }
-  }
+		if (this.editMode) {
+			this.editGroup();
+		}
+	}
 
 	async createGroup() {
 		const orgId = localStorage.getItem('orgId');
@@ -58,12 +58,12 @@ export class CreateGroupComponent implements OnInit {
 			this.loading = false;
 		}
 	}
-  updateForm() {
+	updateForm() {
 		this.createGroupForm.patchValue({
 			disable_endpoint: this.disableEndpoint
 		});
 	}
-  editGroup() {
+	editGroup() {
 		this.createGroupForm.patchValue({
 			name: this.selectedGroup?.name,
 			strategy: {
@@ -79,5 +79,8 @@ export class CreateGroupComponent implements OnInit {
 	}
 	closeCreateGroupModal() {
 		this.closeModal.emit();
+	}
+	onlyNumber(event: KeyboardEvent): boolean {
+		return this.generalService.onlyNumber(event);
 	}
 }

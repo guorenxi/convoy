@@ -30,7 +30,9 @@ export class PrivateComponent implements OnInit {
 			const response: any = await this.privateService.logout();
 			if (response) {
 				this.router.navigateByUrl('/login');
+				localStorage.clear();
 			}
+
 			this.showLoader = false;
 		} catch (error) {
 			this.showLoader = false;
@@ -38,15 +40,16 @@ export class PrivateComponent implements OnInit {
 	}
 
 	async getOrganizations() {
-		const userId = localStorage.getItem('USER_ID');
-		console.log(userId);
+		const userDetails = localStorage.getItem('USER_DETAILS') || '';
+		const { id } = JSON.parse(userDetails);
+		console.log(id);
 		const requestOptions = {
-			userId: `userId=${userId}`
+			userId: `userId=${id}`
 		};
 		try {
 			const response = await this.privateService.getOrganizations(requestOptions);
 			this.organisations = response.data;
-			const userOrganisation = this.organisations.find(organisation => organisation.members.some(item => item.id === userId));
+			const userOrganisation = this.organisations.find(organisation => organisation.members.some(item => item.id === id));
 			const organisationId = userOrganisation?.id;
 			if (organisationId) localStorage.setItem('orgId', organisationId);
 		} catch (error) {}

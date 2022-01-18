@@ -31,15 +31,13 @@ export class LoginComponent implements OnInit {
 		this.disableLoginBtn = true;
 		try {
 			const response: any = await this.loginService.login(this.loginForm.value);
+			const { user } = response.data;
 			localStorage.setItem('CONVOY_AUTH', JSON.stringify(response.data));
-			const userId = response.data?.user?.id;
-			localStorage.setItem('USER_ID', userId)
+			localStorage.setItem('USER_DETAILS', JSON.stringify(user));
 			this.disableLoginBtn = false;
 			this.router.navigateByUrl('dashboard');
 		} catch {
 			this.disableLoginBtn = false;
 		}
 	}
-
-	
 }

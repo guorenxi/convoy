@@ -30,7 +30,7 @@
 					<button class="white">Edit Photo</button>
 				</div>
 
-				<button class="primary" (click)="editBasicUserInfo()">{{ savingDetails ? 'Saving changes...' : 'Save Changes' }}</button>
+				<button class="primary" [disabled]="savingDetails" (click)="editBasicUserInfo()">{{ savingDetails ? 'Saving changes...' : 'Save Changes' }}</button>
 			</div>
 
 			<h2>Basic Info</h2>

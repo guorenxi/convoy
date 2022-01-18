@@ -41,8 +41,5 @@ export class SignupComponent implements OnInit {
 		} catch {
 			this.loading = false;
 		}
-		// localStorage.setItem('CONVOY_AUTH', JSON.stringify(this.signupForm.value));
-		// this.router.navigateByUrl('dashboard');
-		// this.activeStep = 'otp'
 	}
 }

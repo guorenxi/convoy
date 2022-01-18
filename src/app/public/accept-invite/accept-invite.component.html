@@ -5,20 +5,39 @@
 		<p>Please, fill in your detail to create your Kwiksell account and join your team (Buycoins).</p>
 
 		<form [formGroup]="acceptInviteForm" class="card" (ngSubmit)="acceptInvite()">
-			<div class="input">
-				<input type="text" autocomplete="given-name" placeholder="First name" formControlName="firstName" />
+			<div class="input smaller">
+				<input type="text" aria-label="Firstname" autocomplete="firstname" placeholder="Firstname" id="first-name" formControlName="firstname" />
+				<div class="input--error-message" *ngIf="acceptInviteForm.controls.firstname.touched && acceptInviteForm.controls.firstname.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Firstname is required</span>
+				</div>
 			</div>
 
-			<div class="input">
-				<input type="text" autocomplete="family-name" placeholder="Last name" formControlName="lastName" />
+			<div class="input smaller">
+				<input type="text" aria-label="Lastname" autocomplete="lastname" placeholder="Lastname" id="last-name" formControlName="lastname" />
+				<div class="input--error-message" *ngIf="acceptInviteForm.controls.lastname.touched && acceptInviteForm.controls.lastname.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Lastname is required</span>
+				</div>
 			</div>
 
 			<div class="input">
 				<input type="email" autocomplete="email" placeholder="Email address" formControlName="email" />
+				<div class="input--error-message" *ngIf="acceptInviteForm.controls.email.touched && acceptInviteForm.controls.email.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Email is required</span>
+				</div>
 			</div>
 
 			<div class="input">
-				<input type="text" placeholder="Role assigned goes here " />
+				<select name="role" id="role" formControlName="role" aria-placeholder="Role assigned goes here">
+					<option value="Admin">Admin</option>
+					<option value="Dev">Dev</option>
+				</select>
+				<div class="input--error-message" *ngIf="acceptInviteForm.controls.role.touched && acceptInviteForm.controls.role.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Role is required</span>
+				</div>
 			</div>
 
 			<div class="input">
@@ -38,7 +57,7 @@
 			</div>
 
 			<div class="button-container margin-top">
-				<button class="primary full-100">Join your team</button>
+				<button class="primary full-100" [disabled]="loading" (click)="acceptInvite()">{{ loading ? 'Loading...' : 'Join your team' }}</button>
 			</div>
 		</form>
 	</section>
