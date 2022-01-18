@@ -1,32 +1,29 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { EventEmitter } from 'stream';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+	selector: 'app-search',
+	templateUrl: './search.component.html',
+	styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  searchForm: FormGroup = this.formBuilder.group({
+	searchForm: FormGroup = this.formBuilder.group({
 		search: ['', Validators.required]
 	});
-	@Output() searchInput = new EventEmitter();
-	@Output() noSearch = new EventEmitter();
+	@Output() searchInput = new EventEmitter<string>();
+	@Output() clear = new EventEmitter<any>();
 	@Input() searchPlaceholder: string = '';
 	@Input() searchFilter: boolean = false;
-  constructor(private formBuilder:FormBuilder) { }
+	constructor(private formBuilder: FormBuilder) {}
 
-  ngOnInit(): void {
-  }
+	ngOnInit(): void {}
 
-  search() {
+	search() {
 		this.searchInput.emit(this.searchForm.value.search);
 	}
 
 	clearSearch() {
 		this.searchForm.reset();
-		this.noSearch.emit(false);
+		this.clear.emit()
 	}
-
 }

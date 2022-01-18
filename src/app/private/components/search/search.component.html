@@ -1,4 +1,5 @@
-<div class="input search no-margin">
-    <img src="/assets/img/search-icon.svg" alt="search icon" />
-    <input type="search" placeholder="Search team member here" />
-</div>
+<form class="input search no-margin" [formGroup]="searchForm" (ngSubmit)="search()">
+	<img src="/assets/img/search-icon.svg" alt="search icon" />
+	<input type="text" [placeholder]="searchPlaceholder" formControlName="search" />
+	<button *ngIf="searchForm.valid" (click)="clearSearch()" type="button"><img src="/assets/img/cancel.svg" alt="clear search" /></button>
+</form>
