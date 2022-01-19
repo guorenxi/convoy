@@ -30,7 +30,7 @@ export class AcceptInviteComponent implements OnInit {
 
 	getToken() {
 		this.route.queryParams.subscribe(res => {
-			this.token = res.token;
+			this.token = res.invitation_token;
 		});
 	}
 
