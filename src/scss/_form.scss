@@ -3,7 +3,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	width: 100%;
-
+	
 	label {
 		font-weight: 600;
 		font-size: 12px;
@@ -107,6 +107,9 @@
 		order: 3;
 		img {
 			margin-right: 9.33px;
+		}
+		span{
+			color: #FF554A;
 		}
 	}
 	&.checkbox {

@@ -1,6 +1,6 @@
 <div>
 	<div class="modal--head">
-		<h1>{{ editMode ? 'Edit Group' : 'Create Group' }}</h1>
+		<h1>{{ editMode ? 'Edit Project' : 'Create Project' }}</h1>
 		<button class="modal--close clear" (click)="closeCreateGroupModal()">
 			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
 		</button>
@@ -9,7 +9,7 @@
 	<div class="modal--body">
 		<form [formGroup]="createGroupForm" (ngSubmit)="createGroup()">
 			<div class="input">
-				<label for="group-name">Group Name</label>
+				<label for="group-name">Project Name</label>
 				<input type="text" id="group-name" formControlName="name" />
 				<div class="input--error-message" *ngIf="createGroupForm.controls.name.touched && createGroupForm.controls.name.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
@@ -21,12 +21,12 @@
 			<div formGroupName="strategy">
 				<div class="input">
 					<label for="interval">Interval seconds</label>
-					<input type="number" id="interval" formControlName="interval_seconds" (keypress)="onlyNumber($event)"/>
+					<input type="number" id="interval" formControlName="interval_seconds" (keypress)="onlyNumber($event)" />
 				</div>
 
 				<div class="input">
 					<label for="retry-limit">Retry Limit</label>
-					<input type="number" id="retry-limit" formControlName="limit" (keypress)="onlyNumber($event)"/>
+					<input type="number" id="retry-limit" formControlName="limit" (keypress)="onlyNumber($event)" />
 				</div>
 			</div>
 
@@ -60,7 +60,7 @@
 		<div class="button-container">
 			<button class="white" (click)="closeCreateGroupModal()">Discard</button>
 			<button class="primary" *ngIf="editMode" [disabled]="loading" (click)="createGroup()">{{ loading ? 'Saving...' : 'Save Changes' }}</button>
-			<button class="primary" *ngIf="!editMode" [disabled]="loading" (click)="createGroup()">{{ loading ? 'Creating Group...' : 'Create Group' }}</button>
+			<button class="primary" *ngIf="!editMode" [disabled]="loading" (click)="createGroup()">{{ loading ? 'Creating Project...' : 'Create Project' }}</button>
 		</div>
 	</div>
 </div>

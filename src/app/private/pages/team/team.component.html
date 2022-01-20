@@ -5,7 +5,7 @@
 	<div class="page--head">
 		<div>
 			<h1>Teams</h1>
-			<p>A definition of what a team is goes here</p>
+			<p>View and manage your team members.</p>
 		</div>
 		<div class="page--head--search">
 			<app-search (searchInput)="searchTeam($event)" (clear)="fetchTeamMembers()" searchPlaceholder="Search team member here"></app-search>
@@ -118,7 +118,7 @@
 
 		<form [formGroup]="inviteUserForm" (ngSubmit)="inviteUser()">
 			<h3>Basic info</h3>
-			<p>Amet minim mollit non deserunt ullamco est sit aliqua dolo</p>
+			<p>Invite other members of your team to your organization.</p>
 			<div class="input smaller">
 				<label for="first-name">First Name</label>
 				<input type="text" id="first-name" formControlName="firstname" />

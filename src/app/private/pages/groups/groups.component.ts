@@ -60,7 +60,7 @@ export class GroupsComponent implements OnInit {
 	}
 
 	viewGroup(id: string) {
-		this.router.navigate(['/groups/' + id]);
+		this.router.navigate(['/projects/' + id]);
 	}
 	async deleteGroup() {
 		const orgId = localStorage.getItem('orgId');

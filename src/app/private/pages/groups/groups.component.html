@@ -6,11 +6,11 @@
 <div class="groups-page page" *ngIf="!noData && !showLoader">
 	<div class="page--head">
 		<div>
-			<h1>Groups</h1>
-			<p>A definition of what a group is goes here</p>
+			<h1>Projects</h1>
+			<p>All your project's summary at a glance</p>
 		</div>
 
-		<button class="primary" (click)="showCreateGroupModal = true; currentId = ''">Create Group</button>
+		<button class="primary" (click)="showCreateGroupModal = true; currentId = ''">Create Project</button>
 	</div>
 
 	<ul class="groups">
@@ -41,13 +41,13 @@
 			<div *ngIf="currentId == group.id" class="dropdown groups">
 				<ul>
 					<li (click)="viewGroup(group.id)">
-						<p>View Group</p>
+						<p>View Project</p>
 					</li>
 					<li (click)="viewGroupSettings(group)">
-						<p>Group settings</p>
+						<p>Project settings</p>
 					</li>
 					<li (click)="selectedGroup = group; showDeleteGroupModal = true; currentId = ''">
-						<p class="delete">Delete Group</p>
+						<p class="delete">Delete Project</p>
 					</li>
 				</ul>
 			</div>
@@ -60,9 +60,9 @@
 		<div class="page--empty-state--img">
 			<img src="/assets/img/group-empty-img.svg" alt="add group empty" />
 		</div>
-		<h4>You have no group yet</h4>
-		<p>A definition of what a group is goes here</p>
-		<button class="primary" (click)="showCreateGroupModal = true">Create Group</button>
+		<h4>You have no project yet</h4>
+		<p>All your project's summary at a glance</p>
+		<button class="primary" (click)="showCreateGroupModal = true">Create Project</button>
 	</div>
 </div>
 
@@ -160,11 +160,11 @@
 	<div class="modal--footer">
 		<div class="button-container">
 			<button class="white delete" (click)="showDeleteGroupModal = !showDeleteGroupModal">
-				Delete Group
+				Delete Project
 				<img src="/assets/img/trash-alt.svg" alt="delete icon" />
 			</button>
 			<button class="primary groups" (click)="editMode = true; showGroupSettingModal = false; showCreateGroupModal = true">
-				Edit Group Settings
+				Edit Project Settings
 				<img src="/assets/img/edit-alt.svg" alt="edit icon" />
 			</button>
 		</div>

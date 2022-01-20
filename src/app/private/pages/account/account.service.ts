@@ -32,4 +32,16 @@ export class AccountService {
 			return error;
 		}
 	}
+	async changePassword(requestDetails: { current_password: string; password: string; password_confirmation: string }) {
+		try {
+			const response = await this.http.request({
+				url: `users/update_password`,
+				body: requestDetails,
+				method: 'put'
+			});
+			return response;
+		} catch (error: any) {
+			return error;
+		}
+	}
 }

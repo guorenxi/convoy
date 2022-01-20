@@ -1,22 +1,22 @@
 <div class="account-page page page__small">
 	<div class="account-page--nav">
 		<div class="account-page--head">
-			<h2>Account Settings</h2>
+			<h2>User Settings</h2>
 		</div>
 		<ul class="account-page--nav--items">
 			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'profile' }">
 				<button (click)="activePage = 'profile'" class="clear">Profile</button>
 			</li>
-			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'organisation' }">
-				<button (click)="activePage = 'organisation'" class="clear">Organisation</button>
+			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'security' }">
+				<button (click)="activePage = 'security'" class="clear">Security</button>
 			</li>
-			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'billing' }">
+			<!-- <li class="account-page--nav--item" [ngClass]="{ active: activePage === 'billing' }">
 				<button (click)="activePage = 'billing'" class="clear">Billing & Plan</button>
-			</li>
+			</li> -->
 
 			<hr />
 
-			<li class="account-page--nav--item" (click)="logout()">
+			<li class="account-page--nav--item logout" (click)="logout()">
 				<a href="">Logout</a>
 			</li>
 		</ul>
@@ -49,49 +49,104 @@
 				</div>
 			</form>
 
-			<h2>Change Password</h2>
+			<!-- <h2>Change Password</h2>
 			<p>Here you can change your password should it be compromised.</p>
-			<button class="white" (click)="showChangePasswordModal = true">Change password</button>
+			<button class="white" (click)="showChangePasswordModal = true">Change password</button> -->
 		</ng-container>
 
-		<ng-container *ngIf="activePage === 'organisation'">
-			<h2>Account Info</h2>
-			<p>Amet minim mollit non deserunt ullamco est sit aliqua dolo</p>
-
-			<form>
-				<div class="input small">
-					<input type="text" aria-label="first name" />
-				</div>
-				<div class="input small">
-					<input type="text" aria-label="last name" />
+		<ng-container *ngIf="activePage === 'security'">
+			<div class="user-details--head">
+				<div class="password">
+					<h3>Change Password</h3>
+					<p>Here you can change your password incase you’ve been compromised</p>
 				</div>
 
+				<button class="primary" [disabled]="changingPassword" (click)="changePassword()">{{ changingPassword ? 'Saving changes...' : 'Save Changes' }}</button>
+			</div>
+			<form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
+				<div class="input without-margin">
+					<div class="input--password">
+						<input
+							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
+							id="password"
+							name="password"
+							autocomplete="current-password"
+							placeholder="Enter your password"
+							formControlName="current_password"
+						/>
+						<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
+							<img
+								[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
+								[alt]="passwordToggle.oldPassword ? 'hide password icon' : 'view password icon'"
+							/>
+						</button>
+					</div>
+					<div class="input--error-message" *ngIf="changePasswordForm.controls.current_password.touched && changePasswordForm.controls.current_password.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Enter current password</span>
+					</div>
+				</div>
+				<p>
+					Forgot password?
+					<button class="primary clear" type="button" [routerLink]="['/forgot-password']">Reset it here</button>
+				</p>
 				<div class="input">
-					<input type="email" aria-label="email" />
+					<div class="input--password">
+						<input
+							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
+							id="password"
+							name="password"
+							autocomplete="current-password"
+							placeholder="Enter your password"
+							formControlName="password"
+						/>
+						<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
+							<img
+								[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
+								[alt]="passwordToggle.oldPassword ? 'hide password icon' : 'view password icon'"
+							/>
+						</button>
+					</div>
+					<div class="input--error-message" *ngIf="changePasswordForm.controls.password.touched && changePasswordForm.controls.password.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Enter new password</span>
+					</div>
 				</div>
-
-				<div class="input small">
-					<input type="text" aria-label="first name" />
-				</div>
-				<div class="input small">
-					<input type="text" aria-label="last name" />
-				</div>
-
-				<div class="input small">
-					<input type="text" aria-label="first name" />
-				</div>
-				<div class="input small">
-					<input type="text" aria-label="last name" />
-				</div>
-
 				<div class="input">
-					<textarea></textarea>
+					<div class="input--password">
+						<input
+							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
+							id="password"
+							name="password"
+							autocomplete="current-password"
+							placeholder="Enter your password"
+							formControlName="password_confirmation"
+							(input)="checkPassword()"
+						/>
+						<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
+							<img
+								[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
+								[alt]="passwordToggle.oldPassword ? 'hide password icon' : 'view password icon'"
+							/>
+						</button>
+					</div>
+					<div class="input--error-message" *ngIf="changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Confirm new password</span>
+					</div>
+					<div class="input--error-message" *ngIf="changePasswordForm.controls.password_confirmation.touched && !passwordsMatch">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Passwords do not match</span>
+					</div>
 				</div>
 			</form>
 
-			<h2 class="danger">Danger zone</h2>
-			<p>Deactivating your account means you will lose all workspaces created by you and all your every other account information.</p>
-			<button class="white">Deactivate Account</button>
+			<div class="plan full-width">
+				<img src="/assets/img/ideas.svg" alt="idea" />
+				<div>
+					<p>Use a strong password with at least 8 characters long, and having a mixed of letters, numbers, and symbols.</p>
+				</div>
+			</div>
 		</ng-container>
 	</div>
 </div>
