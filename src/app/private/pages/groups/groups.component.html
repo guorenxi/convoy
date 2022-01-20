@@ -68,7 +68,7 @@
 
 <div class="overlay" *ngIf="showCreateGroupModal || showGroupSettingModal || showDeleteGroupModal"></div>
 <div class="modal modal__right" *ngIf="showCreateGroupModal">
-	<app-create-group (closeModal)="showCreateGroupModal = false; editMode = false; getGroups()" [selectedGroup]="selectedGroup" [editMode]="editMode"></app-create-group>
+	<app-create-group (closeModal)="closeCreateGroupModal($event)" [selectedGroup]="selectedGroup" [editMode]="editMode"></app-create-group>
 </div>
 
 <div class="modal modal__right" *ngIf="showGroupSettingModal">
@@ -86,7 +86,7 @@
 						<p>Retry Strategy</p>
 					</div>
 					<div class="setting">
-						<span>{{ selectedGroup?.config?.strategy?.default?.intervalSeconds }}secs</span>
+						<span>{{ selectedGroup?.config?.Strategy?.default?.intervalSeconds }}secs</span>
 						<button>
 							<img src="/assets/img/copy.svg" alt="copy" />
 						</button>
@@ -98,7 +98,7 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.strategy?.default?.retryLimit }}
+							{{ selectedGroup?.config?.Strategy?.default?.retryLimit }}
 						</span>
 						<button>
 							<img src="/assets/img/copy.svg" alt="copy" />
@@ -111,7 +111,7 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.signature?.header }}
+							{{ selectedGroup?.config?.Signature?.header }}
 						</span>
 						<button>
 							<img src="/assets/img/copy.svg" alt="copy" />
@@ -124,7 +124,7 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.signature?.hash }}
+							{{ selectedGroup?.config?.Signature?.hash }}
 						</span>
 						<button>
 							<img src="/assets/img/copy.svg" alt="copy" />
@@ -137,7 +137,7 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.disable_endpoint }}
+							{{ selectedGroup?.config?.DisableEndpoint }}
 						</span>
 					</div>
 				</li>

@@ -10,9 +10,6 @@
 			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'security' }">
 				<button (click)="activePage = 'security'" class="clear">Security</button>
 			</li>
-			<!-- <li class="account-page--nav--item" [ngClass]="{ active: activePage === 'billing' }">
-				<button (click)="activePage = 'billing'" class="clear">Billing & Plan</button>
-			</li> -->
 
 			<hr />
 
@@ -27,31 +24,41 @@
 			<div class="user-details--head">
 				<div>
 					<img src="/assets/img/mimoji.png" alt="profile image" />
-					<button class="white">Edit Photo</button>
+					<!-- <button class="white">Edit Photo</button> -->
 				</div>
 
 				<button class="primary" [disabled]="savingDetails" (click)="editBasicUserInfo()">{{ savingDetails ? 'Saving changes...' : 'Save Changes' }}</button>
 			</div>
 
 			<h2>Basic Info</h2>
-			<p>Amet minim mollit non deserunt ullamco est sit aliqua dolo</p>
 
 			<form [formGroup]="editBasicInfoForm">
 				<div class="input small">
+					<div class="input--error-message" *ngIf="editBasicInfoForm.controls.firstname.touched && editBasicInfoForm.controls.firstname.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Field cannot be empty</span>
+					</div>
 					<input type="text" aria-label="first name" placeholder="firstname" formControlName="firstname" />
+					<label for="email">Firstname</label>
 				</div>
 				<div class="input small">
+					<div class="input--error-message" *ngIf="editBasicInfoForm.controls.lastname.touched && editBasicInfoForm.controls.lastname.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Field cannot be empty</span>
+					</div>
 					<input type="text" aria-label="last name" placeholder="lastname" formControlName="lastname" />
+					<label for="email">Lastname</label>
 				</div>
 
 				<div class="input">
+					<div class="input--error-message" *ngIf="editBasicInfoForm.controls.email.touched && editBasicInfoForm.controls.email.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Field cannot be empty</span>
+					</div>
 					<input type="email" aria-label="email" placeholder="email" formControlName="email" />
+					<label for="email">Email Address</label>
 				</div>
 			</form>
-
-			<!-- <h2>Change Password</h2>
-			<p>Here you can change your password should it be compromised.</p>
-			<button class="white" (click)="showChangePasswordModal = true">Change password</button> -->
 		</ng-container>
 
 		<ng-container *ngIf="activePage === 'security'">
@@ -65,6 +72,10 @@
 			</div>
 			<form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
 				<div class="input without-margin">
+					<div class="input--error-message" *ngIf="changePasswordForm.controls.current_password.touched && changePasswordForm.controls.current_password.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Enter current password</span>
+					</div>
 					<div class="input--password">
 						<input
 							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
@@ -81,16 +92,16 @@
 							/>
 						</button>
 					</div>
-					<div class="input--error-message" *ngIf="changePasswordForm.controls.current_password.touched && changePasswordForm.controls.current_password.invalid">
-						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-						<span>Enter current password</span>
-					</div>
 				</div>
 				<p>
 					Forgot password?
 					<button class="primary clear" type="button" [routerLink]="['/forgot-password']">Reset it here</button>
 				</p>
 				<div class="input">
+					<div class="input--error-message" *ngIf="changePasswordForm.controls.password.touched && changePasswordForm.controls.password.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Enter new password</span>
+					</div>
 					<div class="input--password">
 						<input
 							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
@@ -107,12 +118,21 @@
 							/>
 						</button>
 					</div>
-					<div class="input--error-message" *ngIf="changePasswordForm.controls.password.touched && changePasswordForm.controls.password.invalid">
-						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-						<span>Enter new password</span>
-					</div>
 				</div>
 				<div class="input">
+					<div class="input--error-message" *ngIf="changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Confirm new password</span>
+					</div>
+					<div
+						class="input--error-message"
+						*ngIf="
+							changePasswordForm.controls.password.valid && changePasswordForm.controls.password_confirmation.valid && changePasswordForm.controls.password_confirmation.touched && !passwordsMatch
+						"
+					>
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Passwords do not match</span>
+					</div>
 					<div class="input--password">
 						<input
 							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
@@ -130,14 +150,6 @@
 							/>
 						</button>
 					</div>
-					<div class="input--error-message" *ngIf="changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid">
-						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-						<span>Confirm new password</span>
-					</div>
-					<div class="input--error-message" *ngIf="changePasswordForm.controls.password_confirmation.touched && !passwordsMatch">
-						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-						<span>Passwords do not match</span>
-					</div>
 				</div>
 			</form>
 
@@ -148,53 +160,5 @@
 				</div>
 			</div>
 		</ng-container>
-	</div>
-</div>
-
-<div class="overlay" *ngIf="showChangePasswordModal"></div>
-<div class="modal modal__center" *ngIf="showChangePasswordModal">
-	<div class="modal--head">
-		<h1>Change Password</h1>
-		<button class="clear has-icon" (click)="showChangePasswordModal = false">
-			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
-		</button>
-	</div>
-	<div class="modal--body">
-		<form>
-			<p>Here you can change your password incase you’ve been compromised</p>
-			<div class="input">
-				<div class="input--password">
-					<input [type]="passwordToggle.oldPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
-					<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
-						<img
-							[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
-							alt="passwordToggle.oldPassword ? 'hide password icon' : 'view password icon'"
-						/>
-					</button>
-				</div>
-			</div>
-			<div class="input">
-				<div class="input--password">
-					<input [type]="passwordToggle.oldPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
-					<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
-						<img
-							[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
-							alt="passwordToggle.oldPassword ? 'hide password icon' : 'view password icon'"
-						/>
-					</button>
-				</div>
-			</div>
-			<div class="input">
-				<div class="input--password">
-					<input [type]="passwordToggle.oldPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
-					<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
-						<img
-							[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
-							alt="passwordToggle.oldPassword ? 'hide password icon' : 'view password icon'"
-						/>
-					</button>
-				</div>
-			</div>
-		</form>
 	</div>
 </div>

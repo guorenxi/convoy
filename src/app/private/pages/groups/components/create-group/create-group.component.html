@@ -9,24 +9,24 @@
 	<div class="modal--body">
 		<form [formGroup]="createGroupForm" (ngSubmit)="createGroup()">
 			<div class="input">
-				<label for="group-name">Project Name</label>
-				<input type="text" id="group-name" formControlName="name" />
 				<div class="input--error-message" *ngIf="createGroupForm.controls.name.touched && createGroupForm.controls.name.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Name is required</span>
 				</div>
+				<input type="text" id="group-name" formControlName="name" />
+				<label for="group-name">Project Name</label>
 			</div>
 
 			<h3>Retry Strategy</h3>
 			<div formGroupName="strategy">
 				<div class="input">
-					<label for="interval">Interval seconds</label>
 					<input type="number" id="interval" formControlName="interval_seconds" (keypress)="onlyNumber($event)" />
+					<label for="interval">Interval seconds</label>
 				</div>
 
 				<div class="input">
-					<label for="retry-limit">Retry Limit</label>
 					<input type="number" id="retry-limit" formControlName="limit" (keypress)="onlyNumber($event)" />
+					<label for="retry-limit">Retry Limit</label>
 				</div>
 			</div>
 

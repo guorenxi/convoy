@@ -11,7 +11,6 @@ import { AccountService } from './account.service';
 })
 export class AccountComponent implements OnInit {
 	activePage: 'profile' | 'security' | 'billing' = 'profile';
-	showChangePasswordModal: boolean = false;
 	savingDetails: boolean = false;
 	changingPassword: boolean = false;
 	passwordsMatch: boolean = false;

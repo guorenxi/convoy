@@ -6,18 +6,21 @@
 
 		<form [formGroup]="loginForm" class="card" (ngSubmit)="login()">
 			<div class="input login">
-				<input type="email" aria-label="email" name="email" autocomplete="email" formControlName="email" placeholder="Jane Doe" />
-				<div class="input-floating-label">Email Address</div>
 				<div class="input--error-message" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Email is required</span>
 				</div>
+				<input type="email" aria-label="email" name="email" autocomplete="email" formControlName="email" placeholder="Jane Doe" />
+				<label for="email">Email Address</label>
 			</div>
 
 			<div class="input login">
+				<div class="input--error-message" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Password is required</span>
+				</div>
 				<div class="input--password">
 					<input [type]="showLoginPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
-					<div class="input-floating-label">Password</div>
 					<button class="input--password__view-toggle" (click)="showLoginPassword = !showLoginPassword" type="button">
 						<img
 							[src]="!showLoginPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
@@ -25,10 +28,7 @@
 						/>
 					</button>
 				</div>
-				<div class="input--error-message" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
-					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-					<span>Password is required</span>
-				</div>
+				<label for="password">Password</label>
 			</div>
 			<p>
 				Forgot password?

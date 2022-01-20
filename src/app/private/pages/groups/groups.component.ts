@@ -76,4 +76,10 @@ export class GroupsComponent implements OnInit {
 			this.deletingGroup = false;
 		}
 	}
+
+	closeCreateGroupModal(fetchGroups: boolean) {
+		this.showCreateGroupModal = false;
+		this.editMode = false;
+		if (fetchGroups) this.getGroups();
+	}
 }

@@ -12,7 +12,7 @@ import { CreateGroupService } from './create-group.service';
 export class CreateGroupComponent implements OnInit {
 	@Input() selectedGroup!: GROUP;
 	@Input() editMode: boolean = false;
-	@Output() closeModal = new EventEmitter();
+	@Output() closeModal = new EventEmitter<boolean>();
 	disableEndpoint: boolean = true;
 	loading: boolean = false;
 	createGroupForm: FormGroup = this.formBuilder.group({
@@ -50,7 +50,7 @@ export class CreateGroupComponent implements OnInit {
 			} else {
 				response = await this.createGroupService.createGroup(this.createGroupForm.value, requestOptions);
 			}
-			this.closeCreateGroupModal();
+			this.closeModal.emit(true);
 			this.createGroupForm.reset();
 			this.generalService.showNotification({ message: response.message });
 			this.loading = false;
@@ -67,15 +67,15 @@ export class CreateGroupComponent implements OnInit {
 		this.createGroupForm.patchValue({
 			name: this.selectedGroup?.name,
 			strategy: {
-				interval_seconds: this.selectedGroup?.config?.strategy?.default?.intervalSeconds,
-				limit: this.selectedGroup?.config?.strategy?.default?.retryLimit
+				interval_seconds: this.selectedGroup?.config?.Strategy?.default?.intervalSeconds,
+				limit: this.selectedGroup?.config?.Strategy?.default?.retryLimit
 			},
 			signature: {
-				header: this.selectedGroup?.config?.signature?.header,
-				hash: this.selectedGroup?.config?.signature?.hash
+				header: this.selectedGroup?.config?.Signature?.header,
+				hash: this.selectedGroup?.config?.Signature?.hash
 			}
 		});
-		this.disableEndpoint = this.selectedGroup?.config?.disable_endpoint;
+		this.disableEndpoint = this.selectedGroup?.config?.DisableEndpoint;
 	}
 	closeCreateGroupModal() {
 		this.closeModal.emit();

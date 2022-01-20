@@ -3,19 +3,20 @@ export interface GROUP {
 	name: string;
 	logo_url: string;
 	config: {
-		strategy: {
+		Strategy: {
 			type: string;
 			default: {
 				intervalSeconds: number;
 				retryLimit: number;
 			};
 		};
-		signature: {
+		Signature: {
 			header: string;
 			hash: string;
 		};
-		disable_endpoint: boolean;
+		DisableEndpoint: boolean;
 	};
 	created_at: Date;
 	updated_at: Date;
+	selected: boolean;
 }
