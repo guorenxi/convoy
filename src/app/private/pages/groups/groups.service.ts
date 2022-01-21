@@ -52,8 +52,10 @@ export class GroupsService {
 		}
 	}
 
-	async deleteGroup(requestOptions: {orgId: string;groupId: string}): Promise<HTTP_RESPONSE>{
-		try{
+	
+
+	async deleteGroup(requestOptions: { orgId: string; groupId: string }): Promise<HTTP_RESPONSE> {
+		try {
 			const response = await this.http.request({
 				url: `groups/${requestOptions.groupId}?${requestOptions.orgId || ''}`,
 				method: 'delete'

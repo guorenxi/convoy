@@ -79,7 +79,6 @@ export class TeamComponent implements OnInit {
 					selected: false
 				});
 			});
-			console.log(this.groups);
 			this.filteredGroups = this.groups;
 		} catch {}
 	}

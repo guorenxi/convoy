@@ -37,7 +37,6 @@ export class AccountComponent implements OnInit {
 		if (authDetails) {
 			const user = JSON.parse(authDetails);
 			this.id = user?.id;
-			console.log(user);
 			this.editBasicInfoForm.patchValue({
 				firstname: user?.profile?.firstname,
 				lastname: user?.profile?.lastname,
@@ -86,7 +85,6 @@ export class AccountComponent implements OnInit {
 		this.changingPassword = true;
 		try {
 			const response = await this.accountService.changePassword(this.changePasswordForm.value);
-			console.log(response);
 			if (response.status == true) {
 				this.generalService.showNotification({ message: response.message });
 				this.changePasswordForm.reset();

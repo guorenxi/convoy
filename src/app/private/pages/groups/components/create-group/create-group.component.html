@@ -21,11 +21,22 @@
 			<h3>Retry Strategy</h3>
 			<div formGroupName="strategy">
 				<div class="input">
+					<!-- <div *ngFor="let strategyError of getStrategyControls()">
+						{{strategyError}}
+						<div class="input--error-message" *ngIf="strategyError.interval_seconds.touched && strategyError.interval_seconds.invalid">
+							<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+							<span>Name is required</span>
+						</div>
+					</div> -->
 					<input type="number" id="interval" formControlName="interval_seconds" (keypress)="onlyNumber($event)" />
 					<label for="interval">Interval seconds</label>
 				</div>
 
 				<div class="input">
+					<!-- <div class="input--error-message" *ngIf="createGroupForm.get('strategy')['controls'].limit.touched && createGroupForm.get('strategy')['controls'].limit.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Name is required</span>
+					</div> -->
 					<input type="number" id="retry-limit" formControlName="limit" (keypress)="onlyNumber($event)" />
 					<label for="retry-limit">Retry Limit</label>
 				</div>
@@ -39,7 +50,9 @@
 				</div>
 
 				<div class="input">
-					<input type="text" id="hash" formControlName="hash" />
+					<select name="hash" id="hash" formControlName="hash">
+						<option value="{{ hash }}" *ngFor="let hash of hashes">{{ hash }}</option>
+					</select>
 					<label for="hash">Hash</label>
 				</div>
 			</div>
