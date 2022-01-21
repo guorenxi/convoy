@@ -1,0 +1,171 @@
+.account-page {
+	display: flex;
+	padding: 0;
+
+	&--nav {
+		border-right: 1px solid #eaedf3;
+		min-width: 260px;
+		width: 260px;
+
+		
+	}
+
+	&--head {
+		border-bottom: 1px solid #eaedf3;
+		padding: 16px 24px 10px;
+
+		h2 {
+			font-weight: 600;
+			font-size: 16px;
+			line-height: 30px;
+		}
+	}
+
+	&--nav--item {
+		margin: 30px 0;
+		padding-left: 22px;
+		font-weight: normal;
+		font-size: 14px;
+		line-height: 22px;
+
+		button {
+			color: #737a91;
+		}
+
+		&.active {
+			color: var(--primary-color);
+			position: relative;
+
+			&::before {
+				position: absolute;
+				content: '';
+				width: 3px;
+				height: 16px;
+				background-color: var(--primary-color);
+				left: 0;
+				top: 50%;
+				transform: translate(0, -50%);
+				border-radius: 100px;
+			}
+
+			button {
+				font-weight: 600;
+				color: var(--primary-color);
+			}
+		}
+
+		& + hr {
+			margin-left: 24px;
+		}
+	}
+
+	&--view {
+		padding: 32px;
+		width: 100%;
+
+		.user-details--head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: 1px solid #edeff5;
+			padding-bottom: 26px;
+
+			& > div {
+				display: flex;
+				align-items: center;
+				&.password {
+					display: block;
+					h3 {
+						font-weight: 600;
+						font-size: 18px;
+						line-height: 30px;
+						margin-bottom: 4px;
+					}
+					p {
+						max-width: 383px;
+					}
+				}
+
+				img {
+					margin-right: 16px;
+				}
+
+				button {
+					margin: 0;
+					padding: 6px 13px;
+					font-weight: 500;
+					font-size: 12px;
+					line-height: 200%;
+					color: #32587d;
+				}
+			}
+
+			button.primary {
+				padding: 8px 18px;
+				font-size: 14px;
+			}
+		}
+
+		.user-details--head,
+		form {
+			border-bottom: 1px solid #edeff5;
+			padding-bottom: 26px;
+			margin-bottom: 22px;
+		}
+
+		h2 {
+			font-weight: 600;
+			font-size: 20px;
+			line-height: 30px;
+			margin-bottom: 8px;
+		}
+
+		p {
+			font-size: 14px;
+			line-height: 22px;
+			color: #7987a3;
+		}
+
+		form {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: flex-start;
+			margin-top: 22px;
+			padding-bottom: 0;
+
+			.input {
+				margin-bottom: 25px;
+				&.without-margin {
+					margin-bottom: 0;
+				}
+				&.extra-space {
+					margin-bottom: 41px;
+				}
+			}
+
+			input {
+				margin-top: 0;
+			}
+		}
+
+		button.white {
+			font-size: 14px;
+		}
+
+		.danger {
+			color: var(--danger-color);
+		}
+	}
+}
+
+.modal {
+	width: 624px;
+
+	.modal--body {
+		height: unset;
+	}
+}
+.logout {
+	color: #ff554a;
+}

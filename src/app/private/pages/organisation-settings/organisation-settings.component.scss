@@ -1,0 +1,42 @@
+.deactivate {
+	h4 {
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 24px;
+		margin-bottom: 12px;
+	}
+	p {
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 22px;
+		max-width: 500px;
+		color: #737a91;
+	}
+	form {
+		margin-top: 38px;
+		p {
+			font-weight: 500;
+			font-size: 14px;
+			line-height: 22px;
+			color: #000624;
+			margin-bottom: 18px;
+		}
+		label {
+			font-weight: 500;
+			font-size: 14px;
+			line-height: 22px;
+			color: #737a91;
+			margin-left: 17px;
+		}
+		.checkbox {
+			margin-bottom: 26px;
+			display: flex;
+			align-items: center;
+		}
+		
+	}
+    
+}
+button.danger {
+    margin-left: 24px;
+}
