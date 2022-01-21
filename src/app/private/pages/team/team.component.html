@@ -61,7 +61,7 @@
 						</button>
 						<div class="dropdown user-dropdown" *ngIf="currentId == team.id">
 							<ul>
-								<li>
+								<li class="no-hover">
 									<button class="danger clear" (click)="showDeactivateModal = !showDeactivateModal; showTeamMemberDropdown = false; selectedMember = team; currentId = ''">
 										Deactivate team member
 									</button>

@@ -24,8 +24,11 @@ export class ForgotPasswordComponent implements OnInit {
 		};
 		try {
 			const response = await this.forgotPasswordService.forgotPassword(payload);
-			if (response) this.generalService.showNotification({ message: response.message });
-			this.activeState = 'instructionSent';
+			if (response.status) {
+				this.activeState = 'instructionSent';
+				this.generalService.showNotification({ message: response.message });
+			}
+
 			this.loading = false;
 		} catch (error) {
 			this.loading = false;

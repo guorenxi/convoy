@@ -27,8 +27,8 @@
 				<div>
 					<h2>Account Info</h2>
 				</div>
-
-				<button class="primary">Save Changes</button>
+				<!-- not available yet  -->
+				<!-- <button class="primary">Save Changes</button> -->
 			</div>
 
 			<form [formGroup]="editAccountForm">
@@ -37,16 +37,16 @@
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Field cannot be empty</span>
 					</div>
-					<input type="text" aria-label="first name" placeholder="firstname" formControlName="firstname" />
-					<label for="email">Firstname</label>
+					<input type="text" aria-label="Organization name" placeholder="Organization name" formControlName="name" readonly />
+					<label for="email">Organization name</label>
 				</div>
 				<div class="input smaller">
 					<div class="input--error-message" *ngIf="editAccountForm.controls.id.touched && editAccountForm.controls.id.invalid">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Field cannot be empty</span>
 					</div>
-					<input type="text" aria-label="last name" placeholder="lastname" formControlName="id" />
-					<label for="email">Lastname</label>
+					<input type="text" aria-label="Organization ID" placeholder="Organization ID" formControlName="id" readonly />
+					<label for="email">Organization ID</label>
 				</div>
 			</form>
 		</ng-container>
