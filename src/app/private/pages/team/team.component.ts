@@ -29,7 +29,7 @@ export class TeamComponent implements OnInit {
 	groups: GROUP[] = [];
 	filteredGroups: GROUP[] = [];
 	selectedGroups: GROUP[] = [];
-	noOfSelectedGroups!: string;
+	noOfSelectedGroups: string = '0 Groups';
 	invitingUser: boolean = false;
 	currentId!: string;
 	inviteUserForm: FormGroup = this.formBuilder.group({

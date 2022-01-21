@@ -166,3 +166,14 @@
 .logout {
 	color: #ff554a;
 }
+.input{
+	label{
+		top: 13px;
+	}
+	input.ng-valid + label{
+		top: 7px;
+	}
+}
+input:focus + label {
+	top: 7px;
+}
