@@ -1,0 +1,107 @@
+<div class="account-page page page__small">
+	<div class="account-page--nav">
+		<div class="account-page--head">
+			<h2>Organization Settings</h2>
+		</div>
+		<ul class="account-page--nav--items">
+			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'general settings' }">
+				<button (click)="activePage = 'general settings'" class="clear">General Settings</button>
+			</li>
+			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'billing' }">
+				<button (click)="activePage = 'billing'" class="clear">Billing</button>
+			</li>
+			<li class="account-page--nav--item" [ngClass]="{ active: activePage === 'danger zone' }">
+				<button (click)="activePage = 'danger zone'" class="clear">Danger Zone</button>
+			</li>
+			<hr />
+
+			<li class="account-page--nav--item logout" (click)="logout()">
+				<a href="">Logout</a>
+			</li>
+		</ul>
+	</div>
+
+	<div class="account-page--view">
+		<ng-container *ngIf="activePage === 'general settings'">
+			<div class="user-details--head">
+				<div>
+					<h2>Account Info</h2>
+				</div>
+
+				<button class="primary">Save Changes</button>
+			</div>
+
+			<form [formGroup]="editAccountForm">
+				<div class="input smaller">
+					<div class="input--error-message" *ngIf="editAccountForm.controls.name.touched && editAccountForm.controls.name.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Field cannot be empty</span>
+					</div>
+					<input type="text" aria-label="first name" placeholder="firstname" formControlName="firstname" />
+					<label for="email">Firstname</label>
+				</div>
+				<div class="input smaller">
+					<div class="input--error-message" *ngIf="editAccountForm.controls.id.touched && editAccountForm.controls.id.invalid">
+						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+						<span>Field cannot be empty</span>
+					</div>
+					<input type="text" aria-label="last name" placeholder="lastname" formControlName="id" />
+					<label for="email">Lastname</label>
+				</div>
+			</form>
+		</ng-container>
+		<ng-container *ngIf="activePage === 'billing'">
+			<div class="user-details--head">
+				<div>
+					<h2>Billing</h2>
+				</div>
+			</div>
+			<div class="plan full-width">
+				<img src="/assets/img/ideas.svg" alt="idea" />
+				<div>
+					<p>
+						Facilisi elit in in duis elementum ac. Amet, id amet turpis pretium mauris in fermentum eget. Dolor hendrerit diam eget tortor aliquam vitae. Aliquam morbi id pulvinar sed aliquam.
+						Quisque nisl sit ipsum cursus ornare et. Lectus venenatis nibh suspendisse scelerisque ipsum porttitor tempor. Tellus sed suspendisse vel sed.
+					</p>
+				</div>
+			</div>
+		</ng-container>
+		<ng-container *ngIf="activePage === 'danger zone'">
+			<h2 class="danger">Danger zone</h2>
+			<p>Deactivating your account means you will lose all workspaces created by you and all your every other account information.</p>
+			<button class="white" (click)="showDeactivateAccountModal = !showDeactivateAccountModal">Deactivate Account</button>
+		</ng-container>
+	</div>
+</div>
+<div class="overlay" *ngIf="showDeactivateAccountModal"></div>
+<div class="modal modal__center" *ngIf="showDeactivateAccountModal">
+	<div class="modal--head">
+		<h1>Deactivate account</h1>
+		<button class="clear has-icon" (click)="showDeactivateAccountModal = false">
+			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
+		</button>
+	</div>
+	<div class="modal--body">
+		<div class="deactivate">
+			<h4>Are you sure you want to deactivate your account?</h4>
+			<p>
+				All workspace created by you will be closed, and you will be removed from all workspaces where you’re a team member in. Your account can be reactivated if you change your mind within our 90days
+				grace period.
+			</p>
+
+			<form [formGroup]="deactivateAccountForm">
+				<p class="why">Why are you deactivating your account?</p>
+				<div class="checkbox" *ngFor="let reason of reasonsForDeactivation">
+					<input type="checkbox" name="reason" id="reasons" [checked]="reason.selected" (input)="selectReason(reason)" />
+					<label for="group-name1">{{ reason.reason }}</label>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="modal--footer">
+		<div class="button-container flex-end">
+			<button class="white" (click)="showDeactivateAccountModal = false">Discard</button>
+			<button class="danger">Deactivate account</button>
+		</div>
+	</div>
+</div>

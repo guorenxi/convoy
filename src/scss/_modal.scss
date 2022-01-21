@@ -76,6 +76,9 @@
 
 		.button-container {
 			justify-content: space-between;
+			&.flex-end{
+				justify-content: flex-end;
+			}
 		}
 
 		button {

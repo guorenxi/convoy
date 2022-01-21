@@ -33,7 +33,7 @@
 			<h2>Basic Info</h2>
 
 			<form [formGroup]="editBasicInfoForm">
-				<div class="input small">
+				<div class="input smaller">
 					<div class="input--error-message" *ngIf="editBasicInfoForm.controls.firstname.touched && editBasicInfoForm.controls.firstname.invalid">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Field cannot be empty</span>
@@ -41,7 +41,7 @@
 					<input type="text" aria-label="first name" placeholder="firstname" formControlName="firstname" />
 					<label for="email">Firstname</label>
 				</div>
-				<div class="input small">
+				<div class="input smaller">
 					<div class="input--error-message" *ngIf="editBasicInfoForm.controls.lastname.touched && editBasicInfoForm.controls.lastname.invalid">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Field cannot be empty</span>
@@ -157,7 +157,7 @@
 				</div>
 			</form>
 
-			<div class="plan full-width">
+			<div class="plan full-width flex-center">
 				<img src="/assets/img/ideas.svg" alt="idea" />
 				<div>
 					<p>Use a strong password with at least 8 characters long, and having a mixed of letters, numbers, and symbols.</p>

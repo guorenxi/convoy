@@ -25,8 +25,12 @@ const routes: Routes = [
 				loadChildren: () => import('./pages/team/team.module').then(m => m.TeamModule)
 			},
 			{
-				path: 'account',
+				path: 'user-settings',
 				loadChildren: () => import('./pages/account/account.module').then(m => m.AccountModule)
+			},
+			{
+				path: 'organisation-settings',
+				loadChildren: () => import('./pages/organisation-settings/organisation-settings.module').then(m => m.OrganisationSettingsModule)
 			}
 		]
 	}
