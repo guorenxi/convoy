@@ -26,7 +26,9 @@ export class OrganisationSettingsComponent implements OnInit {
 	];
 	constructor(private formBuilder: FormBuilder, private organisationSerive: OrganisationSettingsService, private router: Router) {}
 
-	ngOnInit(): void {}
+	ngOnInit() {
+		this.getOrganisationDetails()
+	}
 	async logout() {
 		try {
 			const response: any = await this.organisationSerive.logout();
@@ -38,4 +40,15 @@ export class OrganisationSettingsComponent implements OnInit {
 	}
 
 	selectReason(reason: any) {}
+
+	getOrganisationDetails(){
+		const org = localStorage.getItem('ORG_DETAILS')
+		if(org){
+			const organisationDetails = JSON.parse(org)
+			this.editAccountForm.patchValue({
+				name: organisationDetails.name,
+				id: organisationDetails.id
+			})
+		}
+	}
 }

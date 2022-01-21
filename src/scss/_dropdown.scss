@@ -123,6 +123,12 @@
 			background: #edf2f7;
 		}
 
+		&.no-hover {
+			&:hover {
+				background: unset;
+			}
+		}
+
 		p {
 			font-weight: 500;
 			font-size: 14px;

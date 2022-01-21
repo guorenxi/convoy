@@ -178,6 +178,16 @@
 			color: #ff554a;
 		}
 	}
+	&.has-icon {
+		position: relative;
+
+		.input--valid-icon {
+			position: absolute;
+			top: calc(50% + 8px);
+			transform: translate(0, -50%);
+			right: 12px;
+		}
+	}
 	.select {
 		width: fit-content;
 		position: relative;
