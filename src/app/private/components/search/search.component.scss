@@ -1,0 +1,27 @@
+.search {
+	border: 1px solid #edeff5;
+	background: #fff;
+	border-radius: 10px;
+	padding: 11px 16px;
+	transition: all 0.3s;
+	display: flex;
+	align-items: center;
+	flex-wrap: nowrap;
+	input {
+		background: transparent;
+		border: none;
+		border-radius: 0;
+		padding: 0;
+		margin-left: 10px;
+		margin-top: 0;
+		color: #737a91;
+	}
+	button {
+		padding: 0;
+		border: none;
+		background: none;
+		order: 3;
+		margin-top: -9px;
+		height: 12px;
+	}
+}

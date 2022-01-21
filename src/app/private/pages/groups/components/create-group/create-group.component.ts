@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GROUP } from 'src/app/models/group.model';
 import { GeneralService } from 'src/app/services/general/general.service';
 import { CreateGroupService } from './create-group.service';
@@ -12,9 +12,10 @@ import { CreateGroupService } from './create-group.service';
 export class CreateGroupComponent implements OnInit {
 	@Input() selectedGroup!: GROUP;
 	@Input() editMode: boolean = false;
-	@Output() closeModal = new EventEmitter();
+	@Output() closeModal = new EventEmitter<boolean>();
 	disableEndpoint: boolean = true;
 	loading: boolean = false;
+	hashes!: string[];
 	createGroupForm: FormGroup = this.formBuilder.group({
 		name: ['', Validators.required],
 		strategy: this.formBuilder.group({
@@ -30,19 +31,31 @@ export class CreateGroupComponent implements OnInit {
 	constructor(private formBuilder: FormBuilder, private createGroupService: CreateGroupService, private generalService: GeneralService) {}
 
 	ngOnInit() {
+		this.getHashes();
 		if (this.editMode) {
 			this.editGroup();
 		}
 	}
-
+	getStrategyControls() {
+		return (this.createGroupForm.get('strategy') as FormArray).controls;
+	}
+	getSignatureControls() {
+		return (this.createGroupForm.get('signature') as FormArray).controls;
+	}
 	async createGroup() {
+		
+		if (this.createGroupForm.invalid) {
+			(<any>Object).values(this.createGroupForm.controls).forEach((control: FormControl) => {
+				control?.markAsTouched();
+			});
+			return;
+		}
 		const orgId = localStorage.getItem('orgId');
 		this.loading = true;
 		const requestOptions = {
 			orgId: `org_id=${orgId}`,
 			groupId: this.selectedGroup?.id
 		};
-
 		try {
 			let response;
 			if (this.editMode) {
@@ -50,7 +63,7 @@ export class CreateGroupComponent implements OnInit {
 			} else {
 				response = await this.createGroupService.createGroup(this.createGroupForm.value, requestOptions);
 			}
-			this.closeCreateGroupModal();
+			this.closeModal.emit(true);
 			this.createGroupForm.reset();
 			this.generalService.showNotification({ message: response.message });
 			this.loading = false;
@@ -67,15 +80,24 @@ export class CreateGroupComponent implements OnInit {
 		this.createGroupForm.patchValue({
 			name: this.selectedGroup?.name,
 			strategy: {
-				interval_seconds: this.selectedGroup?.config?.strategy?.default?.intervalSeconds,
-				limit: this.selectedGroup?.config?.strategy?.default?.retryLimit
+				interval_seconds: this.selectedGroup?.config?.Strategy?.default?.intervalSeconds,
+				limit: this.selectedGroup?.config?.Strategy?.default?.retryLimit
 			},
 			signature: {
-				header: this.selectedGroup?.config?.signature?.header,
-				hash: this.selectedGroup?.config?.signature?.hash
+				header: this.selectedGroup?.config?.Signature?.header,
+				hash: this.selectedGroup?.config?.Signature?.hash
 			}
 		});
-		this.disableEndpoint = this.selectedGroup?.config?.disable_endpoint;
+		this.disableEndpoint = this.selectedGroup?.config?.DisableEndpoint;
+	}
+
+	async getHashes() {
+		try {
+			const response = await this.createGroupService.getHashes();
+			this.hashes = response.data.hashes;
+		} catch {
+			this.generalService.showNotification({ message: 'Unable to retrieve hashes' });
+		}
 	}
 	closeCreateGroupModal() {
 		this.closeModal.emit();

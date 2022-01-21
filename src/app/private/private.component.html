@@ -11,7 +11,7 @@
 						<a routerLink="/dashboard" routerLinkActive="active">Getting Started</a>
 					</li>
 					<li>
-						<a routerLink="/groups" routerLinkActive="active">Groups</a>
+						<a routerLink="/projects" routerLinkActive="active">Projects</a>
 					</li>
 					<li>
 						<a routerLink="/team" routerLinkActive="active">Team</a>
@@ -26,16 +26,16 @@
 				Go to docs
 			</a>
 
-			<div class="dropdown--container">
-				<button class="has-icon icon-left" (click)="showOrgDropdown = !showOrgDropdown" *ngIf="authDetails()">
+			<div class="dropdown--container" *ngIf="authDetails()">
+				<button class="has-icon icon-left" (click)="showOrgDropdown = !showOrgDropdown">
 					<div class="has-icon">
 						<div class="icon">O</div>
-						<div class="name">{{ authDetails().user?.profile?.firstname }}</div>
+						<div class="name">{{ userOrganization?.name }}</div>
 					</div>
 					<img src="/assets/img/angle-arrow-down.svg" alt="arrow down icon" />
 				</button>
 
-				<div *ngIf="showOrgDropdown" class="dropdown organisations">
+				<div *ngIf="showOrgDropdown" class="dropdown organisations" (window:mouseup)="autoClose($event)">
 					<div class="dropdown--head">
 						<h3>Your organisations ({{ organisations?.length }})</h3>
 					</div>
@@ -62,9 +62,9 @@
 					<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
 				</button>
 
-				<div *ngIf="showMoreDropdown" class="dropdown more">
+				<div *ngIf="showMoreDropdown" class="dropdown more" (window:mouseup)="autoClose($event)">
 					<div class="dropdown--head">
-						<h3>Kayode Sholanke</h3>
+						<h3>{{ authDetails().user?.profile?.firstname }} {{ authDetails().user?.profile?.lastname }}</h3>
 						<p>Product Designer</p>
 					</div>
 					<ul>
@@ -72,10 +72,10 @@
 							<p>My account</p>
 						</li>
 						<li>
-							<p>Docs</p>
+							<p>Organization settings</p>
 						</li>
 						<li>
-							<p>Billing</p>
+							<a target="_blank" href="https://getconvoy.io/docs" rel="noreferrer">Docs</a>
 						</li>
 					</ul>
 					<div class="dropdown--footer">

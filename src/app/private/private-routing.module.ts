@@ -17,7 +17,7 @@ const routes: Routes = [
 				loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule)
 			},
 			{
-				path: 'groups',
+				path: 'projects',
 				loadChildren: () => import('./pages/groups/groups.module').then(m => m.GroupsModule)
 			},
 			{

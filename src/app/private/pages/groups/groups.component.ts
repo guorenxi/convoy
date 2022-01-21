@@ -60,7 +60,7 @@ export class GroupsComponent implements OnInit {
 	}
 
 	viewGroup(id: string) {
-		this.router.navigate(['/groups/' + id]);
+		this.router.navigate(['/projects/' + id]);
 	}
 	async deleteGroup() {
 		const orgId = localStorage.getItem('orgId');
@@ -75,5 +75,11 @@ export class GroupsComponent implements OnInit {
 		} catch {
 			this.deletingGroup = false;
 		}
+	}
+
+	closeCreateGroupModal(fetchGroups: boolean) {
+		this.showCreateGroupModal = false;
+		this.editMode = false;
+		if (fetchGroups) this.getGroups();
 	}
 }

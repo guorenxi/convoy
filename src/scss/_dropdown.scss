@@ -33,6 +33,7 @@
 		overflow: hidden;
 		white-space: nowrap;
 		text-align: left;
+		text-transform: capitalize;
 		margin-right: 20px;
 	}
 }
@@ -61,6 +62,22 @@
 		}
 	}
 
+	&.more {
+		h3,
+		p {
+			text-transform: capitalize;
+			color: #000624;
+		}
+		li {
+			p {
+				font-weight: 500;
+				font-size: 14px;
+				line-height: 22px;
+				color: #737a91;
+				text-transform: capitalize;
+			}
+		}
+	}
 	&--head {
 		padding: 24px 32px 12px;
 		border-bottom: 1px solid #edeff5;

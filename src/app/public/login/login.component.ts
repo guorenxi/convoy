@@ -12,7 +12,7 @@ export class LoginComponent implements OnInit {
 	showLoginPassword = false;
 	disableLoginBtn = false;
 	loginForm: FormGroup = this.formBuilder.group({
-		email: ['', Validators.required],
+		email: ['', Validators.compose([Validators.required, Validators.email])],
 		password: ['', Validators.required]
 	});
 

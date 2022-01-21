@@ -26,10 +26,10 @@ export class TeamComponent implements OnInit {
 	searchingMembers: boolean = false;
 	searchText!: string;
 	teams!: TEAMS[];
-	groups!: GROUP[];
-	filteredGroups!: GROUP[];
+	groups: GROUP[] = [];
+	filteredGroups: GROUP[] = [];
 	selectedGroups: GROUP[] = [];
-	noOfSelectedGroups!: string;
+	noOfSelectedGroups: string = '0 Groups';
 	invitingUser: boolean = false;
 	currentId!: string;
 	inviteUserForm: FormGroup = this.formBuilder.group({
@@ -72,8 +72,14 @@ export class TeamComponent implements OnInit {
 		};
 		try {
 			const response = await this.groupService.getGroups(requestOptions);
-			this.groups = response.data;
-			this.filteredGroups = response.data;
+			const groupsAvailable = response.data;
+			groupsAvailable.forEach((element: GROUP) => {
+				this.groups.push({
+					...element,
+					selected: false
+				});
+			});
+			this.filteredGroups = this.groups;
 		} catch {}
 	}
 
@@ -115,12 +121,22 @@ export class TeamComponent implements OnInit {
 			const groupExists = this.selectedGroups.find(item => item.id == id);
 			if (groupExists) {
 				this.selectedGroups = this.selectedGroups.filter(group => group.id != id);
+				this.filteredGroups.forEach((item: GROUP) => {
+					if (item.id == id) item.selected = false;
+				});
 			} else {
 				this.selectedGroups.push(group);
+				this.filteredGroups.forEach((item: GROUP) => {
+					if (item.id == id) item.selected = true;
+				});
 			}
 		} else {
 			this.selectedGroups.push(group);
+			this.filteredGroups.forEach((item: GROUP) => {
+				if (item.id == id) item.selected = true;
+			});
 		}
+		
 		this.noOfSelectedGroups = `${this.selectedGroups?.length} group${this.selectedGroups?.length == 1 ? '' : 's'}`;
 	}
 	async inviteUser() {

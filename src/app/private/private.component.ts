@@ -12,6 +12,7 @@ export class PrivateComponent implements OnInit {
 	showOrgDropdown = false;
 	showMoreDropdown = false;
 	organisations!: ORGANIZATION_DATA[];
+	userOrganization!: ORGANIZATION_DATA;
 	showLoader: boolean = false;
 	constructor(private router: Router, private privateService: PrivateService) {}
 
@@ -42,7 +43,6 @@ export class PrivateComponent implements OnInit {
 	async getOrganizations() {
 		const userDetails = localStorage.getItem('USER_DETAILS') || '';
 		const { id } = JSON.parse(userDetails);
-		console.log(id);
 		const requestOptions = {
 			userId: `userId=${id}`
 		};
@@ -50,8 +50,23 @@ export class PrivateComponent implements OnInit {
 			const response = await this.privateService.getOrganizations(requestOptions);
 			this.organisations = response.data;
 			const userOrganisation = this.organisations.find(organisation => organisation.members.some(item => item.id === id));
+			if (userOrganisation) this.userOrganization = userOrganisation;
+			localStorage.setItem('ORG_DETAILS', JSON.stringify(userOrganisation));
 			const organisationId = userOrganisation?.id;
 			if (organisationId) localStorage.setItem('orgId', organisationId);
 		} catch (error) {}
 	}
+
+	autoClose(event: any) {
+		var target = event.target;
+		if (!target.closest('.dropdown')) {
+			if (this.showOrgDropdown) {
+				this.showOrgDropdown = false;
+			}
+			if (this.showMoreDropdown) {
+				this.showMoreDropdown = false;
+			}
+		}
+	}
+	
 }

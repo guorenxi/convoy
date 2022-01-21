@@ -5,11 +5,11 @@
 	<div class="page--head">
 		<div>
 			<h1>Teams</h1>
-			<p>A definition of what a team is goes here</p>
+			<p>View and manage your team members.</p>
 		</div>
 		<div class="page--head--search">
 			<app-search (searchInput)="searchTeam($event)" (clear)="fetchTeamMembers()" searchPlaceholder="Search team member here"></app-search>
-			
+
 			<button class="primary with-margin-left" (click)="showInviteTeamMemberModal = true">Add team member</button>
 		</div>
 	</div>
@@ -18,8 +18,7 @@
 		<div class="page--empty-state--img">
 			<img src="/assets/img/team-empty-img.svg" alt="add team empty" />
 		</div>
-		<h4>You have no one with the name '{{searchText}}' on your team</h4>
-		
+		<h4>You have no one with the name '{{ searchText }}' on your team</h4>
 	</div>
 	<div class="loader" *ngIf="searchingMembers && searchMode">
 		<app-loader></app-loader>
@@ -47,7 +46,7 @@
 					<div>Role goes here</div>
 				</td>
 				<td>
-					<div>{{ team.groups }} Group{{team.groups == 1  ? '' : 's' }}</div>
+					<div>{{ team.groups }} Group{{ team.groups == 1 ? '' : 's' }}</div>
 				</td>
 				<td>
 					<div>
@@ -118,42 +117,50 @@
 
 		<form [formGroup]="inviteUserForm" (ngSubmit)="inviteUser()">
 			<h3>Basic info</h3>
-			<p>Amet minim mollit non deserunt ullamco est sit aliqua dolo</p>
+			<p>Invite other members of your team to your organization.</p>
 			<div class="input smaller">
-				<label for="first-name">First Name</label>
-				<input type="text" id="first-name" formControlName="firstname" />
 				<div class="input--error-message" *ngIf="inviteUserForm.controls.firstname.touched && inviteUserForm.controls.firstname.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Firstname is required</span>
 				</div>
+				<input type="text" id="first-name" formControlName="firstname" [ngClass]="{ invalid: inviteUserForm.controls.firstname.touched && inviteUserForm.controls.firstname.invalid }" />
+				<label for="first-name">First Name</label>
 			</div>
 
 			<div class="input smaller">
-				<label for="last-name">Last Name</label>
-				<input type="text" id="last-name" formControlName="lastname" />
 				<div class="input--error-message" *ngIf="inviteUserForm.controls.lastname.touched && inviteUserForm.controls.lastname.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Lastname is required</span>
 				</div>
+				<input type="text" id="last-name" formControlName="lastname" [ngClass]="{ invalid: inviteUserForm.controls.lastname.touched && inviteUserForm.controls.lastname.invalid }" />
+				<label for="last-name">Last Name</label>
 			</div>
 
 			<div class="input">
-				<label for="email">Email</label>
-				<input type="email" id="email" formControlName="email" />
 				<div class="input--error-message" *ngIf="inviteUserForm.controls.email.touched && inviteUserForm.controls.email.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Please enter a valid email</span>
 				</div>
+				<input type="email" id="email" formControlName="email" [ngClass]="{ invalid: inviteUserForm.controls.email.touched && inviteUserForm.controls.email.invalid }" />
+				<label for="email">Email</label>
 			</div>
 
 			<div class="dropdown--container">
 				<div class="input">
-					<label for="group">Select group</label>
-					<input type="text" id="group" [(ngModel)]="noOfSelectedGroups" [ngModelOptions]="{ standalone: true }" readonly (click)="showTeamGroupDropdown = !showTeamGroupDropdown" />
 					<div class="input--error-message" *ngIf="noOfSelectedGroups && selectedGroups?.length == 0">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Please select at least 1 group</span>
 					</div>
+					<input
+						type="text"
+						id="group"
+						[(ngModel)]="noOfSelectedGroups"
+						[ngModelOptions]="{ standalone: true }"
+						readonly
+						(click)="showTeamGroupDropdown = !showTeamGroupDropdown"
+						[ngClass]="{ invalid: noOfSelectedGroups && selectedGroups?.length == 0 }"
+					/>
+					<label for="group">Select group</label>
 				</div>
 
 				<div class="dropdown" *ngIf="showTeamGroupDropdown">
@@ -165,22 +172,22 @@
 					<ul *ngIf="filteredGroups.length">
 						<li *ngFor="let group of filteredGroups">
 							<label for="group-name1">{{ group.name }}</label>
-							<input type="checkbox" name="group-name" id="group-name1" (input)="selectGroup(group)" />
+							<input type="checkbox" name="group-name" id="group-name1" [checked]="group.selected" (input)="selectGroup(group)" />
 						</li>
 					</ul>
 				</div>
 			</div>
 
 			<div class="input">
-				<label for="role">Select Role</label>
-				<select name="role" id="role" formControlName="role">
-					<option value="Admin">Admin</option>
-					<option value="Dev">Dev</option>
-				</select>
 				<div class="input--error-message" *ngIf="inviteUserForm.controls.role.touched && inviteUserForm.controls.role.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Please select a role</span>
 				</div>
+				<select name="role" id="role" formControlName="role" [ngClass]="{ invalid: inviteUserForm.controls.role.touched && inviteUserForm.controls.role.invalid }">
+					<option value="Admin">Admin</option>
+					<option value="Dev">Dev</option>
+				</select>
+				<label for="role">Select Role</label>
 			</div>
 		</form>
 	</div>

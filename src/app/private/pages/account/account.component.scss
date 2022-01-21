@@ -70,6 +70,18 @@
 			& > div {
 				display: flex;
 				align-items: center;
+				&.password {
+					display: block;
+					h3 {
+						font-weight: 600;
+						font-size: 18px;
+						line-height: 30px;
+						margin-bottom: 4px;
+					}
+					p {
+						max-width: 383px;
+					}
+				}
 
 				img {
 					margin-right: 16px;
@@ -115,12 +127,15 @@
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
+			align-items: flex-start;
 			margin-top: 22px;
 			padding-bottom: 0;
 
 			.input {
 				margin-bottom: 25px;
-
+				&.without-margin {
+					margin-bottom: 0;
+				}
 				&.extra-space {
 					margin-bottom: 41px;
 				}
@@ -147,4 +162,18 @@
 	.modal--body {
 		height: unset;
 	}
+}
+.logout {
+	color: #ff554a;
+}
+.input{
+	label{
+		top: 13px;
+	}
+	input.ng-valid + label{
+		top: 7px;
+	}
+}
+input:focus + label {
+	top: 7px;
 }

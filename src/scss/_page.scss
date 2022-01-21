@@ -58,7 +58,7 @@
 		justify-content: space-between;
 		margin-bottom: 23px;
 
-		&--search{
+		&--search {
 			display: flex;
 			flex-flow: row;
 			align-items: center;
@@ -84,7 +84,6 @@
 		}
 	}
 
-	
 	&__small {
 		max-width: 920px;
 		background: #ffffff;
@@ -137,7 +136,34 @@
 	text-transform: uppercase;
 	margin-right: 16px;
 }
-
+.plan {
+	background: #edf2f7;
+	border: 1px dashed #c8d8e8;
+	border-radius: 8px;
+	max-width: 576px;
+	margin: 0 auto;
+	padding: 10px 24px;
+	display: flex;
+	align-items: flex-start;
+	&.full-width {
+		max-width: 100%;
+		width: 100%;
+		align-items: center;
+	}
+	img {
+		margin-right: 20px;
+	}
+	p,
+	a {
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 22px;
+		max-width: 464px;
+	}
+	a {
+		color: #477db3;
+	}
+}
 .user-details--head {
 	display: flex;
 	align-items: center;
