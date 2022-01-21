@@ -5,22 +5,39 @@
 		<p>Log in to your workspace to continue</p>
 
 		<form [formGroup]="loginForm" class="card" (ngSubmit)="login()">
-			<div class="input login">
+			<div class="input">
 				<div class="input--error-message" *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-					<span>Email is required</span>
+					<span>Please enter a valid email.</span>
 				</div>
-				<input type="email" aria-label="email" name="email" autocomplete="email" formControlName="email" placeholder="Jane Doe" />
+				<input
+					type="email"
+					aria-label="email"
+					name="email"
+					autocomplete="email"
+					formControlName="email"
+					placeholder="Jane Doe"
+					[ngClass]="{ invalid: loginForm.controls.email.touched && loginForm.controls.email.invalid }"
+				/>
 				<label for="email">Email Address</label>
 			</div>
 
-			<div class="input login">
+			<div class="input">
 				<div class="input--error-message" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Password is required</span>
 				</div>
 				<div class="input--password">
-					<input [type]="showLoginPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
+					<input
+						[type]="showLoginPassword ? 'text' : 'password'"
+						id="password"
+						name="password"
+						autocomplete="current-password"
+						placeholder="Enter your password"
+						formControlName="password"
+						[ngClass]="{ invalid: loginForm.controls.password.touched && loginForm.controls.password.invalid }"
+					/>
+					<label for="password">Password</label>
 					<button class="input--password__view-toggle" (click)="showLoginPassword = !showLoginPassword" type="button">
 						<img
 							[src]="!showLoginPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
@@ -28,7 +45,6 @@
 						/>
 					</button>
 				</div>
-				<label for="password">Password</label>
 			</div>
 			<p>
 				Forgot password?

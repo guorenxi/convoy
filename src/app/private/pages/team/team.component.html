@@ -123,7 +123,7 @@
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Firstname is required</span>
 				</div>
-				<input type="text" id="first-name" formControlName="firstname" />
+				<input type="text" id="first-name" formControlName="firstname" [ngClass]="{ invalid: inviteUserForm.controls.firstname.touched && inviteUserForm.controls.firstname.invalid }" />
 				<label for="first-name">First Name</label>
 			</div>
 
@@ -132,7 +132,7 @@
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Lastname is required</span>
 				</div>
-				<input type="text" id="last-name" formControlName="lastname" />
+				<input type="text" id="last-name" formControlName="lastname" [ngClass]="{ invalid: inviteUserForm.controls.lastname.touched && inviteUserForm.controls.lastname.invalid }" />
 				<label for="last-name">Last Name</label>
 			</div>
 
@@ -141,7 +141,7 @@
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Please enter a valid email</span>
 				</div>
-				<input type="email" id="email" formControlName="email" />
+				<input type="email" id="email" formControlName="email" [ngClass]="{ invalid: inviteUserForm.controls.email.touched && inviteUserForm.controls.email.invalid }" />
 				<label for="email">Email</label>
 			</div>
 
@@ -151,7 +151,15 @@
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Please select at least 1 group</span>
 					</div>
-					<input type="text" id="group" [(ngModel)]="noOfSelectedGroups" [ngModelOptions]="{ standalone: true }" readonly (click)="showTeamGroupDropdown = !showTeamGroupDropdown" />
+					<input
+						type="text"
+						id="group"
+						[(ngModel)]="noOfSelectedGroups"
+						[ngModelOptions]="{ standalone: true }"
+						readonly
+						(click)="showTeamGroupDropdown = !showTeamGroupDropdown"
+						[ngClass]="{ invalid: noOfSelectedGroups && selectedGroups?.length == 0 }"
+					/>
 					<label for="group">Select group</label>
 				</div>
 
@@ -175,7 +183,7 @@
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Please select a role</span>
 				</div>
-				<select name="role" id="role" formControlName="role">
+				<select name="role" id="role" formControlName="role" [ngClass]="{ invalid: inviteUserForm.controls.role.touched && inviteUserForm.controls.role.invalid }">
 					<option value="Admin">Admin</option>
 					<option value="Dev">Dev</option>
 				</select>

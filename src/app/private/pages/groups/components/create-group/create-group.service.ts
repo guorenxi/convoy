@@ -39,4 +39,16 @@ export class CreateGroupService {
 			return error;
 		}
 	}
+
+	async getHashes(): Promise<HTTP_RESPONSE> {
+		try {
+			const response = await this.http.request({
+				url: `groups/hashes`,
+				method: 'get'
+			});
+			return response;
+		} catch (error: any) {
+			return error;
+		}
+	}
 }

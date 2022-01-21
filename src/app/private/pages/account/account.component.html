@@ -38,7 +38,13 @@
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Field cannot be empty</span>
 					</div>
-					<input type="text" aria-label="first name" placeholder="firstname" formControlName="firstname" />
+					<input
+						type="text"
+						aria-label="first name"
+						placeholder="firstname"
+						formControlName="firstname"
+						[ngClass]="{ invalid: editBasicInfoForm.controls.firstname.touched && editBasicInfoForm.controls.firstname.invalid }"
+					/>
 					<label for="email">Firstname</label>
 				</div>
 				<div class="input smaller">
@@ -46,7 +52,13 @@
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Field cannot be empty</span>
 					</div>
-					<input type="text" aria-label="last name" placeholder="lastname" formControlName="lastname" />
+					<input
+						type="text"
+						aria-label="last name"
+						placeholder="lastname"
+						formControlName="lastname"
+						[ngClass]="{ invalid: editBasicInfoForm.controls.lastname.touched && editBasicInfoForm.controls.lastname.invalid }"
+					/>
 					<label for="email">Lastname</label>
 				</div>
 
@@ -55,7 +67,13 @@
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Field cannot be empty</span>
 					</div>
-					<input type="email" aria-label="email" placeholder="email" formControlName="email" />
+					<input
+						type="email"
+						aria-label="email"
+						placeholder="email"
+						formControlName="email"
+						[ngClass]="{ invalid: editBasicInfoForm.controls.email.touched && editBasicInfoForm.controls.email.invalid }"
+					/>
 					<label for="email">Email Address</label>
 				</div>
 			</form>
@@ -84,7 +102,9 @@
 							autocomplete="current-password"
 							placeholder="Enter your password"
 							formControlName="current_password"
+							[ngClass]="{ invalid: changePasswordForm.controls.current_password.touched && changePasswordForm.controls.current_password.invalid }"
 						/>
+						<label for="current_password">Confirm Password</label>
 						<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
 							<img
 								[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
@@ -92,7 +112,6 @@
 							/>
 						</button>
 					</div>
-					<label for="current_password">Confirm Password</label>
 				</div>
 				<p>
 					Forgot password?
@@ -111,7 +130,9 @@
 							autocomplete="password"
 							placeholder="Enter your password"
 							formControlName="password"
+							[ngClass]="{ invalid: changePasswordForm.controls.password.touched && changePasswordForm.controls.password.invalid }"
 						/>
+						<label for="password">New Password</label>
 						<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
 							<img
 								[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
@@ -119,7 +140,6 @@
 							/>
 						</button>
 					</div>
-					<label for="password">New Password</label>
 				</div>
 				<div class="input">
 					<div class="input--error-message" *ngIf="changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid">
@@ -144,8 +164,16 @@
 							placeholder="Enter your password"
 							formControlName="password_confirmation"
 							(input)="checkPassword()"
-							[ngClass]="{'invalid': changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid}"
+							[ngClass]="{
+								invalid:
+									(changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid) ||
+									(changePasswordForm.controls.password.valid &&
+										changePasswordForm.controls.password_confirmation.valid &&
+										changePasswordForm.controls.password_confirmation.touched &&
+										!passwordsMatch)
+							}"
 						/>
+						<label for="password_confirmation">Confirm Password</label>
 						<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
 							<img
 								[src]="!passwordToggle.oldPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
@@ -153,7 +181,6 @@
 							/>
 						</button>
 					</div>
-					<label for="password_confirmation">Confirm Password</label>
 				</div>
 			</form>
 

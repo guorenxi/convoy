@@ -17,7 +17,7 @@
 		<li *ngFor="let group of groups">
 			<div class="group">
 				<div class="group--head">
-					<h4>{{ group.name }}</h4>
+					<h4 (click)="viewGroup(group.id)">{{ group.name }}</h4>
 				</div>
 				<div class="group--metric">
 					<div>
@@ -34,7 +34,7 @@
 						</button>
 					</div>
 				</div>
-				<div class="group--body">
+				<div class="group--body" (click)="viewGroup(group.id)">
 					<img src="/assets/img/chart-icon.svg" alt="graph icon" />
 				</div>
 			</div>
@@ -87,9 +87,10 @@
 					</div>
 					<div class="setting">
 						<span>{{ selectedGroup?.config?.Strategy?.default?.intervalSeconds }}secs</span>
-						<button>
+						<!-- pending discussion -->
+						<!-- <button>
 							<img src="/assets/img/copy.svg" alt="copy" />
-						</button>
+						</button> -->
 					</div>
 				</li>
 				<li>
@@ -100,9 +101,10 @@
 						<span>
 							{{ selectedGroup?.config?.Strategy?.default?.retryLimit }}
 						</span>
-						<button>
+						<!-- pending discussion -->
+						<!-- <button>
 							<img src="/assets/img/copy.svg" alt="copy" />
-						</button>
+						</button> -->
 					</div>
 				</li>
 				<li>
@@ -113,9 +115,10 @@
 						<span>
 							{{ selectedGroup?.config?.Signature?.header }}
 						</span>
-						<button>
+						<!-- pending discussion -->
+						<!-- <button>
 							<img src="/assets/img/copy.svg" alt="copy" />
-						</button>
+						</button> -->
 					</div>
 				</li>
 				<li>
@@ -126,9 +129,10 @@
 						<span>
 							{{ selectedGroup?.config?.Signature?.hash }}
 						</span>
-						<button>
+						<!-- pending discussion -->
+						<!-- <button>
 							<img src="/assets/img/copy.svg" alt="copy" />
-						</button>
+						</button> -->
 					</div>
 				</li>
 				<li>
