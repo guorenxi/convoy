@@ -79,8 +79,8 @@
 					<div class="input--password">
 						<input
 							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
-							id="password"
-							name="password"
+							id="current_password"
+							name="current_password"
 							autocomplete="current-password"
 							placeholder="Enter your password"
 							formControlName="current_password"
@@ -92,6 +92,7 @@
 							/>
 						</button>
 					</div>
+					<label for="current_password">Confirm Password</label>
 				</div>
 				<p>
 					Forgot password?
@@ -107,7 +108,7 @@
 							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
 							id="password"
 							name="password"
-							autocomplete="current-password"
+							autocomplete="password"
 							placeholder="Enter your password"
 							formControlName="password"
 						/>
@@ -118,6 +119,7 @@
 							/>
 						</button>
 					</div>
+					<label for="password">New Password</label>
 				</div>
 				<div class="input">
 					<div class="input--error-message" *ngIf="changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid">
@@ -136,12 +138,13 @@
 					<div class="input--password">
 						<input
 							[type]="passwordToggle.oldPassword ? 'text' : 'password'"
-							id="password"
-							name="password"
-							autocomplete="current-password"
+							id="password_confirmation"
+							name="password_confirmation"
+							autocomplete="password_confirmation"
 							placeholder="Enter your password"
 							formControlName="password_confirmation"
 							(input)="checkPassword()"
+							[ngClass]="{'invalid': changePasswordForm.controls.password_confirmation.touched && changePasswordForm.controls.password_confirmation.invalid}"
 						/>
 						<button class="input--password__view-toggle" (click)="passwordToggle.oldPassword = !passwordToggle.oldPassword" type="button">
 							<img
@@ -150,6 +153,7 @@
 							/>
 						</button>
 					</div>
+					<label for="password_confirmation">Confirm Password</label>
 				</div>
 			</form>
 

@@ -13,7 +13,8 @@
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Name is required</span>
 				</div>
-				<input type="text" id="group-name" formControlName="name" />
+
+				<input type="text" id="group-name" formControlName="name" [ngClass]="{ invalid: createGroupForm.controls.name.touched && createGroupForm.controls.name.invalid }" />
 				<label for="group-name">Project Name</label>
 			</div>
 
@@ -33,13 +34,13 @@
 			<h3>Signature</h3>
 			<div formGroupName="signature">
 				<div class="input">
-					<label for="signatur-header">Header</label>
 					<input type="text" id="signatur-header" formControlName="header" />
+					<label for="signatur-header">Header</label>
 				</div>
 
 				<div class="input">
-					<label for="hash">Hash</label>
 					<input type="text" id="hash" formControlName="hash" />
+					<label for="hash">Hash</label>
 				</div>
 			</div>
 			<h3>Disable Endpoint</h3>
