@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Chart } from 'chart.js';
 import { GROUP } from 'src/app/models/group.model';
+import { environment } from 'src/environments/environment';
 import { ViewGroupService } from './view-group.service';
 
 @Component({
@@ -34,8 +35,10 @@ export class ViewGroupComponent implements OnInit {
 	detailsActiveTab: 'response' | 'request' = 'response';
 	eventApp!: string;
 	lineChart: any = [];
-  showEditGroupModal: boolean = false;
-  editMode: boolean = true;
+	showEditGroupModal: boolean = false;
+	editMode: boolean = true;
+	environment = environment;
+
 	constructor(private route: ActivatedRoute, private viewGroupService: ViewGroupService, private formBuilder: FormBuilder, private location: Location) {}
 
 	ngOnInit() {
@@ -58,7 +61,7 @@ export class ViewGroupComponent implements OnInit {
 		try {
 			const response = await this.viewGroupService.viewGroup(requestOptions);
 			if (response.data) this.groupDetails = response.data;
-      this.messagesChart()
+			this.messagesChart();
 			this.showLoader = false;
 		} catch {
 			this.showLoader = false;

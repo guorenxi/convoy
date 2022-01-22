@@ -8,9 +8,21 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CreateGroupModule } from '../create-group/create-group.module';
+import { ConvoyDashboardModule } from 'convoy-dashboard';
 
 @NgModule({
 	declarations: [ViewGroupComponent],
-	imports: [MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, CommonModule, LoaderModule, FormsModule, ReactiveFormsModule, CreateGroupModule, RouterModule.forChild([{ path: '', component: ViewGroupComponent }])]
+	imports: [
+		MatDatepickerModule,
+		MatNativeDateModule,
+		MatFormFieldModule,
+		CommonModule,
+		LoaderModule,
+		FormsModule,
+		ReactiveFormsModule,
+		CreateGroupModule,
+		ConvoyDashboardModule,
+		RouterModule.forChild([{ path: '', component: ViewGroupComponent }])
+	]
 })
 export class ViewGroupModule {}
