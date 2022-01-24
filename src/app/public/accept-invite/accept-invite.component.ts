@@ -13,6 +13,7 @@ export class AcceptInviteComponent implements OnInit {
 	showPassword: boolean = false;
 	loading: boolean = false;
 	token!: string;
+	acceptTerms: boolean = false;
 	acceptInviteForm: FormGroup = this.formBuilder.group({
 		email: ['', Validators.required],
 		role: ['', Validators.required],
@@ -36,7 +37,7 @@ export class AcceptInviteComponent implements OnInit {
 
 	async acceptInvite() {
 		if (this.acceptInviteForm.invalid) {
-			(<any>this.acceptInviteForm).values(this.acceptInviteForm.controls).forEach((control: FormControl) => {
+			(<any>Object).values(this.acceptInviteForm.controls).forEach((control: FormControl) => {
 				control?.markAsTouched();
 			});
 			return;
