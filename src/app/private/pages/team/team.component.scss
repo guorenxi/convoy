@@ -43,11 +43,11 @@ table {
 	flex-wrap: wrap;
 	justify-content: space-between;
 
-	.dropdown--container {
+	.drop-down--container {
 		width: 100%;
 	}
 
-	.dropdown {
+	.drop-down {
 		position: absolute;
 		width: 281px;
 		left: 0;
@@ -92,6 +92,6 @@ table {
 	}
 }
 
-.dropdown--container {
+.drop-down--container {
 	width: fit-content;
 }

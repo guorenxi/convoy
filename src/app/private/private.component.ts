@@ -59,7 +59,7 @@ export class PrivateComponent implements OnInit {
 
 	autoClose(event: any) {
 		var target = event.target;
-		if (!target.closest('.dropdown')) {
+		if (!target.closest('.drop-down')) {
 			if (this.showOrgDropdown) {
 				this.showOrgDropdown = false;
 			}
@@ -68,5 +68,4 @@ export class PrivateComponent implements OnInit {
 			}
 		}
 	}
-	
 }
