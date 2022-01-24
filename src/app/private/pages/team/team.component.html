@@ -10,7 +10,7 @@
 		<div class="page--head--search">
 			<app-search (searchInput)="searchTeam($event)" (clear)="fetchTeamMembers()" searchPlaceholder="Search team member here"></app-search>
 
-			<button class="primary with-margin-left" (click)="showInviteTeamMemberModal = true">Add team member</button>
+			<button class="primary with-margin-left" (click)="showInviteTeamMemberModal = true; currentId = ''">Add team member</button>
 		</div>
 	</div>
 
@@ -167,7 +167,11 @@
 				<div class="drop-down" *ngIf="showTeamGroupDropdown">
 					<div class="input search">
 						<img src="/assets/img/search-icon.svg" alt="search icon" />
-						<input type="search" placeholder="Search groups here" (input)="searchGroup($event)" />
+						<input type="search" placeholder="Search projects here" (input)="searchGroup($event)" />
+					</div>
+
+					<div class="empty-form" *ngIf="!filteredGroups.length">
+						You haven't created any group
 					</div>
 
 					<ul *ngIf="filteredGroups.length">

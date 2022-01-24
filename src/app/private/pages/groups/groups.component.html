@@ -21,12 +21,12 @@
 				</div>
 				<div class="group--metric">
 					<div>
-						<span>234</span>
+						<span>{{ group?.statistics?.messages_sent }}</span>
 						Message Sent
 					</div>
 					<div class="group--metric-app">
 						<div>
-							<span>24</span>
+							<span>{{ group?.statistics?.total_apps }}</span>
 							Apps
 						</div>
 						<button (click)="showDropdown(group.id)">
@@ -86,7 +86,7 @@
 						<p>Retry Strategy</p>
 					</div>
 					<div class="setting">
-						<span>{{ selectedGroup?.config?.Strategy?.default?.intervalSeconds }}secs</span>
+						<span>{{ selectedGroup?.config?.strategy?.default?.intervalSeconds }}secs</span>
 						<!-- pending discussion -->
 						<!-- <button>
 							<img src="/assets/img/copy.svg" alt="copy" />
@@ -99,7 +99,7 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.Strategy?.default?.retryLimit }}
+							{{ selectedGroup?.config?.strategy?.default?.retryLimit }}
 						</span>
 						<!-- pending discussion -->
 						<!-- <button>
@@ -113,7 +113,7 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.Signature?.header }}
+							{{ selectedGroup?.config?.signature?.header }}
 						</span>
 						<!-- pending discussion -->
 						<!-- <button>
@@ -127,7 +127,7 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.Signature?.hash }}
+							{{ selectedGroup?.config?.signature?.hash }}
 						</span>
 						<!-- pending discussion -->
 						<!-- <button>
@@ -141,23 +141,23 @@
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.DisableEndpoint }}
+							{{ selectedGroup?.config?.disable_endpoint }}
 						</span>
 					</div>
 				</li>
-				<!-- <li>
+				<li>
 					<div>
 						<p>Group auth key</p>
 					</div>
 					<div class="setting">
 						<span>
-							{{ selectedGroup?.config?.strategy?.default?.retryLimit }}
+							{{ selectedGroup?.group_api_keys[0]?.name }}
 						</span>
 						<button>
 							<img src="/assets/img/copy.svg" alt="copy" />
 						</button>
 					</div>
-				</li> -->
+				</li>
 			</ul>
 		</div>
 	</div>
