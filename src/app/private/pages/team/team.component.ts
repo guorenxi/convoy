@@ -29,7 +29,7 @@ export class TeamComponent implements OnInit {
 	groups: GROUP[] = [];
 	filteredGroups: GROUP[] = [];
 	selectedGroups: GROUP[] = [];
-	noOfSelectedGroups: string = '0 Groups';
+	noOfSelectedGroups: string = '0 Projects';
 	invitingUser: boolean = false;
 	currentId!: string;
 	inviteUserForm: FormGroup = this.formBuilder.group({
@@ -137,7 +137,7 @@ export class TeamComponent implements OnInit {
 			});
 		}
 		
-		this.noOfSelectedGroups = `${this.selectedGroups?.length} group${this.selectedGroups?.length == 1 ? '' : 's'}`;
+		this.noOfSelectedGroups = `${this.selectedGroups?.length} project${this.selectedGroups?.length == 1 ? '' : 's'}`;
 	}
 	async inviteUser() {
 		const orgId = localStorage.getItem('orgId');

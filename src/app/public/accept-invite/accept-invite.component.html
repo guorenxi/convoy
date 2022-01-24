@@ -2,55 +2,64 @@
 	<section class="auth-page--container">
 		<img src="/assets/img/logo.svg" class="logo" alt="convoy logo" />
 		<h3>Join your team to start managing webhooks</h3>
-		<p>Please, fill in your detail to create your Kwiksell account and join your team (Buycoins).</p>
+		<p>Please, fill in your detail to create your account and join your team.</p>
 
 		<form [formGroup]="acceptInviteForm" class="card" (ngSubmit)="acceptInvite()">
 			<div class="input smaller">
-				<input type="text" aria-label="Firstname" autocomplete="firstname" placeholder="Firstname" id="first-name" formControlName="firstname" />
 				<div class="input--error-message" *ngIf="acceptInviteForm.controls.firstname.touched && acceptInviteForm.controls.firstname.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Firstname is required</span>
 				</div>
+				<input type="text" aria-label="Firstname" autocomplete="firstname" id="first-name" formControlName="firstname" />
+				<label for="firstname">Firstname</label>
 			</div>
 
 			<div class="input smaller">
-				<input type="text" aria-label="Lastname" autocomplete="lastname" placeholder="Lastname" id="last-name" formControlName="lastname" />
 				<div class="input--error-message" *ngIf="acceptInviteForm.controls.lastname.touched && acceptInviteForm.controls.lastname.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Lastname is required</span>
 				</div>
+				<input type="text" aria-label="Lastname" autocomplete="lastname" id="last-name" formControlName="lastname" />
+				<label for="lastname">Lastname</label>
 			</div>
 
 			<div class="input">
-				<input type="email" autocomplete="email" placeholder="Email address" formControlName="email" />
 				<div class="input--error-message" *ngIf="acceptInviteForm.controls.email.touched && acceptInviteForm.controls.email.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Email is required</span>
 				</div>
+				<input type="email" autocomplete="email" formControlName="email" />
+				<label for="email">Email Address</label>
 			</div>
 
 			<div class="input">
-				<select name="role" id="role" formControlName="role" aria-placeholder="Role assigned goes here">
-					<option value="Admin">Admin</option>
-					<option value="Dev">Dev</option>
-				</select>
 				<div class="input--error-message" *ngIf="acceptInviteForm.controls.role.touched && acceptInviteForm.controls.role.invalid">
 					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 					<span>Role is required</span>
 				</div>
+				<select name="role" id="role" formControlName="role" aria-placeholder="Role assigned goes here">
+					<option value="Admin">Admin</option>
+					<option value="Dev">Dev</option>
+				</select>
+				<label for="role">Role</label>
 			</div>
 
 			<div class="input">
+				<div class="input--error-message" *ngIf="acceptInviteForm.controls.password.touched && acceptInviteForm.controls.password.invalid">
+					<img src="assets/img/input-error-icon.svg" alt="input error icon" />
+					<span>Password is required</span>
+				</div>
 				<div class="input--password">
-					<input [type]="showPassword ? 'text' : 'password'" autocomplete="new-password" placeholder="Create Password" formControlName="password" />
+					<input [type]="showPassword ? 'text' : 'password'" autocomplete="new-password" formControlName="password" />
+					<label for="password">Create Password</label>
 					<button class="input--password__view-toggle" (click)="showPassword = !showPassword" type="button">
 						<img [src]="!showPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'" alt="showPassword ? 'hide password icon' : 'view password icon'" />
 					</button>
 				</div>
 			</div>
 
-			<div class="input checkbox">
-				<input type="checkbox" id="termsCondition" />
+			<div class="checkbox" (click)="acceptTerms = !acceptTerms">
+				<img [src]="acceptTerms ? '/assets/img/Checkbox.svg' : '/assets/img/square-check.svg'" [alt]="acceptTerms ? 'accept icon' : 'accept icon'" />
 				<label for="termsCondition">
 					<div>I have read, understood and I agree to Convoy’s Privacy Policy, and Terms & Conditions.</div>
 				</label>

@@ -43,7 +43,6 @@ export class CreateGroupComponent implements OnInit {
 		return (this.createGroupForm.get('signature') as FormArray).controls;
 	}
 	async createGroup() {
-		
 		if (this.createGroupForm.invalid) {
 			(<any>Object).values(this.createGroupForm.controls).forEach((control: FormControl) => {
 				control?.markAsTouched();
@@ -80,15 +79,15 @@ export class CreateGroupComponent implements OnInit {
 		this.createGroupForm.patchValue({
 			name: this.selectedGroup?.name,
 			strategy: {
-				interval_seconds: this.selectedGroup?.config?.Strategy?.default?.intervalSeconds,
-				limit: this.selectedGroup?.config?.Strategy?.default?.retryLimit
+				interval_seconds: this.selectedGroup?.config?.strategy?.default?.intervalSeconds,
+				limit: this.selectedGroup?.config?.strategy?.default?.retryLimit
 			},
 			signature: {
-				header: this.selectedGroup?.config?.Signature?.header,
-				hash: this.selectedGroup?.config?.Signature?.hash
+				header: this.selectedGroup?.config?.signature?.header,
+				hash: this.selectedGroup?.config?.signature?.hash
 			}
 		});
-		this.disableEndpoint = this.selectedGroup?.config?.DisableEndpoint;
+		this.disableEndpoint = this.selectedGroup?.config?.disable_endpoint;
 	}
 
 	async getHashes() {

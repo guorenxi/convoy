@@ -10,7 +10,7 @@
 		<div class="page--head--search">
 			<app-search (searchInput)="searchTeam($event)" (clear)="fetchTeamMembers()" searchPlaceholder="Search team member here"></app-search>
 
-			<button class="primary with-margin-left" (click)="showInviteTeamMemberModal = true">Add team member</button>
+			<button class="primary with-margin-left" (click)="showInviteTeamMemberModal = true; currentId = ''">Add team member</button>
 		</div>
 	</div>
 
@@ -29,7 +29,7 @@
 			<tr class="table--head">
 				<th scope="col">NAME</th>
 				<th scope="col">ROLE</th>
-				<th scope="col">Groups</th>
+				<th scope="col">Projects</th>
 				<th scope="col">STATUS</th>
 				<th scope="col"></th>
 			</tr>
@@ -46,7 +46,7 @@
 					<div>{{ team.role }}</div>
 				</td>
 				<td>
-					<div>{{ team.groups.length }} Group{{ team.groups.length == 1 ? '' : 's' }}</div>
+					<div>{{ team.groups.length }} Project{{ team.groups.length == 1 ? '' : 's' }}</div>
 				</td>
 				<td>
 					<div>
@@ -150,7 +150,7 @@
 				<div class="input">
 					<div class="input--error-message" *ngIf="noOfSelectedGroups && selectedGroups?.length == 0">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-						<span>Please select at least 1 group</span>
+						<span>Please select at least 1 project</span>
 					</div>
 					<input
 						type="text"
@@ -161,13 +161,17 @@
 						(click)="showTeamGroupDropdown = !showTeamGroupDropdown"
 						[ngClass]="{ invalid: noOfSelectedGroups && selectedGroups?.length == 0 }"
 					/>
-					<label for="group">Select group</label>
+					<label for="group">Select project</label>
 				</div>
 
 				<div class="drop-down" *ngIf="showTeamGroupDropdown">
 					<div class="input search">
 						<img src="/assets/img/search-icon.svg" alt="search icon" />
-						<input type="search" placeholder="Search groups here" (input)="searchGroup($event)" />
+						<input type="search" placeholder="Search projects here" (input)="searchGroup($event)" />
+					</div>
+
+					<div class="empty-form" *ngIf="!filteredGroups.length">
+						You haven't created any group
 					</div>
 
 					<ul *ngIf="filteredGroups.length">

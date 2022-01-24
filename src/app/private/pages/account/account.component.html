@@ -42,7 +42,6 @@
 					<input
 						type="text"
 						aria-label="first name"
-						placeholder="firstname"
 						formControlName="firstname"
 						[ngClass]="{ invalid: editBasicInfoForm.controls.firstname.touched && editBasicInfoForm.controls.firstname.invalid }"
 					/>
@@ -56,7 +55,6 @@
 					<input
 						type="text"
 						aria-label="last name"
-						placeholder="lastname"
 						formControlName="lastname"
 						[ngClass]="{ invalid: editBasicInfoForm.controls.lastname.touched && editBasicInfoForm.controls.lastname.invalid }"
 					/>
@@ -71,7 +69,6 @@
 					<input
 						type="email"
 						aria-label="email"
-						placeholder="email"
 						formControlName="email"
 						[ngClass]="{ invalid: editBasicInfoForm.controls.email.touched && editBasicInfoForm.controls.email.invalid }"
 					/>
@@ -101,7 +98,6 @@
 							id="current_password"
 							name="current_password"
 							autocomplete="current-password"
-							placeholder="Enter your password"
 							formControlName="current_password"
 							[ngClass]="{ invalid: changePasswordForm.controls.current_password.touched && changePasswordForm.controls.current_password.invalid }"
 						/>
@@ -129,7 +125,6 @@
 							id="password"
 							name="password"
 							autocomplete="password"
-							placeholder="Enter your password"
 							formControlName="password"
 							[ngClass]="{ invalid: changePasswordForm.controls.password.touched && changePasswordForm.controls.password.invalid }"
 						/>
@@ -162,7 +157,6 @@
 							id="password_confirmation"
 							name="password_confirmation"
 							autocomplete="password_confirmation"
-							placeholder="Enter your password"
 							formControlName="password_confirmation"
 							(input)="checkPassword()"
 							[ngClass]="{

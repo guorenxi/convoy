@@ -20,6 +20,7 @@ export class SignupComponent implements OnInit {
 		password: ['', Validators.compose([Validators.minLength(8), Validators.required, Validators.pattern('^[a-zA-Z0-9]{8,}$')])]
 	});
 	activeStep: 'basic' | 'otp' = 'basic';
+	acceptTerms: boolean = false;
 	loading: boolean = false;
 	constructor(private formBuilder: FormBuilder, private router: Router, private generalService: GeneralService, private signupService: SignupService) {}
 
@@ -27,9 +28,10 @@ export class SignupComponent implements OnInit {
 
 	async signup() {
 		if (this.signupForm.invalid) {
-			(<any>this.signupForm).values(this.signupForm.controls).forEach((control: FormControl) => {
+			(<any>Object).values(this.signupForm.controls).forEach((control: FormControl) => {
 				control?.markAsTouched();
 			});
+			console.log(this.signupForm.controls)
 			return;
 		}
 		this.loading = true;
