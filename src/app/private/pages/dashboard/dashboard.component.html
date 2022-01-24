@@ -1,6 +1,3 @@
-<!-- <div class="dashboard page">
-	<convoy-dashboard></convoy-dashboard>
-</div> -->
 <div class="page">
 	<div class="get-started">
 		<h2>Welcome, {{ authDetails()?.user?.profile?.firstname }} {{ authDetails()?.user?.profile?.lastname }} 🌤</h2>
@@ -9,12 +6,12 @@
 			<div class="get-started__cards_item green">
 				<h3>Invite members to your team</h3>
 				<p>Add team members to your Convoy organization so everyone has access to manage webhooks across all environments</p>
-				<button [routerLink]="['/team']">Invite Team Members</button>
+				<button routerLink="/team">Invite Team Members</button>
 			</div>
 			<div class="get-started__cards_item yellow">
 				<h3>Setup projects for your products</h3>
 				<p>Connect your various webhooks products with each project and track their metrics separately</p>
-				<button [routerLink]="['/projects']">Go to Projects</button>
+				<button routerLink="/projects">Go to Projects</button>
 			</div>
 			<div class="get-started__cards_item purple">
 				<h3>Customize your App Portal</h3>

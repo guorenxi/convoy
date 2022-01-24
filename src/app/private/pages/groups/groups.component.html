@@ -38,7 +38,7 @@
 					<img src="/assets/img/chart-icon.svg" alt="graph icon" />
 				</div>
 			</div>
-			<div *ngIf="currentId == group.id" class="dropdown groups">
+			<div *ngIf="currentId == group.id" class="drop-down groups">
 				<ul>
 					<li (click)="viewGroup(group.id)">
 						<p>View Project</p>
@@ -66,7 +66,7 @@
 	</div>
 </div>
 
-<div class="overlay" *ngIf="showCreateGroupModal || showGroupSettingModal || showDeleteGroupModal"></div>
+<div class="_overlay" *ngIf="showCreateGroupModal || showGroupSettingModal || showDeleteGroupModal"></div>
 <div class="modal modal__right" *ngIf="showCreateGroupModal">
 	<app-create-group (closeModal)="closeCreateGroupModal($event)" [selectedGroup]="selectedGroup" [editMode]="editMode"></app-create-group>
 </div>

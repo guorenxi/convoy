@@ -1,4 +1,4 @@
-.overlay {
+._overlay {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -76,7 +76,7 @@
 
 		.button-container {
 			justify-content: space-between;
-			&.flex-end{
+			&.flex-end {
 				justify-content: flex-end;
 			}
 		}
@@ -118,10 +118,10 @@
 	flex-flow: column;
 	align-items: center;
 	justify-content: center;
-	&.deactivate{
+	&.deactivate {
 		padding: 40px;
 	}
-	img{
+	img {
 		height: 126px;
 		width: 126px;
 	}

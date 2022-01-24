@@ -43,7 +43,7 @@
 					</div>
 				</td>
 				<td>
-					<div>{{team.role}}</div>
+					<div>{{ team.role }}</div>
 				</td>
 				<td>
 					<div>{{ team.groups.length }} Group{{ team.groups.length == 1 ? '' : 's' }}</div>
@@ -55,11 +55,11 @@
 					</div>
 				</td>
 				<td>
-					<div class="dropdown--container">
+					<div class="drop-down--container">
 						<button class="has-icon clear" (click)="showDropdown(team.id)">
 							<img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" />
 						</button>
-						<div class="dropdown user-dropdown" *ngIf="currentId == team.id">
+						<div class="drop-down user-dropdown" *ngIf="currentId == team.id">
 							<ul>
 								<li class="no-hover">
 									<button class="danger clear" (click)="showDeactivateModal = !showDeactivateModal; showTeamMemberDropdown = false; selectedMember = team; currentId = ''">
@@ -86,7 +86,7 @@
 	</div>
 </div>
 
-<div class="overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal || showDeactivateModal"></div>
+<div class="_overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal || showDeactivateModal"></div>
 <div class="modal modal__right" *ngIf="showInviteTeamMemberModal">
 	<div class="modal--head">
 		<h1>Add Team Member</h1>
@@ -103,10 +103,10 @@
 				<button class="white">Edit Photo</button>
 			</div>
 
-			<div class="dropdown--container">
+			<div class="drop-down--container">
 				<button class="clear has-icon" (click)="showTeamMemberDropdown = !showTeamMemberDropdown"><img src="/assets/img/nav-bar-more-primary.svg" alt="more icon" /></button>
 
-				<div class="dropdown user-dropdown" *ngIf="showTeamMemberDropdown">
+				<div class="drop-down user-dropdown" *ngIf="showTeamMemberDropdown">
 					<ul>
 						<li>
 							<button class="danger clear">Deactivate team member</button>
@@ -146,7 +146,7 @@
 				<label for="email">Email</label>
 			</div>
 
-			<div class="dropdown--container">
+			<div class="drop-down--container">
 				<div class="input">
 					<div class="input--error-message" *ngIf="noOfSelectedGroups && selectedGroups?.length == 0">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
@@ -164,7 +164,7 @@
 					<label for="group">Select group</label>
 				</div>
 
-				<div class="dropdown" *ngIf="showTeamGroupDropdown">
+				<div class="drop-down" *ngIf="showTeamGroupDropdown">
 					<div class="input search">
 						<img src="/assets/img/search-icon.svg" alt="search icon" />
 						<input type="search" placeholder="Search groups here" (input)="searchGroup($event)" />
