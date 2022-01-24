@@ -12,38 +12,43 @@
 
 			<form [formGroup]="signupForm" class="card card__shadow" (ngSubmit)="signup()">
 				<div class="input">
-					<input type="text" aria-label="Business name" autocomplete="org_name" placeholder="Business name" formControlName="org_name" />
 					<div class="input--error-message" *ngIf="signupForm.controls.org_name.touched && signupForm.controls.org_name.invalid">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Business name is required</span>
 					</div>
+					<input type="text" aria-label="Business name" autocomplete="org_name" placeholder="Business name" formControlName="org_name" />
+					<label for="">Business name</label>
 				</div>
 
 				<div class="input">
-					<input type="email" aria-label="Email address" autocomplete="email" placeholder="Email address" formControlName="email" />
 					<div class="input--error-message" *ngIf="signupForm.controls.email.touched && signupForm.controls.email.invalid">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Email is required</span>
 					</div>
+					<input type="email" aria-label="Email address" autocomplete="email" placeholder="Email address" formControlName="email" />
+					<label for="email">Email address</label>
 				</div>
 				<div class="input smaller">
-					<input type="text" aria-label="Firstname" autocomplete="firstname" placeholder="Firstname" id="first-name" formControlName="firstname" />
 					<div class="input--error-message" *ngIf="signupForm.controls.firstname.touched && signupForm.controls.firstname.invalid">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Firstname is required</span>
 					</div>
+					<input type="text" aria-label="Firstname" autocomplete="firstname" placeholder="Firstname" id="first-name" formControlName="firstname" />
+					<label for="email">Firstname</label>
 				</div>
 
 				<div class="input smaller">
-					<input type="text" aria-label="Lastname" autocomplete="lastname" placeholder="Lastname" id="last-name" formControlName="lastname" />
 					<div class="input--error-message" *ngIf="signupForm.controls.lastname.touched && signupForm.controls.lastname.invalid">
 						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 						<span>Lastname is required</span>
 					</div>
+					<input type="text" aria-label="Lastname" autocomplete="lastname" placeholder="Lastname" id="last-name" formControlName="lastname" />
+					<label for="lastname">Lastname</label>
 				</div>
 				<div class="input">
 					<div class="input--password">
 						<input [type]="showLoginPassword ? 'text' : 'password'" aria-label="password" autocomplete="new-password" placeholder="Enter your password" formControlName="password" />
+						<label for="password">Password</label>
 						<button class="input--password__view-toggle" type="button" (click)="showLoginPassword = !showLoginPassword">
 							<img
 								[src]="!showLoginPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
@@ -51,13 +56,9 @@
 							/>
 						</button>
 					</div>
-					<div class="input--error-message" *ngIf="signupForm.controls.password.touched && signupForm.controls.password.invalid">
-						<img src="assets/img/input-error-icon.svg" alt="input error icon" />
-						<span>Password must contain at least one letter and one number</span>
-					</div>
 				</div>
 
-				<div class="input checkbox">
+				<div class="checkbox">
 					<input type="checkbox" id="termsCondition" />
 					<label for="termsCondition">
 						<div>I have read, understood and I agree to Convoy’s Privacy Policy, and Terms & Conditions.</div>
