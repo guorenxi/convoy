@@ -3,7 +3,7 @@
 		<app-loader></app-loader>
 	</div>
 
-	<convoy-dashboard [apiURL]="environment.managedServiceURL" [isCloud]="true" [groupId]="id"></convoy-dashboard>
+	<convoy-dashboard [apiURL]="environment.managedServiceURL" [isCloud]="true" [groupId]="id" [requestToken]="requestToken()"></convoy-dashboard>
 
 	<div class="_overlay" *ngIf="showEditGroupModal"></div>
 	<div class="modal modal__right" *ngIf="showEditGroupModal">
