@@ -15,7 +15,11 @@ export class CreateGroupComponent implements OnInit {
 	@Output() closeModal = new EventEmitter<boolean>();
 	disableEndpoint: boolean = true;
 	loading: boolean = false;
+	showPublicCopyText: boolean = false;
+	showSecretCopyText: boolean = false;
+	showAuthKey: boolean = false;
 	hashes!: string[];
+	authKey!:string;
 	createGroupForm: FormGroup = this.formBuilder.group({
 		name: ['', Validators.required],
 		strategy: this.formBuilder.group({
@@ -61,9 +65,9 @@ export class CreateGroupComponent implements OnInit {
 				response = await this.createGroupService.editGroup(this.createGroupForm.value, requestOptions);
 			} else {
 				response = await this.createGroupService.createGroup(this.createGroupForm.value, requestOptions);
+				this.authKey = response.data.key
+				this.showAuthKey = true
 			}
-			this.closeModal.emit(true);
-			this.createGroupForm.reset();
 			this.generalService.showNotification({ message: response.message });
 			this.loading = false;
 		} catch (error) {
@@ -98,10 +102,24 @@ export class CreateGroupComponent implements OnInit {
 			this.generalService.showNotification({ message: 'Unable to retrieve hashes' });
 		}
 	}
-	closeCreateGroupModal() {
-		this.closeModal.emit();
+	closeCreateGroupModal(fetchGroups?: boolean) {
+		this.closeModal.emit(fetchGroups);
 	}
 	onlyNumber(event: KeyboardEvent): boolean {
 		return this.generalService.onlyNumber(event);
+	}
+
+	copyKey(key: string, type: 'public' | 'secret') {
+		const text = key;
+		const el = document.createElement('textarea');
+		el.value = text;
+		document.body.appendChild(el);
+		el.select();
+		document.execCommand('copy');
+		type === 'public' ? (this.showPublicCopyText = true) : (this.showSecretCopyText = true);
+		setTimeout(() => {
+			type === 'public' ? (this.showPublicCopyText = false) : (this.showSecretCopyText = false);
+		}, 3000);
+		document.body.removeChild(el);
 	}
 }

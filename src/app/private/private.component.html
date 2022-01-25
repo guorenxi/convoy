@@ -65,7 +65,7 @@
 				<div *ngIf="showMoreDropdown" class="drop-down more" (window:mouseup)="autoClose($event)">
 					<div class="drop-down--head">
 						<h3>{{ authDetails().user?.profile?.firstname }} {{ authDetails().user?.profile?.lastname }}</h3>
-						<p>Product Designer</p>
+						<p>{{ authDetails().user?.email }}</p>
 					</div>
 					<ul>
 						<li routerLink="/user-settings" (click)="showMoreDropdown = !showMoreDropdown">
