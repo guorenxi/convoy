@@ -3,9 +3,9 @@
 		<app-loader></app-loader>
 	</div>
 
-	<div *ngIf="convoy_id">
-		<convoy-dashboard [apiURL]="environment.managedServiceURL" [isCloud]="true" [groupId]="convoy_id" [requestToken]="requestToken()"></convoy-dashboard>
-	</div>
+	<ng-container *ngIf="groupDetails?.convoy_id">
+		<convoy-dashboard [apiURL]="environment.managedServiceURL" [isCloud]="true" [groupId]="groupDetails.convoy_id" [requestToken]="requestToken()"></convoy-dashboard>
+	</ng-container>
 	<div class="_overlay" *ngIf="showEditGroupModal"></div>
 	<div class="modal modal__right" *ngIf="showEditGroupModal">
 		<app-create-group (closeModal)="showEditGroupModal = false; getGroupDetails()" [selectedGroup]="groupDetails" [editMode]="editMode"></app-create-group>
