@@ -1,12 +1,12 @@
 <div>
-	<div class="modal--head">
+	<div class="modal--head" *ngIf="!showAuthKey">
 		<h1>{{ editMode ? 'Edit Project' : 'Create Project' }}</h1>
 		<button class="modal--close clear" (click)="closeCreateGroupModal()">
 			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
 		</button>
 	</div>
 
-	<div class="modal--body">
+	<div class="modal--body" *ngIf="!showAuthKey">
 		<form [formGroup]="createGroupForm" (ngSubmit)="createGroup()">
 			<div class="input">
 				<div class="input--error-message" *ngIf="createGroupForm.controls.name.touched && createGroupForm.controls.name.invalid">
@@ -69,8 +69,24 @@
 			</div>
 		</form>
 	</div>
+	<div class="modal--body" *ngIf="showAuthKey">
+		<div class="delete-modal success">
+			<img src="/assets/img/success.gif" alt="success" />
+			<p class="title">Project Created Successfully</p>
+			<p class="subtext">Your API Key has also been created. Please copy this key and save it somewhere safe.</p>
+			<p class="text-danger">For security reasons, we cannot show it to you again</p>
+			<div class="key">
+				<span>{{authKey}}</span>
+				<button (click)="copyKey(authKey, 'secret')">
+					<img src="/assets/img/copy.svg" alt="copy" />
+					<small *ngIf="showSecretCopyText">Copied!</small>
+				</button>
+			</div>
+			<button class="primary" (click)="closeCreateGroupModal(true)">Done</button>
+		</div>
+	</div>
 
-	<div class="modal--footer">
+	<div class="modal--footer" *ngIf="!showAuthKey">
 		<div class="button-container">
 			<button class="white" (click)="closeCreateGroupModal()">Discard</button>
 			<button class="primary" *ngIf="editMode" [disabled]="loading" (click)="createGroup()">{{ loading ? 'Saving...' : 'Save Changes' }}</button>

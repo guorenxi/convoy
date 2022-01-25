@@ -125,6 +125,12 @@
 	&.deactivate {
 		padding: 40px;
 	}
+	&.success{
+		padding: 100px 30px;
+		.subtext{
+			margin-bottom: 20px;
+		}
+	}
 	img {
 		height: 126px;
 		width: 126px;

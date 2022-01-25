@@ -187,7 +187,7 @@
 			<img src="/assets/img/warning.gif" alt="warning" />
 			<p class="title">Are you sure you want to delete “{{ selectedGroup?.name }}”?</p>
 			<p class="subtext">This action is irrevesible</p>
-			<button class="danger" (click)="deleteGroup()">{{ deletingGroup ? 'Deleting...' : 'Yes, Delete' }}</button>
+			<button class="danger" (click)="deleteGroup()" [disabled]="deletingGroup">{{ deletingGroup ? 'Deleting...' : 'Yes, Delete' }}</button>
 			<button class="clear cancel" (click)="showDeleteGroupModal = false">No, Cancel</button>
 		</div>
 	</div>
