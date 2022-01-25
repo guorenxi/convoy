@@ -1,5 +1,6 @@
 export interface GROUP {
 	id: string;
+	convoy_id: string;
 	name: string;
 	logo_url: string;
 	config: {
