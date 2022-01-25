@@ -32,6 +32,7 @@ export class TeamComponent implements OnInit {
 	noOfSelectedGroups: string = '0 Projects';
 	invitingUser: boolean = false;
 	currentId!: string;
+	showCreateGroupModal: boolean = false;
 	inviteUserForm: FormGroup = this.formBuilder.group({
 		firstname: ['', Validators.required],
 		lastname: ['', Validators.required],
@@ -191,5 +192,9 @@ export class TeamComponent implements OnInit {
 		} else {
 			this.currentId = id;
 		}
+	}
+	closeCreateGroupModal(fetchGroups: boolean) {
+		this.showCreateGroupModal = false;
+		if (fetchGroups) this.getGroups();
 	}
 }

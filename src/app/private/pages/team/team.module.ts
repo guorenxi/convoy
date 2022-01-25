@@ -5,11 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoaderModule } from '../../components/loader/loader.module';
 import { SearchModule } from '../../components/search/search.module';
+import { CreateGroupModule } from '../groups/components/create-group/create-group.module';
 
 const routes: Routes = [{ path: '', component: TeamComponent }];
 
 @NgModule({
 	declarations: [TeamComponent],
-	imports: [CommonModule, ReactiveFormsModule, FormsModule, LoaderModule, SearchModule, RouterModule.forChild(routes)]
+	imports: [CommonModule, ReactiveFormsModule, FormsModule, LoaderModule, SearchModule, CreateGroupModule, RouterModule.forChild(routes)]
 })
 export class TeamModule {}

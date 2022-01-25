@@ -12,6 +12,7 @@ import { ViewGroupService } from './view-group.service';
 export class ViewGroupComponent implements OnInit {
 	showLoader: boolean = false;
 	id!: string;
+	convoy_id!: string;
 	groupDetails!: GROUP;
 	showEditGroupModal: boolean = false;
 	editMode: boolean = true;
@@ -39,6 +40,7 @@ export class ViewGroupComponent implements OnInit {
 		try {
 			const response = await this.viewGroupService.viewGroup(requestOptions);
 			if (response.data) this.groupDetails = response.data;
+			this.convoy_id = this.groupDetails?.convoy_id;
 			this.showLoader = false;
 		} catch {
 			this.showLoader = false;

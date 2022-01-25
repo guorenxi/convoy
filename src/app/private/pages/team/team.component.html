@@ -87,6 +87,9 @@
 </div>
 
 <div class="_overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal || showDeactivateModal"></div>
+<div class="modal modal__right" *ngIf="showCreateGroupModal">
+	<app-create-group (closeModal)="closeCreateGroupModal($event)"></app-create-group>
+</div>
 <div class="modal modal__right" *ngIf="showInviteTeamMemberModal">
 	<div class="modal--head">
 		<h1>Add Team Member</h1>
@@ -94,8 +97,15 @@
 			<img src="/assets/img/modal-close-icon.svg" alt="close icon" />
 		</button>
 	</div>
-
-	<div class="modal--body">
+	<div class="modal--body" *ngIf="!filteredGroups.length">
+		<div class="delete-modal deactivate">
+			<img src="/assets/img/no-group.svg" alt="no project" />
+			<p class="title">Create a project to add team member</p>
+			<p class="subtext">You currently do not have any project and need to have one to add a team member. Create one with the button below</p>
+			<button class="primary" (click)="showCreateGroupModal = true; showInviteTeamMemberModal = false;">Create Project</button>
+		</div>
+	</div>
+	<div class="modal--body" *ngIf="filteredGroups.length">
 		<!-- not available yet  -->
 		<!-- <div class="user-details--head">
 			<div>
@@ -170,10 +180,6 @@
 						<input type="search" placeholder="Search projects here" (input)="searchGroup($event)" />
 					</div>
 
-					<div class="empty-form" *ngIf="!filteredGroups.length">
-						You haven't created any group
-					</div>
-
 					<ul *ngIf="filteredGroups.length">
 						<li *ngFor="let group of filteredGroups">
 							<label for="group-name1">{{ group.name }}</label>
@@ -197,7 +203,7 @@
 		</form>
 	</div>
 
-	<div class="modal--footer">
+	<div class="modal--footer" *ngIf="filteredGroups.length">
 		<div class="button-container">
 			<button class="white" (click)="showInviteTeamMemberModal = false">Discard</button>
 			<button class="primary" [disabled]="invitingUser" (click)="inviteUser()">{{ invitingUser ? 'Inviting User..' : 'Send Invite' }}</button>
