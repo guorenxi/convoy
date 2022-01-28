@@ -1,6 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from 'src/app/public/login/login.service';
+import { GeneralService } from 'src/app/services/general/general.service';
+import { CreateOrganisationService } from './create-organisation.service';
 
 @Component({
 	selector: 'app-create-organisation',
@@ -9,10 +11,11 @@ import { LoginService } from 'src/app/public/login/login.service';
 })
 export class CreateOrganisationComponent implements OnInit {
 	@Output() closeModal = new EventEmitter();
+	loading: boolean = false;
 	addOrganisationForm: FormGroup = this.formBuilder.group({
 		name: ['', Validators.required]
 	});
-	constructor(private loginService: LoginService, private formBuilder: FormBuilder) {}
+	constructor(private createOrganisationService: CreateOrganisationService, private formBuilder: FormBuilder, private generalService:GeneralService) {}
 
 	ngOnInit(): void {}
 
@@ -20,5 +23,23 @@ export class CreateOrganisationComponent implements OnInit {
 		this.closeModal.emit();
 	}
 
-	addNewOrganisation() {}
+	async addNewOrganisation() {
+		if (this.addOrganisationForm.invalid) {
+			(<any>this.addOrganisationForm).values(this.addOrganisationForm.controls).forEach((control: FormControl) => {
+				control?.markAsTouched();
+			});
+			return;
+		}
+		this.loading = true;
+		try {
+			const response = await this.createOrganisationService.addOrganisation(this.addOrganisationForm.value);
+			if(response.status == true){
+				this.generalService.showNotification({message: response.message})
+				this.closeModal.emit()
+			}
+			this.loading = false;
+		} catch {
+			this.loading = false;
+		}
+	}
 }

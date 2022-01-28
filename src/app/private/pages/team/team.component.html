@@ -86,7 +86,7 @@
 	</div>
 </div>
 
-<div class="_overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal || showDeactivateModal"></div>
+<div class="_overlay" *ngIf="showInviteTeamMemberModal || showSuccessModal || showDeactivateModal || showCreateGroupModal"></div>
 <div class="modal modal__right" *ngIf="showCreateGroupModal">
 	<app-create-group (closeModal)="closeCreateGroupModal($event)"></app-create-group>
 </div>
