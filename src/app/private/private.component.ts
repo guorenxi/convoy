@@ -14,6 +14,7 @@ export class PrivateComponent implements OnInit {
 	organisations!: ORGANIZATION_DATA[];
 	userOrganization!: ORGANIZATION_DATA;
 	showLoader: boolean = false;
+	showAddOrganisationModal: boolean = false;
 	constructor(private router: Router, private privateService: PrivateService) {}
 
 	ngOnInit() {
@@ -49,12 +50,25 @@ export class PrivateComponent implements OnInit {
 		try {
 			const response = await this.privateService.getOrganizations(requestOptions);
 			this.organisations = response.data;
-			const userOrganisation = this.organisations.find(organisation => organisation.members.some(item => item.id === id));
-			if (userOrganisation) this.userOrganization = userOrganisation;
-			localStorage.setItem('ORG_DETAILS', JSON.stringify(userOrganisation));
-			const organisationId = userOrganisation?.id;
-			if (organisationId) localStorage.setItem('orgId', organisationId);
+			const setOrg = localStorage.getItem('ORG_DETAILS');
+			if (!setOrg) {
+				this.selectOrganisation(this.organisations[0]);
+			} else {
+				this.userOrganization = JSON.parse(setOrg);
+			}
 		} catch (error) {}
+	}
+
+	selectOrganisation(organisation: ORGANIZATION_DATA) {
+		const userOrganisation = organisation;
+		this.userOrganization = userOrganisation;
+		localStorage.setItem('ORG_DETAILS', JSON.stringify(userOrganisation));
+		const organisationId = userOrganisation?.id;
+		if (organisationId) localStorage.setItem('orgId', organisationId);
+		const currentUrl = this.router.url;
+		this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+			this.router.navigate([currentUrl]);
+		});
 	}
 
 	autoClose(event: any) {
@@ -67,5 +81,10 @@ export class PrivateComponent implements OnInit {
 				this.showMoreDropdown = false;
 			}
 		}
+	}
+
+	closeAddOrganisationModal() {
+		this.showAddOrganisationModal = false;
+		this.getOrganizations();
 	}
 }

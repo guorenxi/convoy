@@ -3,8 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "env:config": "ts-node set-env.ts --environment=development",
+		"env:config:prod": "ts-node set-env.ts --environment=production",
     "start": "ng serve --hmr --port 4300",
-    "build": "ng build",
+    "build": "ng build --configuration development",
+		"build:prod": "ng build",
     "postbuild": "node post-build-css.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

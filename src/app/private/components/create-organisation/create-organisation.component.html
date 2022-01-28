@@ -7,16 +7,17 @@
 
 <div class="modal--body">
 	<form [formGroup]="addOrganisationForm" (ngSubmit)="addNewOrganisation()">
-		<div class="input file-input">
+		<!-- no avalibale yet  -->
+		<!-- <div class="input file-input">
 			<button class="white">Click to Upload logo</button>
-		</div>
+		</div> -->
 		<div class="input">
-			<label for="group-name">Organisation Name</label>
-			<input type="text" id="group-name" formControlName="name" />
 			<div class="input--error-message" *ngIf="addOrganisationForm.controls.name.touched && addOrganisationForm.controls.name.invalid">
 				<img src="assets/img/input-error-icon.svg" alt="input error icon" />
 				<span>Name is required</span>
 			</div>
+			<input type="text" id="group-name" formControlName="name" />
+			<label for="group-name">Organisation Name</label>
 		</div>
 	</form>
 </div>
@@ -24,6 +25,6 @@
 <div class="modal--footer">
 	<div class="button-container">
 		<button class="white" (click)="close()">Discard</button>
-		<button class="primary" (click)="addNewOrganisation()">Create Organisation</button>
+		<button class="primary groups" [disabled]="loading" (click)="addNewOrganisation()">{{ loading ? 'Adding Organisation' : 'Create Organisation' }}</button>
 	</div>
 </div>
