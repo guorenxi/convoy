@@ -16,5 +16,3 @@
     command = "npm run build:prod"
     environment = { SENTRY_ENVIRONMENT = "prod" }
 
-[[plugins]]
-    package = "@sentry/netlify-build-plugin"
