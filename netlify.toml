@@ -8,7 +8,7 @@
     command = "npm run build"
 
 [context.staging]
-    command = "npm run build"
+    command = "npm run build:staging"
 
 [context.prod]
     command = "npm run build:prod"
