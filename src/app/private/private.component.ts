@@ -64,7 +64,7 @@ export class PrivateComponent implements OnInit {
 		this.userOrganization = userOrganisation;
 		localStorage.setItem('ORG_DETAILS', JSON.stringify(userOrganisation));
 		const organisationId = userOrganisation?.id;
-		if (organisationId) localStorage.setItem('orgId', organisationId);
+		localStorage.setItem('orgId', organisationId);
 		const currentUrl = this.router.url;
 		this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
 			this.router.navigate([currentUrl]);
