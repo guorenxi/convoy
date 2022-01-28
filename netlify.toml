@@ -6,13 +6,10 @@
 
 [context.dev]
     command = "npm run build"
-     environment = { SENTRY_ENVIRONMENT = "dev" }
 
 [context.staging]
     command = "npm run build"
-     environment = { SENTRY_ENVIRONMENT = "staging" }
 
 [context.prod]
     command = "npm run build:prod"
-    environment = { SENTRY_ENVIRONMENT = "prod" }
 
