@@ -15,8 +15,10 @@ export class HttpIntercepter implements HttpInterceptor {
 				return httpEvent;
 			}),
 			catchError((error: HttpErrorResponse) => {
-				if (error.status === 401 || error.error.message === 'Signature has expired' || error.error.message === 'Invalid token') this.router.navigate(['/login'], { replaceUrl: true });
-				localStorage.clear();
+				if (error.status === 401 || error.error.message === 'Signature has expired' || error.error.message === 'Invalid token') {
+					this.router.navigate(['/login'], { replaceUrl: true });
+					localStorage.clear();
+				}
 				let errorMessage: string;
 				error.error?.message ? (errorMessage = error.error?.message) : (errorMessage = 'An error occured, please try again');
 				this.generalService.showNotification({
