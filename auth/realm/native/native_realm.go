@@ -16,14 +16,31 @@ import (
 )
 
 type NativeRealm struct {
-	apiKeyRepo datastore.APIKeyRepository
+	apiKeyRepo     datastore.APIKeyRepository
+	userRepo       datastore.UserRepository
+	portalLinkRepo datastore.PortalLinkRepository
 }
 
-func NewNativeRealm(apiKeyRepo datastore.APIKeyRepository) *NativeRealm {
-	return &NativeRealm{apiKeyRepo: apiKeyRepo}
+func NewNativeRealm(apiKeyRepo datastore.APIKeyRepository,
+	userRepo datastore.UserRepository,
+	portalLinkRepo datastore.PortalLinkRepository) *NativeRealm {
+	return &NativeRealm{apiKeyRepo: apiKeyRepo, userRepo: userRepo, portalLinkRepo: portalLinkRepo}
 }
 
 func (n *NativeRealm) Authenticate(ctx context.Context, cred *auth.Credential) (*auth.AuthenticatedUser, error) {
+	if cred.Type == auth.CredentialTypeToken {
+		pLink, err := n.portalLinkRepo.FindPortalLinkByToken(ctx, cred.Token)
+		if err != nil {
+			return nil, errors.New("invalid portal link token")
+		}
+
+		return &auth.AuthenticatedUser{
+			AuthenticatedByRealm: n.GetName(),
+			Credential:           *cred,
+			PortalLink:           pLink,
+		}, nil
+	}
+
 	if cred.Type != auth.CredentialTypeAPIKey {
 		return nil, fmt.Errorf("%s only authenticates credential type %s", n.GetName(), auth.CredentialTypeAPIKey.String())
 	}
@@ -55,11 +72,11 @@ func (n *NativeRealm) Authenticate(ctx context.Context, cred *auth.Credential) (
 	}
 
 	// if the current time is after the specified expiry date then the key has expired
-	if apiKey.ExpiresAt != 0 && time.Now().After(apiKey.ExpiresAt.Time()) {
+	if !apiKey.ExpiresAt.IsZero() && time.Now().After(apiKey.ExpiresAt.ValueOrZero()) {
 		return nil, errors.New("api key has expired")
 	}
 
-	if apiKey.DeletedAt != 0 {
+	if !apiKey.DeletedAt.IsZero() {
 		return nil, errors.New("api key has been revoked")
 	}
 
@@ -67,11 +84,22 @@ func (n *NativeRealm) Authenticate(ctx context.Context, cred *auth.Credential) (
 		AuthenticatedByRealm: n.GetName(),
 		Credential:           *cred,
 		Role:                 apiKey.Role,
+		APIKey:               apiKey,
+	}
+
+	if apiKey.Type == datastore.PersonalKey {
+		user, err := n.userRepo.FindUserByID(ctx, apiKey.UserID)
+		if err != nil {
+			return nil, fmt.Errorf("failed to fetch user: %v", err)
+		}
+
+		authUser.Metadata = user
+		authUser.User = user
 	}
 
 	return authUser, nil
 }
 
 func (n *NativeRealm) GetName() string {
-	return "native_realm"
+	return auth.NativeRealmName
 }

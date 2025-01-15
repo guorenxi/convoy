@@ -9,8 +9,15 @@ type HttpMethod string
 
 type TaskName string
 
+type QueueName string
+
+type CacheKey string
+
 //go:embed VERSION
-var f embed.FS
+var F embed.FS
+
+//go:embed sql/*.sql
+var MigrationFiles embed.FS
 
 func (t TaskName) SetPrefix(prefix string) TaskName {
 	var name strings.Builder
@@ -23,8 +30,23 @@ func (t TaskName) SetPrefix(prefix string) TaskName {
 	return TaskName(name.String())
 }
 
-func ReadVersion() ([]byte, error) {
-	data, err := f.ReadFile("VERSION")
+func (c CacheKey) Get(suffix string) CacheKey {
+	var name strings.Builder
+	delim := ":"
+
+	name.WriteString(string(c))
+	name.WriteString(delim)
+	name.WriteString(suffix)
+
+	return CacheKey(name.String())
+}
+
+func (c CacheKey) String() string {
+	return string(c)
+}
+
+func readVersion(fs embed.FS) ([]byte, error) {
+	data, err := fs.ReadFile("VERSION")
 	if err != nil {
 		return nil, err
 	}
@@ -32,12 +54,75 @@ func ReadVersion() ([]byte, error) {
 	return data, nil
 }
 
-const (
-	EventProcessor      TaskName = "EventProcessor"
-	DeadLetterProcessor TaskName = "DeadLetterProcessor"
-)
+// TODO(subomi): This needs to be refactored for everywhere we depend
+// on this code.
+func GetVersion() string {
+	v := "0.1.0"
+
+	f, err := readVersion(F)
+	if err != nil {
+		return v
+	}
+
+	v = strings.TrimSpace(string(f))
+	return v
+}
+
+func GetVersionFromFS(fs embed.FS) string {
+	v := "0.1.0"
+
+	f, err := readVersion(fs)
+	if err != nil {
+		return v
+	}
+
+	v = strings.TrimSpace(string(f))
+	return v
+}
 
 const (
-	StreamGroup           = "taskq"
-	EventDeliveryIDLength = 12
+	EventProcessor                   TaskName = "EventProcessor"
+	RetryEventProcessor              TaskName = "RetryEventProcessor"
+	CreateEventProcessor             TaskName = "CreateEventProcessor"
+	CreateDynamicEventProcessor      TaskName = "CreateDynamicEventProcessor"
+	CreateBroadcastEventProcessor    TaskName = "CreateBroadcastEventProcessor"
+	MetaEventProcessor               TaskName = "MetaEventProcessor"
+	NotificationProcessor            TaskName = "NotificationProcessor"
+	TokenizeSearch                   TaskName = "TokenizeSearch"
+	TokenizeSearchForProject         TaskName = "TokenizeProjectSearch"
+	DailyAnalytics                   TaskName = "DailyAnalytics"
+	StreamCliEventsProcessor         TaskName = "StreamCliEventsProcessor"
+	MonitorTwitterSources            TaskName = "MonitorTwitterSources"
+	RetentionPolicies                TaskName = "RetentionPolicies"
+	BackupProjectData                TaskName = "BackupProjectData"
+	EmailProcessor                   TaskName = "EmailProcessor"
+	ExpireSecretsProcessor           TaskName = "ExpireSecretsProcessor"
+	DeleteArchivedTasksProcessor     TaskName = "DeleteArchivedTasksProcessor"
+	MatchEventSubscriptionsProcessor TaskName = "MatchEventSubscriptionsProcessor"
+
+	EndpointCacheKey     CacheKey = "endpoints"
+	ApiKeyCacheKey       CacheKey = "api_keys"
+	OrganisationCacheKey CacheKey = "organisations"
+	ProjectsCacheKey     CacheKey = "projects"
+	SubscriptionCacheKey CacheKey = "subscriptions"
+	TokenCacheKey        CacheKey = "tokens"
+	SourceCacheKey       CacheKey = "sources"
+)
+
+// queues
+const (
+	EventQueue         QueueName = "EventQueue"
+	CreateEventQueue   QueueName = "CreateEventQueue"
+	MetaEventQueue     QueueName = "MetaEventQueue"
+	RetryEventQueue    QueueName = "RetryEventQueue"
+	StreamQueue        QueueName = "StreamQueue"
+	ScheduleQueue      QueueName = "ScheduleQueue"
+	DefaultQueue       QueueName = "DefaultQueue"
+	EventWorkflowQueue QueueName = "EventWorkflowQueue"
+)
+
+// Exports dir
+const (
+	DefaultOnPremDir = "/var/convoy/export"
+	TmpExportDir     = "/tmp/convoy/export"
 )

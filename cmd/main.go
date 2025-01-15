@@ -1,344 +1,172 @@
 package main
 
 import (
-	"context"
-	"errors"
-	"fmt"
+	"github.com/frain-dev/convoy/cmd/ff"
+	"github.com/frain-dev/convoy/cmd/utils"
 	"os"
 	"time"
 	_ "time/tzdata"
 
-	"github.com/frain-dev/convoy/cache"
-	"github.com/frain-dev/convoy/logger"
-	memqueue "github.com/frain-dev/convoy/queue/memqueue"
-	redisqueue "github.com/frain-dev/convoy/queue/redis"
-	"github.com/frain-dev/convoy/tracer"
-	"github.com/frain-dev/convoy/worker/task"
-	"github.com/getsentry/sentry-go"
-	"github.com/go-redis/redis/v8"
-	"github.com/google/uuid"
-	prefixed "github.com/x-cray/logrus-prefixed-formatter"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/frain-dev/convoy/cmd/agent"
+	"github.com/frain-dev/convoy/cmd/bootstrap"
 
-	"github.com/frain-dev/convoy/util"
-	log "github.com/sirupsen/logrus"
-	"github.com/vmihailenco/taskq/v3"
+	configCmd "github.com/frain-dev/convoy/cmd/config"
+	"github.com/frain-dev/convoy/cmd/hooks"
+	"github.com/frain-dev/convoy/cmd/ingest"
+	"github.com/frain-dev/convoy/cmd/migrate"
+	"github.com/frain-dev/convoy/cmd/retry"
+	"github.com/frain-dev/convoy/cmd/server"
+	"github.com/frain-dev/convoy/cmd/stream"
+	"github.com/frain-dev/convoy/cmd/version"
+	"github.com/frain-dev/convoy/cmd/worker"
+	"github.com/frain-dev/convoy/database/postgres"
+	"github.com/sirupsen/logrus"
+
+	"github.com/frain-dev/convoy/internal/pkg/cli"
 
 	"github.com/frain-dev/convoy"
-	"github.com/frain-dev/convoy/config"
-	"github.com/frain-dev/convoy/datastore"
-	"github.com/frain-dev/convoy/queue"
-	"github.com/spf13/cobra"
-
-	"github.com/frain-dev/convoy/datastore/bolt"
-	"github.com/frain-dev/convoy/datastore/mongo"
 )
 
 func main() {
-	log.SetLevel(log.InfoLevel)
-
-	log.SetFormatter(&prefixed.TextFormatter{
-		DisableColors:   false,
-		TimestampFormat: "2006-01-02 15:04:05",
-		FullTimestamp:   true,
-		ForceFormatting: true,
-	})
-	log.SetReportCaller(true)
+	slog := logrus.New()
+	slog.Out = os.Stdout
 
 	err := os.Setenv("TZ", "") // Use UTC by default :)
 	if err != nil {
-		log.Fatal("failed to set env - ", err)
+		slog.Fatal("failed to set env - ", err)
 	}
 
-	app := &app{}
+	app := &cli.App{}
+	app.Version = convoy.GetVersionFromFS(convoy.F)
+	db := &postgres.Postgres{}
 
-	var db datastore.DatabaseClient
+	c := cli.NewCli(app)
 
-	cmd := &cobra.Command{
-		Use:   "Convoy",
-		Short: "Fast & reliable webhooks service",
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			cfgPath, err := cmd.Flags().GetString("config")
-			if err != nil {
-				return err
-			}
+	var dbPort int
+	var dbType string
+	var dbHost string
+	var dbScheme string
+	var dbUsername string
+	var dbPassword string
+	var dbDatabase string
+	var dbReadReplicasDSN []string
 
-			override := new(config.Configuration)
+	var fflag []string
+	var ipAllowList []string
+	var ipBLockList []string
+	var enableProfiling bool
 
-			// override config with cli flags
-			redisCliDsn, err := cmd.Flags().GetString("queue")
-			if err != nil {
-				return err
-			}
-			override.Queue.Redis.DSN = redisCliDsn
+	var redisPort int
+	var redisHost string
+	var redisType string
+	var redisScheme string
+	var redisUsername string
+	var redisPassword string
+	var redisDatabase string
 
-			mongoCliDsn, err := cmd.Flags().GetString("db")
-			if err != nil {
-				return err
-			}
-			override.Database.Dsn = mongoCliDsn
+	var tracerType string
+	var sentryDSN string
+	var otelSampleRate float64
+	var otelCollectorURL string
+	var otelAuthHeaderName string
+	var otelAuthHeaderValue string
+	var dataDogAgentUrl string
+	var metricsBackend string
+	var prometheusMetricsSampleTime uint64
 
-			err = config.LoadConfig(cfgPath, override)
-			if err != nil {
-				return err
-			}
+	var retentionPolicy string
+	var retentionPolicyEnabled bool
 
-			cfg, err := config.Get()
-			if err != nil {
-				return err
-			}
+	var maxRetrySeconds uint64
 
-			db, err = NewDB(cfg)
-			if err != nil {
-				return err
-			}
+	var instanceIngestRate int
+	var apiRateLimit int
 
-			err = sentry.Init(sentry.ClientOptions{
-				Debug:       true,
-				Dsn:         cfg.Sentry.Dsn,
-				Environment: cfg.Environment,
-			})
-			if err != nil {
-				return err
-			}
-
-			defer sentry.Recover()              // recover any panic and report to sentry
-			defer sentry.Flush(2 * time.Second) // send any events in sentry before exiting
-
-			sentryHook := convoy.NewSentryHook(convoy.DefaultLevels)
-			log.AddHook(sentryHook)
-
-			var qFn taskq.Factory
-			var rC *redis.Client
-			var lo logger.Logger
-			var tr tracer.Tracer
-			var lS queue.Storage
-			var opts queue.QueueOptions
-			var ca cache.Cache
-
-			if cfg.Queue.Type == config.RedisQueueProvider {
-				rC, qFn, err = redisqueue.NewClient(cfg)
-				if err != nil {
-					return err
-				}
-				opts = queue.QueueOptions{
-					Type:    "redis",
-					Redis:   rC,
-					Factory: qFn,
-				}
-			}
-
-			if cfg.Queue.Type == config.InMemoryQueueProvider {
-				lS, qFn, err = memqueue.NewClient(cfg)
-				if err != nil {
-					return err
-				}
-				opts = queue.QueueOptions{
-					Type:    "in-memory",
-					Storage: lS,
-					Factory: qFn,
-				}
-			}
-
-			lo, err = logger.NewLogger(cfg.Logger)
-			if err != nil {
-				return err
-			}
-
-			if cfg.Tracer.Type == config.NewRelicTracerProvider {
-				tr, err = tracer.NewTracer(cfg, lo.WithLogger())
-				if err != nil {
-					return err
-				}
-			}
-
-			if util.IsStringEmpty(string(cfg.GroupConfig.Signature.Header)) {
-				cfg.GroupConfig.Signature.Header = config.DefaultSignatureHeader
-				log.Warnf("signature header is blank. setting default %s", config.DefaultSignatureHeader)
-			}
-
-			ca, err = cache.NewCache(cfg.Cache)
-			if err != nil {
-				return err
-			}
-
-			app.apiKeyRepo = db.APIRepo()
-			app.groupRepo = db.GroupRepo()
-			app.eventRepo = db.EventRepo()
-			app.applicationRepo = db.AppRepo()
-			app.eventDeliveryRepo = db.EventDeliveryRepo()
-
-			app.eventQueue = NewQueue(opts, "EventQueue")
-			app.deadLetterQueue = NewQueue(opts, "DeadLetterQueue")
-			app.logger = lo
-			app.tracer = tr
-			app.cache = ca
-
-			return ensureDefaultGroup(context.Background(), cfg, app)
-
-		},
-		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
-			defer func() {
-				err := app.eventQueue.Close()
-				if err != nil {
-					log.Errorln("failed to close app queue - ", err)
-				}
-
-				err = app.deadLetterQueue.Close()
-				if err != nil {
-					log.Errorln("failed to close app queue - ", err)
-				}
-			}()
-			err := db.Disconnect(context.Background())
-			if err == nil {
-				os.Exit(0)
-			}
-			return err
-		},
-	}
+	var licenseKey string
 
 	var configFile string
-	var redisDsn string
-	var mongoDsn string
 
-	cmd.PersistentFlags().StringVar(&configFile, "config", "./convoy.json", "Configuration file for convoy")
-	cmd.PersistentFlags().StringVar(&redisDsn, "queue", "", "Redis DSN")
-	cmd.PersistentFlags().StringVar(&mongoDsn, "db", "", "MongoDB DSN")
+	c.Flags().StringVar(&configFile, "config", "./convoy.json", "Configuration file for convoy")
+	c.Flags().StringVar(&licenseKey, "license-key", "", "Convoy license key")
 
-	cmd.AddCommand(addVersionCommand())
-	cmd.AddCommand(addCreateCommand(app))
-	cmd.AddCommand(addGetComamnd(app))
-	cmd.AddCommand(addServerCommand(app))
-	cmd.AddCommand(addWorkerCommand(app))
-	cmd.AddCommand(addQueueCommand(app))
-	cmd.AddCommand(addRetryCommand(app))
-	if err := cmd.Execute(); err != nil {
-		log.Fatal(err)
+	// db config
+	c.Flags().StringVar(&dbHost, "db-host", "", "Database Host")
+	c.Flags().StringVar(&dbType, "db-type", "", "Database provider")
+	c.Flags().StringVar(&dbScheme, "db-scheme", "", "Database Scheme")
+	c.Flags().StringVar(&dbUsername, "db-username", "", "Database Username")
+	c.Flags().StringVar(&dbPassword, "db-password", "", "Database Password")
+	c.Flags().StringVar(&dbDatabase, "db-database", "", "Database Database")
+	c.Flags().StringVar(&dbDatabase, "db-options", "", "Database Options")
+	c.Flags().IntVar(&dbPort, "db-port", 0, "Database Port")
+	c.Flags().BoolVar(&enableProfiling, "enable-profiling", false, "Enable profiling and exporting profile data to pyroscope")
+	c.Flags().StringSliceVar(&dbReadReplicasDSN, "read-replicas-dsn", []string{}, "Comma-separated list of read replica DSNs e.g. postgres://convoy:convoy@host1:5436/db,postgres://convoy:convoy@host2:5437/db")
+
+	// redis config
+	c.Flags().StringVar(&redisHost, "redis-host", "", "Redis Host")
+	c.Flags().StringVar(&redisType, "redis-type", "", "Redis provider")
+	c.Flags().StringVar(&redisScheme, "redis-scheme", "", "Redis Scheme")
+	c.Flags().StringVar(&redisUsername, "redis-username", "", "Redis Username")
+	c.Flags().StringVar(&redisPassword, "redis-password", "", "Redis Password")
+	c.Flags().StringVar(&redisDatabase, "redis-database", "", "Redis database")
+	c.Flags().IntVar(&redisPort, "redis-port", 0, "Redis Port")
+
+	// misc
+	c.Flags().StringSliceVar(&fflag, "enable-feature-flag", []string{}, "List of feature flags to enable e.g. \"full-text-search,prometheus\"")
+	c.Flags().StringSliceVar(&ipAllowList, "ip-allow-list", []string{}, "List of IPs CIDRs to allow e.g. \" 0.0.0.0/0,127.0.0.0/8\"")
+	c.Flags().StringSliceVar(&ipBLockList, "ip-block-list", []string{}, "List of IPs CIDRs to block e.g. \" 0.0.0.0/0,127.0.0.0/8\"")
+
+	c.Flags().IntVar(&instanceIngestRate, "instance-ingest-rate", 0, "Instance ingest Rate")
+	c.Flags().IntVar(&apiRateLimit, "api-rate-limit", 0, "API rate limit")
+
+	// tracing
+	c.Flags().StringVar(&tracerType, "tracer-type", "", "Tracer backend, e.g. sentry, datadog or otel")
+	c.Flags().StringVar(&sentryDSN, "sentry-dsn", "", "Sentry backend dsn")
+	c.Flags().Float64Var(&otelSampleRate, "otel-sample-rate", 1.0, "OTel tracing sample rate")
+	c.Flags().StringVar(&otelCollectorURL, "otel-collector-url", "", "OTel collector URL")
+	c.Flags().StringVar(&otelAuthHeaderName, "otel-auth-header-name", "", "OTel backend auth header name")
+	c.Flags().StringVar(&otelAuthHeaderValue, "otel-auth-header-value", "", "OTel backend auth header value")
+	c.Flags().StringVar(&dataDogAgentUrl, "datadog-agent-url", "", "Datadog agent URL")
+
+	// metrics
+	c.Flags().StringVar(&metricsBackend, "metrics-backend", "prometheus", "Metrics backend e.g. prometheus. ('prometheus' feature flag required")
+	c.Flags().Uint64Var(&prometheusMetricsSampleTime, "metrics-prometheus-sample-time", 5, "Prometheus metrics sample time")
+
+	c.Flags().StringVar(&retentionPolicy, "retention-policy", "", "Retention Policy Duration")
+	c.Flags().BoolVar(&retentionPolicyEnabled, "retention-policy-enabled", false, "Retention Policy Enabled")
+
+	c.Flags().Uint64Var(&maxRetrySeconds, "max-retry-seconds", 7200, "Max retry seconds exponential backoff")
+
+	AddHCPVaultFlags(c)
+
+	c.PersistentPreRunE(hooks.PreRun(app, db))
+	c.PersistentPostRunE(hooks.PostRun(app, db))
+
+	c.AddCommand(version.AddVersionCommand())
+	c.AddCommand(server.AddServerCommand(app))
+	c.AddCommand(worker.AddWorkerCommand(app))
+	c.AddCommand(retry.AddRetryCommand(app))
+	c.AddCommand(migrate.AddMigrateCommand(app))
+	c.AddCommand(configCmd.AddConfigCommand(app))
+	c.AddCommand(stream.AddStreamCommand(app))
+	c.AddCommand(ingest.AddIngestCommand(app))
+	c.AddCommand(bootstrap.AddBootstrapCommand(app))
+	c.AddCommand(agent.AddAgentCommand(app))
+	c.AddCommand(ff.AddFeatureFlagsCommand())
+	c.AddCommand(utils.AddUtilsCommand(app))
+
+	if err = c.Execute(); err != nil {
+		slog.Fatal(err)
 	}
 }
 
-func NewQueue(opts queue.QueueOptions, name string) queue.Queuer {
-	optsType := opts.Type
-	var convoyQueue queue.Queuer
-	switch optsType {
-	case "in-memory":
-		opts.Name = name
-		convoyQueue = memqueue.NewQueue(opts)
+func AddHCPVaultFlags(c *cli.ConvoyCli) {
+	c.Flags().String("hcp-client-id", "", "HCP Vault client ID")
+	c.Flags().String("hcp-client-secret", "", "HCP Vault client secret")
+	c.Flags().String("hcp-org-id", "", "HCP Vault organization ID")
+	c.Flags().String("hcp-project-id", "", "HCP Vault project ID")
+	c.Flags().String("hcp-app-name", "", "HCP Vault app name")
+	c.Flags().String("hcp-secret-name", "", "HCP Vault secret name")
 
-	case "redis":
-		opts.Name = name
-		convoyQueue = redisqueue.NewQueue(opts)
-	default:
-		log.Errorf("Invalid queue type: %v", optsType)
-	}
-	return convoyQueue
-}
-
-func ensureDefaultGroup(ctx context.Context, cfg config.Configuration, a *app) error {
-	var filter *datastore.GroupFilter
-	var groups []*datastore.Group
-	var group *datastore.Group
-	var err error
-
-	filter = &datastore.GroupFilter{}
-	groups, err = a.groupRepo.LoadGroups(ctx, filter)
-	if err != nil {
-		return fmt.Errorf("failed to load groups - %w", err)
-	}
-
-	// return if a group already exists or it's a multi tenant app
-	if cfg.MultipleTenants {
-		return nil
-	}
-
-	if len(groups) > 1 {
-		filter = &datastore.GroupFilter{Names: []string{"default-group"}}
-		groups, err = a.groupRepo.LoadGroups(ctx, filter)
-		if err != nil {
-			return fmt.Errorf("failed to load groups - %w", err)
-		}
-	}
-
-	groupCfg := &datastore.GroupConfig{
-		Strategy: datastore.StrategyConfiguration{
-			Type: cfg.GroupConfig.Strategy.Type,
-			Default: datastore.DefaultStrategyConfiguration{
-				IntervalSeconds: cfg.GroupConfig.Strategy.Default.IntervalSeconds,
-				RetryLimit:      cfg.GroupConfig.Strategy.Default.RetryLimit,
-			},
-		},
-		Signature: datastore.SignatureConfiguration{
-			Header: config.SignatureHeaderProvider(cfg.GroupConfig.Signature.Header),
-			Hash:   cfg.GroupConfig.Signature.Hash,
-		},
-		DisableEndpoint: cfg.GroupConfig.DisableEndpoint,
-	}
-
-	if len(groups) == 0 {
-		defaultGroup := &datastore.Group{
-			UID:            uuid.New().String(),
-			Name:           "default-group",
-			Config:         groupCfg,
-			CreatedAt:      primitive.NewDateTimeFromTime(time.Now()),
-			UpdatedAt:      primitive.NewDateTimeFromTime(time.Now()),
-			DocumentStatus: datastore.ActiveDocumentStatus,
-		}
-
-		err = a.groupRepo.CreateGroup(ctx, defaultGroup)
-		if err != nil {
-			return fmt.Errorf("failed to create default group - %w", err)
-		}
-
-		groups = append(groups, defaultGroup)
-	}
-
-	group = groups[0]
-
-	group.Config = groupCfg
-	err = a.groupRepo.UpdateGroup(ctx, group)
-	if err != nil {
-		log.WithError(err).Error("Default group update failed.")
-		return err
-	}
-
-	taskName := convoy.EventProcessor.SetPrefix(group.Name)
-	task.CreateTask(taskName, *group, task.ProcessEventDelivery(a.applicationRepo, a.eventDeliveryRepo, a.groupRepo))
-
-	return nil
-}
-
-type app struct {
-	apiKeyRepo        datastore.APIKeyRepository
-	groupRepo         datastore.GroupRepository
-	applicationRepo   datastore.ApplicationRepository
-	eventRepo         datastore.EventRepository
-	eventDeliveryRepo datastore.EventDeliveryRepository
-	eventQueue        queue.Queuer
-	deadLetterQueue   queue.Queuer
-	logger            logger.Logger
-	tracer            tracer.Tracer
-	cache             cache.Cache
-}
-
-func getCtx() (context.Context, context.CancelFunc) {
-	return context.WithTimeout(context.Background(), time.Second*1)
-}
-
-func NewDB(cfg config.Configuration) (datastore.DatabaseClient, error) {
-	switch cfg.Database.Type {
-	case "mongodb":
-		db, err := mongo.New(cfg)
-		if err != nil {
-			return nil, err
-		}
-		return db, nil
-	case "bolt":
-		bolt, err := bolt.New(cfg)
-		if err != nil {
-			return nil, err
-		}
-		return bolt, nil
-	default:
-		return nil, errors.New("invalid database type")
-	}
+	// New flag for cache duration
+	c.Flags().Duration("hcp-cache-duration", 5*time.Minute, "HCP Vault key cache duration")
 }

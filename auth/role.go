@@ -1,30 +1,41 @@
 package auth
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Role represents the permission a user is given, if the Type is RoleSuperUser,
-// Then the user will have access to everything regardless of the value of Groups.
+// Then the user will have access to everything regardless of the value of Project.
 type Role struct {
-	Type   RoleType `json:"type"`
-	Groups []string `json:"groups"`
+	Type     RoleType `json:"type" db:"type"`
+	Project  string   `json:"project" db:"project"`
+	Endpoint string   `json:"endpoint,omitempty" db:"endpoint"`
 }
 
 type RoleType string
 
 const (
 	RoleSuperUser = RoleType("super_user")
-	RoleUIAdmin   = RoleType("ui_admin")
 	RoleAdmin     = RoleType("admin")
+	RoleMember    = RoleType("member")
 	RoleAPI       = RoleType("api")
 )
 
 func (r RoleType) IsValid() bool {
 	switch r {
-	case RoleSuperUser, RoleUIAdmin, RoleAdmin, RoleAPI:
+	case RoleSuperUser, RoleAdmin, RoleMember, RoleAPI:
 		return true
 	default:
 		return false
 	}
+}
+
+func (r *Role) HasProject(projectID string) bool {
+	return r.Project == projectID
+}
+
+func (r *Role) HasEndpoint(endpointID string) bool {
+	return r.Endpoint == endpointID
 }
 
 func (r RoleType) String() string {
@@ -40,15 +51,5 @@ func (r *Role) Validate(credType string) error {
 		return fmt.Errorf("invalid role type: %s", r.Type.String())
 	}
 
-	// groups will never be checked for superusers
-	if len(r.Groups) == 0 && !r.Type.Is(RoleSuperUser) {
-		return fmt.Errorf("please specify groups for %s", credType)
-	}
-
-	for _, group := range r.Groups {
-		if group == "" {
-			return fmt.Errorf("empty group name not allowed for %s", credType)
-		}
-	}
 	return nil
 }

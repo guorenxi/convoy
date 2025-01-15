@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
 	selector: 'app-app',
@@ -7,23 +8,10 @@ import { Router } from '@angular/router';
 	styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-	showDropdown = false;
+	token: string = this.route.snapshot.params.token;
+	iframeURL = this.sanitizer.bypassSecurityTrustResourceUrl(`/app/${this.token}`);
 
-	constructor(private router: Router) {}
+	constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer) {}
 
-	async ngOnInit() {
-		await this.initDashboard();
-	}
-
-	async initDashboard() {}
-
-	logout() {
-		localStorage.removeItem('CONVOY_AUTH');
-		this.router.navigateByUrl('/login');
-	}
-
-	authDetails() {
-		const authDetails = localStorage.getItem('CONVOY_AUTH');
-		return authDetails ? JSON.parse(authDetails) : false;
-	}
+	ngOnInit() {}
 }

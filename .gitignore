@@ -13,19 +13,31 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-hookstack
 .idea
+.vscode
 
-/server/ui/build/*
-!/server/ui/build/go_test_stub.txt
+/api/ui/build/*
+!/api/ui/build/go_test_stub.txt
 /data/mongo/
 .DS_Store
 *.db
+pgdata
 
 # ui depencencies
 **/node_modules
+**/source-maps
 **/.angular/cache
+**/storybook-static
 
 # Convoy specific
+convoy
 convoy.json
 docker-compose.yml
+compose.yml
+typesense_data
+postgres_data**
+redis_data
+/.run/go test github.com_frain-dev_convoy_server.run.xml
+
+convoy-ee
+convoy-ce

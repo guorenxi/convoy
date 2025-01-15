@@ -1,31 +1,45 @@
 package worker
 
 import (
-	"context"
-
 	"github.com/frain-dev/convoy"
-	"github.com/frain-dev/convoy/datastore"
-	"github.com/frain-dev/convoy/worker/task"
-	log "github.com/sirupsen/logrus"
-	"github.com/vmihailenco/taskq/v3"
+	"github.com/frain-dev/convoy/pkg/log"
+	"github.com/frain-dev/convoy/queue"
+	"github.com/hibiken/asynq"
 )
 
-func RegisterNewGroupTask(applicationRepo datastore.ApplicationRepository, eventDeliveryRepo datastore.EventDeliveryRepository, groupRepo datastore.GroupRepository) {
-	go func() {
-		for {
-			filter := &datastore.GroupFilter{}
-			groups, err := groupRepo.LoadGroups(context.Background(), filter)
-			if err != nil {
-				log.WithError(err).Error("failed to load groups")
-			}
-			for _, g := range groups {
-				name := convoy.TaskName(g.Name)
-				if t := taskq.Tasks.Get(string(name)); t == nil {
-					handler := task.ProcessEventDelivery(applicationRepo, eventDeliveryRepo, groupRepo)
-					log.Infof("Registering task handler for %s", g.Name)
-					task.CreateTask(name, *g, handler)
-				}
-			}
-		}
-	}()
+type Scheduler struct {
+	log   log.StdLogger
+	queue queue.Queuer
+	inner *asynq.Scheduler
+}
+
+func NewScheduler(queue queue.Queuer, log log.StdLogger) *Scheduler {
+	scheduler := asynq.NewScheduler(queue.Options().RedisClient, &asynq.SchedulerOpts{
+		Logger: log,
+	})
+
+	return &Scheduler{
+		log:   log,
+		inner: scheduler,
+		queue: queue,
+	}
+}
+
+func (s *Scheduler) Start() {
+	if err := s.inner.Start(); err != nil {
+		s.log.WithError(err).Fatal("Could not start scheduler")
+	}
+}
+
+func (s *Scheduler) RegisterTask(cronSpec string, queue convoy.QueueName, taskName convoy.TaskName) {
+	task := asynq.NewTask(string(taskName), nil)
+	id, err := s.inner.Register(cronSpec, task, asynq.Queue(string(queue)))
+	if err != nil {
+		s.log.WithError(err).Fatalf("Failed to register %s scheduler task", taskName)
+	}
+	s.log.Infof("Registered task %v with id %v", taskName, id)
+}
+
+func (s *Scheduler) Stop() {
+	s.inner.Shutdown()
 }

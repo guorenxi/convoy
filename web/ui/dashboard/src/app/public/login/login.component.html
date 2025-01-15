@@ -1,31 +1,39 @@
-<div class="auth-page">
-	<section class="auth-page--container">
-		<img src="/assets/img/logo.svg" alt="convoy logo" />
-
+<div class="min-h-screen flex flex-col items-center justify-center w-full">
+	<img src="/assets/img/logo.svg" alt="convoy logo" class="mb-28px w-130px" />
+	<section class="max-w-[445px] mx-auto my-0 p-24px w-full bg-white-100 shadow-default rounded-8px">
 		<form [formGroup]="loginForm" (ngSubmit)="login()">
-			<div class="input">
-				<label for="username">Username</label>
-				<input type="text" id="username" name="username" autocomplete="username" placeholder="Enter username here" formControlName="username" />
+			<div convoy-input-field>
+				<label for="username" convoy-label>Username</label>
+				<input type="text" id="username" convoy-input autocomplete="username" formControlName="username" placeholder="super@default.com" />
+				<convoy-input-error *ngIf="loginForm.controls.username.touched && loginForm.controls.username.invalid">Please enter your username</convoy-input-error>
 			</div>
 
-			<div class="input">
-				<label htmlFor="password">Password</label>
-				<div class="input--password">
-					<input [type]="showLoginPassword ? 'text' : 'password'" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" formControlName="password" />
-					<button class="input--password__view-toggle" type="button">
-						<img
-							[src]="!showLoginPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'"
-							alt="showLoginPassword ? 'hide password icon' : 'view password icon'"
-						/>
+			<div convoy-input-field>
+				<label convoy-label for="password">Password</label>
+				<convoy-password-field>
+					<input [type]="showLoginPassword ? 'text' : 'password'" convoy-input autocomplete="username" formControlName="password" placeholder="super@default.com" id="password" />
+					<button class="bg-transparent w-18px h-18px absolute top-[55%] right-16px border-none translate-x-0 translate-y-[-50%]" type="button" (click)="showLoginPassword = !showLoginPassword">
+						<img class="w-full" [src]="!showLoginPassword ? '/assets/img/password-invisible-icon.svg' : '/assets/img/password-visible-icon.svg'" alt="showLoginPassword ? 'hide password icon' : 'view password icon'" />
 					</button>
-				</div>
+				</convoy-password-field>
+				<convoy-input-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">Please enter your password</convoy-input-error>
 			</div>
 
-			<div class="button-container margin-top">
-				<button [disabled]="disableLoginBtn" class="primary full-100">
-					{{ disableLoginBtn ? 'loading....' : 'Login to Dashboard' }}
-				</button>
+			<div class="flex items-center text-12 mb-20px -mt-18px">
+				Forgot password?
+				<button convoy-button fill="link" type="button" class="px-0 ml-6px" (click)="router.navigateByUrl('/forgot-password')" size="sm">Reset it here</button>
 			</div>
+
+			<button convoy-button [disabled]="disableLoginBtn" size="lg" class="mb-12px">
+				<span class="text-14 text-white-100" *ngIf="!disableLoginBtn">Login</span>
+				<img *ngIf="disableLoginBtn" src="assets/img/button-loader.gif" alt="loader" class="h-18px" />
+			</button>
+
+			<button convoy-button size="sm" type="button" fill="text" class="w-full" (click)="loginWithSAML()">Login with SAML</button>
 		</form>
+
+		<button *ngIf="isSignupEnabled && licenseService.hasLicense('CREATE_USER')" convoy-button fill="link" class="mt-12px w-full" (click)="router.navigateByUrl('/signup')" size="sm">Signup</button>
 	</section>
 </div>
+
+<convoy-loader [isTransparent]="false" *ngIf="isLoadingProject || isFetchingConfig"></convoy-loader>

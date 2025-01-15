@@ -1,0 +1,89 @@
+version: "3"
+
+services:
+    web:
+        image: getconvoy/convoy:latest
+        command: [ "/start.sh" ]
+        hostname: web
+        container_name: web
+        volumes:
+            - ./convoy.json:/convoy.json
+        restart: on-failure
+        depends_on:
+            - postgres
+            - redis_server
+        networks:
+            - backendCluster
+
+    scheduler:
+        image: getconvoy/convoy:latest
+        command: ["./cmd", "scheduler", "--config", "convoy.json"]
+        volumes:
+            - ./convoy.json:/convoy.json
+        restart: on-failure
+        depends_on:
+            - postgres
+            - redis_server
+        networks:
+            - backendCluster
+
+    worker:
+        image: getconvoy/convoy:latest
+        command: ["./cmd", "worker", "--config", "convoy.json"]
+        volumes:
+            - ./convoy.json:/convoy.json
+        restart: on-failure
+        depends_on:
+            - postgres
+            - redis_server
+        networks:
+            - backendCluster
+
+    ingest:
+        image: getconvoy/convoy:latest
+        command: ["./cmd", "ingest", "--config", "convoy.json"]
+        volumes:
+          - ./convoy.json:/convoy.json
+        restart: on-failure
+        depends_on:
+          - postgres
+          - redis_server
+        networks:
+          - backendCluster
+
+    postgres:
+      image: postgres:15.2-alpine
+      restart: unless-stopped
+      environment:
+        POSTGRES_DB: convoy
+        POSTGRES_USER: convoy
+        POSTGRES_PASSWORD: convoy
+        PGDATA: /data/postgres
+      volumes:
+        - ./postgres_data:/data/postgres
+      networks:
+        - backendCluster
+
+    redis_server:
+        image: redis:7-alpine
+        hostname: redis_server
+        container_name: redis_server
+        restart: always
+        networks:
+            - backendCluster
+
+    caddy:
+        image: caddy
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./caddyfile:/etc/caddy/Caddyfile
+        depends_on:
+            - web
+        networks:
+            - backendCluster
+
+networks:
+    backendCluster:

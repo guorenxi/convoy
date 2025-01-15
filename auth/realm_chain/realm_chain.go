@@ -8,11 +8,11 @@ import (
 
 	"github.com/frain-dev/convoy/auth"
 	"github.com/frain-dev/convoy/auth/realm/file"
+	"github.com/frain-dev/convoy/auth/realm/jwt"
 	"github.com/frain-dev/convoy/auth/realm/native"
-	"github.com/frain-dev/convoy/auth/realm/noop"
+	"github.com/frain-dev/convoy/cache"
 	"github.com/frain-dev/convoy/config"
 	"github.com/frain-dev/convoy/datastore"
-	log "github.com/sirupsen/logrus"
 )
 
 type chainMap map[string]auth.Realm
@@ -39,33 +39,37 @@ func Get() (*RealmChain, error) {
 	return rc, nil
 }
 
-func Init(authConfig *config.AuthConfiguration, apiKeyRepo datastore.APIKeyRepository) error {
+func Init(authConfig *config.AuthConfiguration,
+	apiKeyRepo datastore.APIKeyRepository,
+	userRepo datastore.UserRepository,
+	portalLinkRepo datastore.PortalLinkRepository,
+	cache cache.Cache) error {
 	rc := newRealmChain()
 
 	// validate authentication realms
-	if authConfig.RequireAuth {
-		fr, err := file.NewFileRealm(&authConfig.File)
-		if err != nil {
-			return err
-		}
+	fr, err := file.NewFileRealm(&authConfig.File)
+	if err != nil {
+		return err
+	}
 
-		err = rc.RegisterRealm(fr)
-		if err != nil {
-			return errors.New("failed to register file realm in realm chain")
-		}
+	err = rc.RegisterRealm(fr)
+	if err != nil {
+		return errors.New("failed to register file realm in realm chain")
+	}
 
-		if authConfig.Native.Enabled {
-			nr := native.NewNativeRealm(apiKeyRepo)
-			err = rc.RegisterRealm(nr)
-			if err != nil {
-				return errors.New("failed to register file realm in realm chain")
-			}
-		}
-	} else {
-		log.Warnf("using noop realm for authentication: all requests will be authenticated with super_user role")
-		err := rc.RegisterRealm(noop.NewNoopRealm())
+	if authConfig.Native.Enabled {
+		nr := native.NewNativeRealm(apiKeyRepo, userRepo, portalLinkRepo)
+		err = rc.RegisterRealm(nr)
 		if err != nil {
-			return errors.New("failed to register noop realm in realm chain")
+			return errors.New("failed to register native realm in realm chain")
+		}
+	}
+
+	if authConfig.Jwt.Enabled {
+		jr := jwt.NewJwtRealm(userRepo, &authConfig.Jwt, cache)
+		err = rc.RegisterRealm(jr)
+		if err != nil {
+			return errors.New("failed to register jwt realm in realm chain")
 		}
 	}
 
@@ -75,17 +79,12 @@ func Init(authConfig *config.AuthConfiguration, apiKeyRepo datastore.APIKeyRepos
 
 // Authenticate calls the Authenticate method of all registered realms.
 // If at least one realm can authenticate the given auth.Credential, Authenticate will not return an error
-func (rc *RealmChain) Authenticate(ctx context.Context, cred *auth.Credential) (*auth.AuthenticatedUser, error) {
-	var err error
-	var authUser *auth.AuthenticatedUser
-
-	for name, realm := range rc.chain {
+func (rc *RealmChain) Authenticate(ctx context.Context, cred *auth.Credential) (authUser *auth.AuthenticatedUser, err error) {
+	for _, realm := range rc.chain {
 		authUser, err = realm.Authenticate(ctx, cred)
 		if err == nil {
 			return authUser, nil
 		}
-		// TODO(daniel): starting to think logging cred itself doesn't add any value
-		log.WithError(err).Errorf("realm %s failed to authenticate cred: %s", name, cred)
 	}
 	return nil, ErrAuthFailed
 }

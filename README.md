@@ -1,120 +1,40 @@
-Convoy
+![convoy image](./convoy-logo.svg)
 =========
 [![golangci-lint](https://github.com/frain-dev/convoy/actions/workflows/linter.yml/badge.svg)](https://github.com/frain-dev/convoy/actions/workflows/linter.yml)
 [![Build and run all tests](https://github.com/frain-dev/convoy/actions/workflows/go.yml/badge.svg)](https://github.com/frain-dev/convoy/actions/workflows/go.yml)
 - Website: https://getconvoy.io
-- Forum: [Github Discussions](https://github.com/frain-dev/convoy/discussions)
-- Documentation: [getconvoy.io/docs](https://getconvoy.io/docs)
-- Announcement: [Medium](https://medium.com/frain-technologies/tagged/convoy)
-- Slack: [Slack](https://join.slack.com/t/convoy-community/shared_invite/zt-xiuuoj0m-yPp~ylfYMCV9s038QL0IUQ)
-
-![convoy image](./convoy-logo.svg)
-
-Convoy is a fast & secure webhooks service. It receives event data from a HTTP API and sends these event data to the configured endpoints. To get started download the [openapi spec](https://github.com/frain-dev/convoy/blob/main/docs/v3/openapi3.yaml) into Postman or Insomnia.
-
-It includes the following features
-- **Sign payload:** Configure hash function to use in signing payload.
-- **Retry events:** Retry events to endpoints.
-- **Delivery Attempt Logs:** View request headers and body as well as response headers and body.
-- **Rich UI**: To easily debug and retry failed events.
-
-## Install
-
-There are various ways of installing Convoy.
-
-### Precompiled binaries
-Precompiled binaries for released versions are available in the [releases section](https://github.com/frain-dev/convoy/releases)
-on [Github](https://github.com/frain-dev/convoy).
-
-### Docker images
-Docker images are available on [Github Container Registry](https://github.com/frain-dev/convoy/pkgs/container/convoy).
-
-You can launch a Convoy Container to try it out with 
-
-```bash
-$ docker run \
-	-p 5005:5005 \
-	--name convoy-server \
-	-v `pwd`/convoy.json:/convoy.json \
-	ghcr.io/frain-dev/convoy:v0.3.0
-```
-
-You can download a sample configuration of [convoy.json](https://github.com/frain-dev/convoy/blob/main/convoy.json).
+- Forum: [Convoy Community](https://community.getconvoy.io)
+- Documentation: [docs.getconvoy.io](https://docs.getconvoy.io)
+- Deploy: [Install Convoy](https://docs.getconvoy.io/deployment/install-convoy/docker)
+- Slack: [Join the Community](https://join.slack.com/t/convoy-community/shared_invite/zt-xiuuoj0m-yPp~ylfYMCV9s038QL0IUQ)
 
 
-### Building from source
-To build Convoy from source code, you need:
-* Go [version 1.16 or greater](https://golang.org/doc/install).
-* NodeJS [version 14.17 or greater](https://nodejs.org).
-* Npm [version 6 or greater](https://npmjs.com).
+[Convoy](https://getconvoy.io) is an open source high-performance webhooks gateway used to securely ingest, persist, debug, deliver and manage millions of events reliably with rich features such as retries, rate limiting, static ips, circuit breaking, rolling secrets and more. 
 
-```bash
-git clone https://github.com/frain-dev/convoy.git && cd convoy
-go build -o convoy ./convoy
-```
+Convoy provides several key features:
 
-## Concepts
+- **Webhooks Gateway:** As a webhooks gateway, Convoy lives at the edge of your network to stream webhooks from your microservices, and send them out to your users as well as receive webhooks from your providers and route them to the required services. With this your internal systems are never exposed to the public internet.
 
-1. **Apps:** An app is an abstraction representing a user who wants to receive webhooks. Currently, an app contains one endpoint to receive webhooks.
-2. **Events:** An event represents a webhook event to be sent to an app.
-3. **Delivery Attempts:** A delivery attempt represents an attempt to send an event to it's respective app's endpoint. It contains the `event body`, `status code` and `response body` received on attempt. The amount of attempts on a failed delivery depends on your configured retry strategy.
+- **Scalability:** Convoy acts as a dedicated message queue for webhooks, and was designed to be horizontally scalable. It includes several components like the `api server`, `workers`, `scheduler`, and `socket server` which can be scaled independently to fit the need.
 
-## Configuration
+- **Security:** Convoy ships with several security features for webhooks, such as payload signing to ensure message integrity, bearer token authentication for authenticated webhook endpoints, and static ips for network environments with strict firewall rules.
 
-Convoy is configured using a json file with a sample configuration below:
+- **Fan Out:** Convoy is able to route an event to multiple endpoints based on the event type or payload structure.
 
-```json
-{
-	"database": {
-		"dsn": "mongo-url-with-username-and-password"
-	},
-	"queue": {
-		"type": "redis",
-		"redis": {
-			"dsn": "redis-url-with-username-and-password"
-		}
-	},
-	"server": {
-		"http": {
-			"port": 5005
-		}
-	},
-	"auth": {
-		"type": "none"
-	},
-	"group": {
-		"strategy": {
-			"type": "default",
-			"default": {
-				"intervalSeconds": 125,
-				"retryLimit": 15
-			}
-		},
-		"signature": {
-			"header": "X-Company-Event-Webhook-Signature"
-		}
-	}
-	"environment": "development",
-	"disable_endpoint": false
-	"multiple_tenants": false
-}
-```
+- **Rate Limiting:** While Convoy is able to ingest events at a massive rate, it throttles the delivery of these events to the endpoints at a configurable rate per endpoint. 
 
-#### Notes to Configuration
+- **Retries & Batch Retries:** Convoy supports two retry algorithms; constant time and exponential backoff with jitter. Where automatic retries are not sufficient, convoy provides batch retries for endpoints are consecutively failed to process retried events.
 
--   You can set basic auth mechanism with the following:
+- **Customer-Facing Dashboards:** Convoy allows you to generate customer facing webhooks dashboard to embed into your applications using an iframe. On this dashboard, users can debug webhooks, retry events, add endpoints, and configure each endpoint's subscription.
 
-```json
-{
-	"auth": {
-		"type": "basic",
-		"basic": {
-			"username": "username",
-			"password": "password"
-		}
-	}
-}
-```
+- **Endpoint Failure Notifications:** When endpoints consecutively fails to process events, convoy disables the endpoint and sends out a notification. Two types of notifications are supported: Email and Slack Notifications.
+
+## Installation
+- [Docker](https://docs.getconvoy.io/deployment/install-convoy/docker)
+- [Kubernetes with Helm](https://docs.getconvoy.io/deployment/install-convoy/kubernetes)
+
+## Contributing
+Thank you for your interest in contributing! Please refer to [CONTRIBUTING.md](https://github.com/frain-dev/convoy/blob/main/CONTRIBUTING.md) for guidance. For contributions to the Convoy dashboard, please refer to the [web/ui](https://github.com/frain-dev/convoy/tree/main/web/ui) directory.
 
 ## License
-[Mozilla Public License v2.0](https://github.com/frain-dev/convoy/blob/main/LICENSE)
+[Elastic License v2.0](https://github.com/frain-dev/convoy/blob/main/LICENSE)

@@ -25,7 +25,7 @@ type FileRealm struct {
 }
 
 func (r *FileRealm) GetName() string {
-	return "file_realm"
+	return auth.FileRealmName
 }
 
 func (r *FileRealm) Authenticate(ctx context.Context, cred *auth.Credential) (*auth.AuthenticatedUser, error) {
@@ -75,8 +75,8 @@ func NewFileRealm(opts *config.FileRealmOption) (*FileRealm, error) {
 			Username: basicAuth.Username,
 			Password: basicAuth.Password,
 			Role: auth.Role{
-				Type:   basicAuth.Role.Type,
-				Groups: basicAuth.Role.Groups,
+				Type:    basicAuth.Role.Type,
+				Project: basicAuth.Role.Project,
 			},
 		})
 	}
@@ -85,8 +85,8 @@ func NewFileRealm(opts *config.FileRealmOption) (*FileRealm, error) {
 		fr.APIKey = append(fr.APIKey, APIKeyAuth{
 			APIKey: basicAuth.APIKey,
 			Role: auth.Role{
-				Type:   basicAuth.Role.Type,
-				Groups: basicAuth.Role.Groups,
+				Type:    basicAuth.Role.Type,
+				Project: basicAuth.Role.Project,
 			},
 		})
 	}

@@ -14,7 +14,7 @@
 		"experimentalDecorators": true,
 		"moduleResolution": "node",
 		"importHelpers": true,
-		"target": "es2017",
+		"target": "es2020",
 		"module": "es2020",
 		"lib": ["es2021", "dom", "ES2021.String"],
 		"paths": {
@@ -22,10 +22,13 @@
 		},
 		"allowJs": true
 	},
+	"exclude": ["node_modules", "dist", "source-maps"],
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,
 		"strictInjectionParameters": true,
 		"strictInputAccessModifiers": true,
-		"strictTemplates": true
+		"strictTemplates": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true
 	}
 }

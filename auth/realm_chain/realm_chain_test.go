@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/frain-dev/convoy/mocks"
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 
 	"github.com/frain-dev/convoy/auth"
 	"github.com/frain-dev/convoy/auth/realm/file"
@@ -70,32 +70,32 @@ var fileRealmOpt = &config.FileRealmOption{
 			Username: "username1",
 			Password: "password1",
 			Role: auth.Role{
-				Type:   auth.RoleAdmin,
-				Groups: []string{"sendcash-pay"},
+				Type:    auth.RoleAdmin,
+				Project: "sendcash-pay",
 			},
 		},
 		{
 			Username: "username2",
 			Password: "password2",
 			Role: auth.Role{
-				Type:   auth.RoleUIAdmin,
-				Groups: []string{"buycoins"},
+				Type:    auth.RoleAdmin,
+				Project: "buycoins",
 			},
 		},
 		{
 			Username: "username3",
 			Password: "password3",
 			Role: auth.Role{
-				Type:   auth.RoleSuperUser,
-				Groups: []string{"paystack"},
+				Type:    auth.RoleSuperUser,
+				Project: "paystack",
 			},
 		},
 		{
 			Username: "username4",
 			Password: "password4",
 			Role: auth.Role{
-				Type:   auth.RoleAPI,
-				Groups: []string{"termii"},
+				Type:    auth.RoleAPI,
+				Project: "termii",
 			},
 		},
 	},
@@ -103,8 +103,8 @@ var fileRealmOpt = &config.FileRealmOption{
 		{
 			APIKey: "avcbajbwrohw@##Q39uekvsmbvxc.fdjhd",
 			Role: auth.Role{
-				Type:   auth.RoleUIAdmin,
-				Groups: []string{"sendcash-pay"},
+				Type:    auth.RoleAdmin,
+				Project: "sendcash-pay",
 			},
 		},
 	},
@@ -158,8 +158,8 @@ func TestRealmChain_Authenticate(t *testing.T) {
 					Password: "password1",
 				},
 				Role: auth.Role{
-					Type:   auth.RoleAdmin,
-					Groups: []string{"sendcash-pay"},
+					Type:    auth.RoleAdmin,
+					Project: "sendcash-pay",
 				},
 			},
 			wantErr: false,
@@ -289,15 +289,14 @@ func TestInit(t *testing.T) {
 			name: "should_init_successfully",
 			args: args{
 				authConfig: &config.AuthConfiguration{
-					RequireAuth: true,
 					File: config.FileRealmOption{
 						Basic: []config.BasicAuth{
 							{
 								Username: "test",
 								Password: "test",
 								Role: auth.Role{
-									Type:   auth.RoleAPI,
-									Groups: []string{"paystack"},
+									Type:    auth.RoleAPI,
+									Project: "paystack",
 								},
 							},
 						},
@@ -306,20 +305,17 @@ func TestInit(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name: "should_init_with_noop_realm_successfully",
-			args: args{
-				authConfig: &config.AuthConfiguration{
-					RequireAuth: false,
-				},
-			},
-			wantErr: false,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockAPIKeyRepo := mocks.NewMockAPIKeyRepository(gomock.NewController(t))
-			err := Init(tt.args.authConfig, mockAPIKeyRepo)
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			mockAPIKeyRepo := mocks.NewMockAPIKeyRepository(ctrl)
+			userRepo := mocks.NewMockUserRepository(ctrl)
+			portalLinkRepo := mocks.NewMockPortalLinkRepository(ctrl)
+			cache := mocks.NewMockCache(ctrl)
+			err := Init(tt.args.authConfig, mockAPIKeyRepo, userRepo, portalLinkRepo, cache)
 			if tt.wantErr {
 				require.Equal(t, tt.wantErrMsg, err.Error())
 				return

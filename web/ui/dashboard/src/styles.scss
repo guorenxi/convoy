@@ -1,70 +1,103 @@
-// Material design themeing
-@use '@angular/material' as mat;
-@include mat.core();
-
-$convoy-primary-palette: (
-	50: #e6f2f9,
-	100: #c2e0f1,
-	200: #9fcde8,
-	300: #80b9de,
-	400: #6baad8,
-	500: #5b9cd2,
-	600: #528fc5,
-	700: #477db3,
-	800: #3f6da1,
-	900: #315081,
-	contrast: (
-		50: rgba(black, 0.87),
-		100: rgba(black, 0.87),
-		200: rgba(black, 0.87),
-		300: rgba(black, 0.87),
-		400: rgba(black, 0.87),
-		500: rgba(black, 0.87),
-		600: rgba(black, 0.87),
-		700: rgba(black, 0.87),
-		800: rgba(black, 0.87),
-		900: rgba(black, 0.87)
-	)
-);
-
-$convoy-ng-primary: mat.define-palette($convoy-primary-palette);
-$convoy-ng-accent: mat.define-palette($convoy-primary-palette);
-$convoy-ng-warn: mat.define-palette(mat.$red-palette);
-$convoy-ng-theme: mat.define-light-theme(
-	(
-		color: (
-			primary: $convoy-ng-primary,
-			accent: $convoy-ng-accent,
-			warn: $convoy-ng-warn
-		)
-	)
-);
-
-@include mat.all-component-themes($convoy-ng-theme);
-
-// global styles import
-@import './scss/reset';
-@import './scss/button';
-@import './scss/card';
-@import './scss/form';
-@import './scss/table';
-@import './scss/tabs';
+@import './scss/font';
+@import './scss/forms';
 @import './scss/prism';
-@import './scss/list';
-@import './scss/page';
 @import './scss/material-design-reset';
 @import '~prismjs/plugins/toolbar/prism-toolbar.css';
+@import '@radix-ui/colors/gray.css';
+@import '@radix-ui/colors/gray-alpha.css';
+@import '@radix-ui/colors/gray-dark.css';
+@import '@radix-ui/colors/gray-dark-alpha.css';
+@import '@radix-ui/colors/green.css';
+@import '@radix-ui/colors/green-alpha.css';
+@import '@radix-ui/colors/green-dark.css';
+@import '@radix-ui/colors/green-dark-alpha.css';
+@import '@radix-ui/colors/red.css';
+@import '@radix-ui/colors/red-alpha.css';
+@import '@radix-ui/colors/red-dark.css';
+@import '@radix-ui/colors/red-dark-alpha.css';
+@import '@radix-ui/colors/amber.css';
+@import '@radix-ui/colors/amber-alpha.css';
+@import '@radix-ui/colors/amber-dark.css';
+@import '@radix-ui/colors/amber-dark-alpha.css';
 
-// global variables
-:root {
-	--color-black: #1e1147;
-	--color-black-rgb: 30, 17, 71;
-	--primary-color: #477db3;
-	--primary-color-rgb: 71, 125, 179;
-	--primary-color-inverse: #ffffff;
-	--success-color: #1f9c6a;
-	--danger-color: #ee0005;
-	--danger-color-rgb: 238, 0, 5;
-	--grey-color: #1e1147;
-	--grey-color-rgb: 30, 17, 71;
+@tailwind base;
+
+/* Firefox */
+* {
+	scrollbar-width: 5px;
+    @apply text-neutral-12;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+}
+
+*::-webkit-scrollbar-track {
+	border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+	border-radius: 14px;
+	@apply bg-neutral-4;
+}
+
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--color-white: 255, 255, 255;
+	}
+
+	h1 {
+		@apply text-h1;
+	}
+	h2 {
+		@apply text-h2;
+	}
+	h3 {
+		@apply text-h3;
+	}
+	h4 {
+		@apply text-h4;
+	}
+
+	dialog:modal {
+		@apply max-w-full max-h-full;
+	}
+
+	.no-scrollbar::-webkit-scrollbar {
+		@apply hidden;
+	}
+	.no-scrollbar {
+		scrollbar-width: none;
+	}
+	.no-scrollbar {
+		-ms-overflow-style: none;
+	}
+
+	.docs {
+		article {
+			h3 {
+				@apply text-h3 font-semibold mb-8px;
+			}
+			p {
+				@apply mb-24px text-14 text-neutral-11;
+			}
+
+			code {
+				@apply bg-neutral-a3 rounded-4px py-2px px-8px my-0 mx-[1px] text-12 font-menlo text-black border border-none;
+			}
+
+			pre {
+				@apply rounded-8px font-normal px-16px py-20px bg-[#F3F3F8] mb-22px font-menlo text-14 whitespace-pre overflow-auto text-neutral-11;
+			}
+		}
+	}
+
+	.disabled {
+		@apply opacity-50 pointer-events-none;
+	}
 }

@@ -1,28 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { PrivateComponent } from './private.component';
+import { inject, NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { PrivateService } from './private.service';
+import { routes } from './private-routers';
 
-const routes: Routes = [
-	{
-		path: '',
-		component: PrivateComponent,
-		children: [
-			{
-				path: '',
-				redirectTo: 'dashboard',
-				pathMatch: 'full'
-			},
-			{
-				path: 'dashboard',
-				loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule)
-			},
-			{
-				path: 'app',
-				loadChildren: () => import('./pages/app/app.module').then(m => m.AppModule)
-			}
-		]
-	}
-];
+// export const fetchOrganisations = async (privateService = inject(PrivateService)) => await privateService.getOrganizations();
 
 @NgModule({
 	imports: [RouterModule.forChild(routes)],

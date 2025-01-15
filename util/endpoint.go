@@ -1,41 +1,17 @@
 package util
 
 import (
+	"context"
+	"crypto/tls"
 	"errors"
+	"fmt"
+	"net"
+	"net/http"
 	"net/url"
-	"strings"
-
-	"github.com/frain-dev/convoy/datastore"
+	"time"
 )
 
-func ParseMetadataFromActiveEndpoints(endpoints []datastore.Endpoint) []datastore.EndpointMetadata {
-	return parseMetadataFromEndpoints(endpoints, func(e datastore.Endpoint) bool {
-		return e.Status == datastore.ActiveEndpointStatus
-	})
-}
-
-func GetMetadataFromEndpoints(endpoints []datastore.Endpoint) []datastore.EndpointMetadata {
-	return parseMetadataFromEndpoints(endpoints, func(e datastore.Endpoint) bool {
-		return true
-	})
-}
-
-func parseMetadataFromEndpoints(endpoints []datastore.Endpoint, filter func(e datastore.Endpoint) bool) []datastore.EndpointMetadata {
-	m := make([]datastore.EndpointMetadata, 0)
-	for _, e := range endpoints {
-		if filter(e) {
-			m = append(m, datastore.EndpointMetadata{
-				UID:       e.UID,
-				TargetURL: e.TargetURL,
-				Sent:      false,
-			})
-		}
-	}
-
-	return m
-}
-
-func CleanEndpoint(s string) (string, error) {
+func ValidateEndpoint(s string, enforceSecure bool) (string, error) {
 	if IsStringEmpty(s) {
 		return "", errors.New("please provide the endpoint url")
 	}
@@ -46,15 +22,24 @@ func CleanEndpoint(s string) (string, error) {
 	}
 
 	switch u.Scheme {
-	case "http", "https":
+	case "http":
+		if enforceSecure {
+			return "", errors.New("only https endpoints allowed")
+		}
+	case "https":
+		client := &http.Client{Timeout: 10 * time.Second, Transport: &http.Transport{
+			DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				return tls.Dial(network, addr, &tls.Config{MinVersion: tls.VersionTLS12})
+			},
+		}}
+
+		_, err = client.Get(s)
+		if err != nil {
+			return "", fmt.Errorf("failed to ping tls endpoint: %v", err)
+		}
 	default:
 		return "", errors.New("invalid endpoint scheme")
 	}
 
-	switch strings.ToLower(u.Hostname()) {
-	case "localhost", "127.0.0.1":
-		return "", errors.New("cannot use localhost or 127.0.0.1")
-	}
-
-	return strings.ToLower(u.String()), nil
+	return u.String(), nil
 }

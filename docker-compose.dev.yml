@@ -1,0 +1,82 @@
+version: "3"
+
+volumes:
+  postgres_data:
+  redis_data:
+
+services:
+    web:
+        build:
+          context: ./
+          dockerfile: Dockerfile.dev
+        command: [ "/start.sh" ]
+        volumes:
+            - ./convoy.json:/convoy.json
+        restart: on-failure
+        ports:
+          - "5005:5005"
+        depends_on:
+            - postgres
+            - redis_server
+
+    scheduler:
+        build:
+          context: ./
+          dockerfile: Dockerfile.dev
+        entrypoint: ["./cmd", "scheduler", "--config", "convoy.json"]
+        volumes:
+            - ./convoy.json:/convoy.json
+        restart: on-failure
+        depends_on:
+            - postgres
+            - redis_server
+
+    worker:
+        build:
+          context: ./
+          dockerfile: Dockerfile.dev
+        entrypoint: ["./cmd", "worker", "--config", "convoy.json"]
+        volumes:
+            - ./convoy.json:/convoy.json
+        restart: on-failure
+        depends_on:
+            - postgres
+            - redis_server
+
+    ingest:
+      build:
+        context: ./
+        dockerfile: Dockerfile.dev
+      entrypoint: ["./cmd", "ingest", "--config", "convoy.json"]
+      volumes:
+        - ./convoy.json:/convoy.json
+      restart: on-failure
+      depends_on:
+        - postgres
+        - redis_server
+
+    postgres:
+      image: postgres:15.2-alpine
+      restart: unless-stopped
+      environment:
+        POSTGRES_DB: convoy
+        POSTGRES_USER: convoy
+        POSTGRES_PASSWORD: convoy
+        PGDATA: /data/postgres
+      volumes:
+        - ./postgres_data:/data/postgres
+
+    redis_server:
+        image: redis:7-alpine
+        restart: always
+        volumes:
+          - ./redis_data:/data
+
+    prometheus:
+        image: prom/prometheus:v2.24.0
+        volumes:
+            - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+            - 9090:9090
+        restart: always
+

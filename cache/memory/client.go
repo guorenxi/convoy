@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/go-redis/cache/v8"
+	"github.com/go-redis/cache/v9"
 )
 
 type MemoryCache struct {
@@ -16,7 +16,7 @@ const cacheSize = 128000
 
 func NewMemoryCache() *MemoryCache {
 	c := cache.New(&cache.Options{
-		LocalCache: cache.NewTinyLFU(cacheSize, time.Hour),
+		LocalCache: cache.NewTinyLFU(cacheSize, time.Second),
 	})
 
 	return &MemoryCache{cache: c}

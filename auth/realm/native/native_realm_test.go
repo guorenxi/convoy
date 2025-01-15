@@ -7,68 +7,194 @@ import (
 	"testing"
 	"time"
 
-	"github.com/frain-dev/convoy/datastore"
+	"gopkg.in/guregu/null.v4"
+
 	"github.com/frain-dev/convoy/auth"
+	"github.com/frain-dev/convoy/datastore"
 	"github.com/frain-dev/convoy/mocks"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNativeRealm_Authenticate(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	mockApiKeyRepo := mocks.NewMockAPIKeyRepository(ctrl)
-
-	nr := NewNativeRealm(mockApiKeyRepo)
-
 	type args struct {
 		cred *auth.Credential
 	}
 	tests := []struct {
 		name       string
 		args       args
-		nFn        func(apiKeyRepo *mocks.MockAPIKeyRepository)
+		nFn        func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository)
 		want       *auth.AuthenticatedUser
 		wantErr    bool
 		wantErrMsg string
 	}{
 		{
-			name: "should_authenticate_successfully",
+			name: "should_authenticate_portal_link_tokens_successfully",
+			args: args{
+				cred: &auth.Credential{
+					Type:  auth.CredentialTypeToken,
+					Token: "C8oU2G7dA75BWrHfFYYvrash",
+				},
+			},
+			nFn: func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository) {
+				pR.EXPECT().
+					FindPortalLinkByToken(gomock.Any(), gomock.Any()).
+					Times(1).Return(&datastore.PortalLink{
+					UID:       "abcd",
+					Token:     "C8oU2G7dA75BWrHfFYYvrash",
+					CreatedAt: time.Time{},
+				}, nil)
+			},
+			want: &auth.AuthenticatedUser{
+				AuthenticatedByRealm: "native_realm",
+				Credential: auth.Credential{
+					Type:  auth.CredentialTypeToken,
+					Token: "C8oU2G7dA75BWrHfFYYvrash",
+				},
+				PortalLink: &datastore.PortalLink{
+					UID:       "abcd",
+					Token:     "C8oU2G7dA75BWrHfFYYvrash",
+					CreatedAt: time.Time{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "should_authenticate_apikey_successfully",
 			args: args{
 				cred: &auth.Credential{
 					Type:   auth.CredentialTypeAPIKey,
 					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
 				},
 			},
-			nFn: func(apiKeyRepo *mocks.MockAPIKeyRepository) {
-				apiKeyRepo.EXPECT().
+			nFn: func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository) {
+				aR.EXPECT().
 					FindAPIKeyByMaskID(gomock.Any(), gomock.Any()).
 					Times(1).Return(&datastore.APIKey{
 					UID: "abcd",
 					Role: auth.Role{
-						Type:   auth.RoleUIAdmin,
-						Groups: []string{"paystack"},
+						Type:    auth.RoleAdmin,
+						Project: "paystack",
 					},
 					MaskID:    "DkwB9HnZxy4DqZMi",
 					Hash:      "R4rtPIELUaJ9fx6suLreIpH3IaLzbxRcODy3a0Zm1qM=",
 					Salt:      "6y9yQZWqbE1AMHvfUewuYwasycmoe_zg5g==",
-					ExpiresAt: 0,
-					CreatedAt: 0,
+					ExpiresAt: null.Time{},
+					CreatedAt: time.Time{},
 				}, nil)
 			},
 			want: &auth.AuthenticatedUser{
-				AuthenticatedByRealm: nr.GetName(),
+				AuthenticatedByRealm: "native_realm",
 				Credential: auth.Credential{
 					Type:   auth.CredentialTypeAPIKey,
 					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
 				},
 				Role: auth.Role{
-					Type:   auth.RoleUIAdmin,
-					Groups: []string{"paystack"},
+					Type:    auth.RoleAdmin,
+					Project: "paystack",
+				},
+				APIKey: &datastore.APIKey{
+					UID: "abcd",
+					Role: auth.Role{
+						Type:    auth.RoleAdmin,
+						Project: "paystack",
+					},
+					MaskID:    "DkwB9HnZxy4DqZMi",
+					Hash:      "R4rtPIELUaJ9fx6suLreIpH3IaLzbxRcODy3a0Zm1qM=",
+					Salt:      "6y9yQZWqbE1AMHvfUewuYwasycmoe_zg5g==",
+					ExpiresAt: null.Time{},
+					CreatedAt: time.Time{},
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "should_authenticate_personal_apiKey_successfully",
+			args: args{
+				cred: &auth.Credential{
+					Type:   auth.CredentialTypeAPIKey,
+					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
+				},
+			},
+			nFn: func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository) {
+				aR.EXPECT().
+					FindAPIKeyByMaskID(gomock.Any(), gomock.Any()).
+					Times(1).Return(&datastore.APIKey{
+					UID: "abcd",
+					Role: auth.Role{
+						Type:    auth.RoleAdmin,
+						Project: "paystack",
+					},
+					Type:      datastore.PersonalKey,
+					UserID:    "1234",
+					MaskID:    "DkwB9HnZxy4DqZMi",
+					Hash:      "R4rtPIELUaJ9fx6suLreIpH3IaLzbxRcODy3a0Zm1qM=",
+					Salt:      "6y9yQZWqbE1AMHvfUewuYwasycmoe_zg5g==",
+					ExpiresAt: null.Time{},
+					CreatedAt: time.Time{},
+				}, nil)
+
+				uR.EXPECT().FindUserByID(gomock.Any(), "1234").Times(1).Return(&datastore.User{UID: "1234"}, nil)
+			},
+			want: &auth.AuthenticatedUser{
+				AuthenticatedByRealm: "native_realm",
+				Credential: auth.Credential{
+					Type:   auth.CredentialTypeAPIKey,
+					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
+				},
+				Role: auth.Role{
+					Type:    auth.RoleAdmin,
+					Project: "paystack",
+				},
+				Metadata: &datastore.User{UID: "1234"},
+				User:     &datastore.User{UID: "1234"},
+				APIKey: &datastore.APIKey{
+					UID: "abcd",
+					Role: auth.Role{
+						Type:    auth.RoleAdmin,
+						Project: "paystack",
+					},
+					Type:      datastore.PersonalKey,
+					UserID:    "1234",
+					MaskID:    "DkwB9HnZxy4DqZMi",
+					Hash:      "R4rtPIELUaJ9fx6suLreIpH3IaLzbxRcODy3a0Zm1qM=",
+					Salt:      "6y9yQZWqbE1AMHvfUewuYwasycmoe_zg5g==",
+					ExpiresAt: null.Time{},
+					CreatedAt: time.Time{},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "should_error_for_failed_to_fined_user",
+			args: args{
+				cred: &auth.Credential{
+					Type:   auth.CredentialTypeAPIKey,
+					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
+				},
+			},
+			nFn: func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository) {
+				aR.EXPECT().
+					FindAPIKeyByMaskID(gomock.Any(), gomock.Any()).
+					Times(1).Return(&datastore.APIKey{
+					UID: "abcd",
+					Role: auth.Role{
+						Type:    auth.RoleAdmin,
+						Project: "paystack",
+					},
+					Type:      datastore.PersonalKey,
+					UserID:    "1234",
+					MaskID:    "DkwB9HnZxy4DqZMi",
+					Hash:      "R4rtPIELUaJ9fx6suLreIpH3IaLzbxRcODy3a0Zm1qM=",
+					Salt:      "6y9yQZWqbE1AMHvfUewuYwasycmoe_zg5g==",
+					ExpiresAt: null.Time{},
+					CreatedAt: time.Time{},
+				}, nil)
+
+				uR.EXPECT().FindUserByID(gomock.Any(), "1234").Times(1).Return(nil, errors.New("failed"))
+			},
+			wantErr:    true,
+			wantErrMsg: "failed to fetch user: failed",
 		},
 		{
 			name: "should_error_for_wrong_cred_type",
@@ -80,7 +206,7 @@ func TestNativeRealm_Authenticate(t *testing.T) {
 			nFn:        nil,
 			want:       nil,
 			wantErr:    true,
-			wantErrMsg: fmt.Sprintf("%s only authenticates credential type BEARER", nr.GetName()),
+			wantErrMsg: fmt.Sprintf("%s only authenticates credential type BEARER", "native_realm"),
 		},
 		{
 			name: "should_error_for_revoked_key",
@@ -90,21 +216,21 @@ func TestNativeRealm_Authenticate(t *testing.T) {
 					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
 				},
 			},
-			nFn: func(apiKeyRepo *mocks.MockAPIKeyRepository) {
-				apiKeyRepo.EXPECT().
+			nFn: func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository) {
+				aR.EXPECT().
 					FindAPIKeyByMaskID(gomock.Any(), gomock.Any()).
 					Times(1).Return(&datastore.APIKey{
 					UID: "abcd",
 					Role: auth.Role{
-						Type:   auth.RoleUIAdmin,
-						Groups: []string{"paystack"},
+						Type:    auth.RoleAdmin,
+						Project: "paystack",
 					},
 					MaskID:    "DkwB9HnZxy4DqZMi",
 					Hash:      "R4rtPIELUaJ9fx6suLreIpH3IaLzbxRcODy3a0Zm1qM=",
 					Salt:      "6y9yQZWqbE1AMHvfUewuYwasycmoe_zg5g==",
-					DeletedAt: primitive.NewDateTimeFromTime(time.Now()),
-					ExpiresAt: 0,
-					CreatedAt: 0,
+					DeletedAt: null.NewTime(time.Now(), true),
+					ExpiresAt: null.Time{},
+					CreatedAt: time.Time{},
 				}, nil)
 			},
 			want:       nil,
@@ -131,21 +257,21 @@ func TestNativeRealm_Authenticate(t *testing.T) {
 					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
 				},
 			},
-			nFn: func(apiKeyRepo *mocks.MockAPIKeyRepository) {
-				apiKeyRepo.EXPECT().
+			nFn: func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository) {
+				aR.EXPECT().
 					FindAPIKeyByMaskID(gomock.Any(), gomock.Any()).
 					Times(1).Return(&datastore.APIKey{
 					UID: "abcd",
 					Role: auth.Role{
-						Type:   auth.RoleUIAdmin,
-						Groups: []string{"paystackx"},
+						Type:    auth.RoleAdmin,
+						Project: "paystack",
 					},
 					MaskID:    "DkwB9HnZxy4DqZMi",
 					Hash:      "R4rtPIELUaJ9fx6suLreIpH3IaLzbxRcODy3a0Zm1qM=",
 					Salt:      "6y9yQZWqbE1AMHvfUewuYwasycmoe_zg5g==",
-					ExpiresAt: primitive.NewDateTimeFromTime(time.Now().Add(time.Second * -10)),
-					DeletedAt: 0,
-					CreatedAt: 0,
+					ExpiresAt: null.NewTime(time.Now().Add(time.Second*-10), true),
+					DeletedAt: null.Time{},
+					CreatedAt: time.Time{},
 				}, nil)
 			},
 			want:       nil,
@@ -160,8 +286,8 @@ func TestNativeRealm_Authenticate(t *testing.T) {
 					APIKey: "CO.DkwB9HnZxy4DqZMi.0JUxUfnQJ7NHqvD2ikHsHFx4Wd5nnlTMgsOfUs4eW8oU2G7dA75BWrHfFYYvrash",
 				},
 			},
-			nFn: func(apiKeyRepo *mocks.MockAPIKeyRepository) {
-				apiKeyRepo.EXPECT().
+			nFn: func(aR *mocks.MockAPIKeyRepository, uR *mocks.MockUserRepository, pR *mocks.MockPortalLinkRepository) {
+				aR.EXPECT().
 					FindAPIKeyByMaskID(gomock.Any(), gomock.Any()).
 					Times(1).Return(nil, errors.New("no documents in result"))
 			},
@@ -173,8 +299,15 @@ func TestNativeRealm_Authenticate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+			mockApiKeyRepo := mocks.NewMockAPIKeyRepository(ctrl)
+			mockUserRepo := mocks.NewMockUserRepository(ctrl)
+			mockPortalLinkRepo := mocks.NewMockPortalLinkRepository(ctrl)
+
+			nr := NewNativeRealm(mockApiKeyRepo, mockUserRepo, mockPortalLinkRepo)
 			if tt.nFn != nil {
-				tt.nFn(mockApiKeyRepo)
+				tt.nFn(mockApiKeyRepo, mockUserRepo, mockPortalLinkRepo)
 			}
 
 			got, err := nr.Authenticate(context.Background(), tt.args.cred)
